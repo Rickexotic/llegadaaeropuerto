@@ -1,5 +1,3 @@
-const tl = gsap.timeline();
-
 const progress =
 document.querySelector(".progress-fill");
 
@@ -9,48 +7,53 @@ document.querySelector(".card-title");
 const status =
 document.querySelector(".card-status");
 
-function setProgress(value){
+function updateProgress(value){
 
-    progress.style.width =
-    value + "%";
+progress.style.width =
+value + "%";
 
 }
 
-tl
+const tl =
+gsap.timeline();
 
-.fromTo(
+// WhatsApp
+
+tl.fromTo(
 ".notification",
 {
-    y:-80,
-    opacity:0
+y:-100,
+opacity:0
 },
 {
-    y:0,
-    opacity:1,
-    duration:1
+y:0,
+opacity:1,
+duration:1
 }
 )
 
 .fromTo(
 ".reply",
 {
-    y:20,
-    opacity:0
+y:20,
+opacity:0
 },
 {
-    y:0,
-    opacity:1,
-    duration:.8
+y:0,
+opacity:1,
+duration:.8
 },
 "+=1"
 )
 
+// Transformación
+
 .to(
 ".notification",
 {
-    scale:.85,
-    opacity:.3,
-    duration:.8
+scale:.85,
+opacity:.3,
+duration:.8
 },
 "+=1"
 )
@@ -58,9 +61,9 @@ tl
 .to(
 ".reply",
 {
-    scale:.85,
-    opacity:.3,
-    duration:.8
+scale:.85,
+opacity:.3,
+duration:.8
 },
 "<"
 )
@@ -68,28 +71,30 @@ tl
 .to(
 ".app-badge",
 {
-    opacity:1,
-    duration:1
+opacity:1,
+duration:.8
 }
 )
 
 .to(
 ".action-card",
 {
-    opacity:1,
-    duration:.8
+opacity:1,
+duration:.8
 }
 )
 
+// Parking
+
 .call(()=>{
 
-    title.innerHTML =
-    "🅿 Parking Premium";
+title.innerHTML =
+"🅿 Parking Premium";
 
-    status.innerHTML =
-    "Reservando...";
+status.innerHTML =
+"Reservando...";
 
-    setProgress(20);
+updateProgress(25);
 
 })
 
@@ -97,24 +102,26 @@ tl
 
 .call(()=>{
 
-    status.innerHTML =
-    "✅ Confirmado";
+status.innerHTML =
+"✅ Confirmado";
 
-    setProgress(35);
+updateProgress(35);
 
 })
 
-.to({}, {duration:1.5})
+// Restaurante
+
+.to({}, {duration:1.2})
 
 .call(()=>{
 
-    title.innerHTML =
-    "🍽 Restaurant";
+title.innerHTML =
+"🍽 Restaurant";
 
-    status.innerHTML =
-    "Reservando mesa...";
+status.innerHTML =
+"Reservando mesa...";
 
-    setProgress(60);
+updateProgress(65);
 
 })
 
@@ -122,24 +129,26 @@ tl
 
 .call(()=>{
 
-    status.innerHTML =
-    "✅ Mesa Confirmada";
+status.innerHTML =
+"✅ Mesa Confirmada";
 
-    setProgress(75);
+updateProgress(75);
 
 })
 
-.to({}, {duration:1.5})
+// Gift
+
+.to({}, {duration:1.2})
 
 .call(()=>{
 
-    title.innerHTML =
-    "🎁 Duty Free";
+title.innerHTML =
+"🎁 Duty Free";
 
-    status.innerHTML =
-    "Aplicando 15% OFF";
+status.innerHTML =
+"Aplicando 15% OFF";
 
-    setProgress(90);
+updateProgress(90);
 
 })
 
@@ -147,42 +156,46 @@ tl
 
 .call(()=>{
 
-    status.innerHTML =
-    "✅ Regalo Comprado";
+status.innerHTML =
+"✅ Regalo Comprado";
 
-    setProgress(100);
+updateProgress(100);
 
 })
+
+// Resumen
 
 .to(
 ".action-card",
 {
-    opacity:0,
-    duration:.8
+opacity:0,
+duration:.8
 }
 )
 
 .to(
 ".stack",
 {
-    opacity:1,
-    duration:1
+opacity:1,
+duration:1
 }
 )
 
 .to(
 ".stack",
 {
-    opacity:0,
-    duration:1
+opacity:0,
+duration:1
 },
 "+=2"
 )
 
+// Final
+
 .to(
 ".closing",
 {
-    opacity:1,
-    duration:1.5
+opacity:1,
+duration:1.5
 }
 );
