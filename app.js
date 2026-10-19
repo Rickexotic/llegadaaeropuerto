@@ -14,27 +14,75 @@ document.getElementById("closing")
 
 };
 
+// ----------
+
 function showScreen(screen){
 
 document
 .querySelectorAll(".screen")
-.forEach(s=>s.classList.remove("active"));
+.forEach(s =>
+s.classList.remove("active")
+);
 
 screen.classList.add("active");
 
 }
 
-// respuesta whatsapp
+// ----------
+
+function showMessage(selector){
+
+const message =
+document.querySelector(selector);
+
+message.classList.add("show");
+
+}
+
+// ----------
+
+function showCard(selector){
+
+const card =
+document.querySelector(selector);
+
+card.classList.add("show");
+
+}
+
+// ----------
+
+function confirmCard(selector){
+
+const card =
+document.querySelector(selector);
+
+card.classList.add("confirmed");
+
+card.innerHTML =
+"✓ " + card.innerHTML;
+
+}
+
+// ----------
+// INICIO
+// ----------
+
+showMessage(".incoming");
+
+// ----------
+// RESPUESTA
+// ----------
 
 setTimeout(()=>{
 
-document
-.querySelector(".outgoing")
-.classList.remove("hidden");
+showMessage(".outgoing");
 
 },2000);
 
-// abrir app
+// ----------
+// APP
+// ----------
 
 setTimeout(()=>{
 
@@ -42,31 +90,59 @@ showScreen(
 screens.dashboard
 );
 
-animateCards();
+},4500);
 
-},5000);
-
-function animateCards(){
-
-const cards =
-document.querySelectorAll(".card");
-
-cards.forEach((card,index)=>{
+// ----------
+// PARKING
+// ----------
 
 setTimeout(()=>{
 
-card.style.opacity=1;
+showCard(".parking");
 
-card.style.transform=
-"translateX(0px)";
+},5500);
 
-},index*800);
+setTimeout(()=>{
 
-});
+confirmCard(".parking");
 
-}
+},7500);
 
-// resumen
+// ----------
+// RESTAURANTE
+// ----------
+
+setTimeout(()=>{
+
+showCard(".restaurant");
+
+},9000);
+
+setTimeout(()=>{
+
+confirmCard(".restaurant");
+
+},11000);
+
+// ----------
+// REGALO
+// ----------
+
+setTimeout(()=>{
+
+showCard(".gift");
+
+},12500);
+
+setTimeout(()=>{
+
+confirmCard(".gift");
+
+},14500);
+
+// ----------
+// RESUMEN
+// ----------
 
 setTimeout(()=>{
 
@@ -74,9 +150,11 @@ showScreen(
 screens.summary
 );
 
-},15000);
+},18000);
 
-// cierre
+// ----------
+// CIERRE
+// ----------
 
 setTimeout(()=>{
 
@@ -84,4 +162,32 @@ showScreen(
 screens.closing
 );
 
-},21000);
+},22000);
+
+// ----------
+// PHONE 3D
+// ----------
+
+const phone =
+document.querySelector(".phone");
+
+window.addEventListener(
+"mousemove",
+e=>{
+
+const x =
+(e.clientX /
+window.innerWidth -.5) * 8;
+
+const y =
+(e.clientY /
+window.innerHeight -.5) * 8;
+
+phone.style.transform =
+`
+translateY(-6px)
+rotateY(${x}deg)
+rotateX(${-y}deg)
+`;
+
+});
