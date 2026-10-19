@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Club Beneficios Aeropuerto Santiago</title>
 
 <link rel="stylesheet" href="styles.css">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
-
 <body>
 
 <div class="stage">
@@ -19,74 +17,64 @@
 
         <div class="dynamic-island"></div>
 
-        <div id="chat" class="screen active">
+        <div class="status-bar">
+            <div class="progress">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
 
-            <div class="message incoming">
+        <div class="notification">
+
+            <div class="notif-header">
+                WhatsApp
+            </div>
+
+            <div class="notif-content">
                 Hola 👋<br>
                 Llego a las 9 PM
             </div>
 
-            <div class="message outgoing">
-                Ok, no hay problema 👍
-            </div>
-
         </div>
 
-        <div class="app-transition">
+        <div class="reply">
+            Ok, no hay problema 👍
+        </div>
+
+        <div class="app-badge">
 
             <div class="app-icon">
                 ✈
             </div>
 
-            <div class="app-title">
+            <div class="app-name">
                 Club Beneficios
             </div>
 
         </div>
 
-        <div id="dashboard" class="screen">
+        <div class="action-card">
 
-            <div class="welcome">
-                Llegada programada
+            <div class="card-title">
+                —
             </div>
 
-            <h1>21:00</h1>
-
-            <div class="card parking">
-                🅿 Parking Premium
-            </div>
-
-            <div class="card restaurant">
-                🍽 Mesa para 2 · Restaurant Internacional
-            </div>
-
-            <div class="card gift">
-                🎁 Regalo Duty Free · 15% OFF
+            <div class="card-status">
+                —
             </div>
 
         </div>
 
-        <div id="summary" class="screen">
+        <div class="stack">
 
-            <h1>Todo listo</h1>
-
-            <div class="success">
-                ✓ Parking Reservado
-            </div>
-
-            <div class="success">
-                ✓ Restaurante Confirmado
-            </div>
-
-            <div class="success">
-                ✓ Regalo Comprado
-            </div>
+            <div class="stack-item">✅ Parking</div>
+            <div class="stack-item">✅ Restaurant</div>
+            <div class="stack-item">✅ Duty Free</div>
 
         </div>
 
-        <div id="closing" class="screen">
+        <div class="closing">
 
-            <div class="final-copy">
+            <div class="closing-copy">
 
                 <h2>
                     No vas al aeropuerto
