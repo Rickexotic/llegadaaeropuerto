@@ -5,63 +5,102 @@
 }
 
 body{
-    background:#030912;
     font-family:"Segoe UI",sans-serif;
-    height:100vh;
     overflow:hidden;
+    height:100vh;
+
+    background:
+    radial-gradient(
+        circle at 20% 20%,
+        #1b2433,
+        #030912 70%
+    );
+
+    color:white;
 }
 
 .stage{
 
+    width:100vw;
     height:100vh;
 
     display:flex;
 
     justify-content:center;
-
     align-items:center;
+
+    position:relative;
+}
+
+.stage::before{
+
+    content:"";
+
+    position:absolute;
+    width:900px;
+    height:900px;
+
+    border-radius:50%;
 
     background:
     radial-gradient(
-        circle at center,
-        #0e1520,
-        #030912
+        circle,
+        rgba(211,176,107,.15),
+        transparent 70%
     );
+
+    animation:pulse 8s infinite ease-in-out;
 }
 
 .phone{
 
-    width:360px;
+    width:min(340px,70vw);
+    height:min(700px,78vh);
 
-    height:760px;
+    background:
+    linear-gradient(
+        180deg,
+        #141c28,
+        #0a1018
+    );
 
-    background:#0f1722;
+    border-radius:42px;
 
-    border-radius:45px;
+    border:1px solid rgba(255,255,255,.08);
 
     overflow:hidden;
 
-    border:8px solid #222;
+    position:relative;
+
+    z-index:2;
 
     box-shadow:
-    0 40px 80px rgba(0,0,0,.6);
+    0 0 40px rgba(211,176,107,.12),
+    0 50px 120px rgba(0,0,0,.65);
 
-    position:relative;
+    transform-style:preserve-3d;
+
+    animation:floatPhone 6s ease-in-out infinite;
 }
 
 .screen{
 
     position:absolute;
-
     inset:0;
 
-    padding:40px 25px;
+    padding:35px 24px;
 
     opacity:0;
 
-    transform:translateY(30px);
+    transform:
+    translateY(20px);
 
-    transition:1s;
+    filter:blur(15px);
+
+    transition:
+    opacity .8s,
+    transform .8s,
+    filter .8s;
 
     pointer-events:none;
 }
@@ -71,93 +110,174 @@ body{
     opacity:1;
 
     transform:none;
+
+    filter:none;
 }
 
 .message{
 
-    max-width:80%;
+    max-width:82%;
 
     padding:16px;
 
-    border-radius:20px;
+    border-radius:22px;
 
-    margin-bottom:15px;
+    margin-bottom:12px;
 
     line-height:1.4;
+
+    opacity:0;
+
+    transform:translateY(20px);
+
+    transition:.7s;
+}
+
+.message.show{
+
+    opacity:1;
+
+    transform:none;
 }
 
 .incoming{
 
-    background:#222f44;
+    background:
+    rgba(255,255,255,.08);
 
-    color:white;
+    backdrop-filter:blur(20px);
 }
 
 .outgoing{
 
     background:#d3b06b;
 
-    color:black;
+    color:#111;
 
     margin-left:auto;
-}
-
-.hidden{
-    opacity:0;
 }
 
 h1{
 
     font-size:2rem;
 
-    margin-bottom:20px;
+    margin-bottom:10px;
 }
 
 h2{
 
-    margin-bottom:20px;
+    font-size:1.4rem;
+
+    margin-bottom:15px;
 }
 
 .welcome{
 
     opacity:.7;
 
-    margin-bottom:30px;
+    margin-bottom:25px;
 }
 
 .card{
 
-    background:#182333;
+    background:
+    linear-gradient(
+    135deg,
+    rgba(255,255,255,.12),
+    rgba(255,255,255,.04)
+    );
+
+    backdrop-filter:blur(20px);
+
+    border-radius:22px;
 
     padding:18px;
-
-    border-radius:20px;
 
     margin-bottom:15px;
 
     border:1px solid rgba(255,255,255,.08);
 
-    transform:translateX(-40px);
-
     opacity:0;
+
+    transform:
+    translateX(-30px);
+
+    transition:.7s;
+}
+
+.card.show{
+
+    opacity:1;
+
+    transform:none;
+}
+
+.card.confirmed{
+
+    border-color:#46c267;
+
+    box-shadow:
+    0 0 25px rgba(70,194,103,.35);
 }
 
 .success{
 
-    background:#102b1f;
+    background:
+    rgba(70,194,103,.15);
+
+    border:1px solid rgba(70,194,103,.4);
 
     padding:18px;
 
-    border-radius:16px;
+    border-radius:18px;
 
     margin-bottom:12px;
 }
 
 .logo{
 
-    margin-top:30px;
-
     color:#d3b06b;
 
-    font-weight:600;
+    margin-top:20px;
+
+    text-shadow:
+    0 0 20px rgba(211,176,107,.5);
+}
+
+.hidden{
+
+    opacity:0;
+}
+
+@keyframes floatPhone{
+
+    0%{
+        transform:
+        translateY(0px);
+    }
+
+    50%{
+        transform:
+        translateY(-12px);
+    }
+
+    100%{
+        transform:
+        translateY(0px);
+    }
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(.9);
+    }
+
+    50%{
+        transform:scale(1.1);
+    }
+
+    100%{
+        transform:scale(.9);
+    }
 }
