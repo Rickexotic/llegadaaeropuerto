@@ -12,20 +12,18 @@ body{
     background:
     radial-gradient(
         circle at 20% 20%,
-        #1b2433,
-        #030912 70%
+        #1d2737,
+        #030912 75%
     );
 
     color:white;
 }
 
 .stage{
-
     width:100vw;
     height:100vh;
 
     display:flex;
-
     justify-content:center;
     align-items:center;
 
@@ -37,6 +35,7 @@ body{
     content:"";
 
     position:absolute;
+
     width:900px;
     height:900px;
 
@@ -49,7 +48,8 @@ body{
         transparent 70%
     );
 
-    animation:pulse 8s infinite ease-in-out;
+    animation:pulse 8s ease-in-out infinite;
+
 }
 
 .phone{
@@ -59,9 +59,9 @@ body{
 
     background:
     linear-gradient(
-        180deg,
-        #141c28,
-        #0a1018
+    180deg,
+    #151e2c,
+    #0b1119
     );
 
     border-radius:42px;
@@ -72,46 +72,65 @@ body{
 
     position:relative;
 
-    z-index:2;
-
-    box-shadow:
-    0 0 40px rgba(211,176,107,.12),
-    0 50px 120px rgba(0,0,0,.65);
+    z-index:5;
 
     transform-style:preserve-3d;
 
     animation:floatPhone 6s ease-in-out infinite;
+
+    box-shadow:
+    0 0 40px rgba(211,176,107,.15),
+    0 50px 120px rgba(0,0,0,.65);
+
+}
+
+.dynamic-island{
+
+    position:absolute;
+
+    top:12px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:120px;
+    height:28px;
+
+    border-radius:30px;
+
+    background:black;
+
+    z-index:100;
 }
 
 .screen{
 
     position:absolute;
+
     inset:0;
 
-    padding:35px 24px;
+    padding:60px 25px 25px;
 
     opacity:0;
 
-    transform:
-    translateY(20px);
-
     filter:blur(15px);
+
+    transform:translateY(25px);
 
     transition:
     opacity .8s,
-    transform .8s,
-    filter .8s;
+    filter .8s,
+    transform .8s;
 
-    pointer-events:none;
 }
 
 .screen.active{
 
     opacity:1;
 
-    transform:none;
-
     filter:none;
+
+    transform:none;
 }
 
 .message{
@@ -120,9 +139,9 @@ body{
 
     padding:16px;
 
-    border-radius:22px;
+    border-radius:24px;
 
-    margin-bottom:12px;
+    margin-bottom:14px;
 
     line-height:1.4;
 
@@ -150,32 +169,93 @@ body{
 
 .outgoing{
 
-    background:#d3b06b;
-
-    color:#111;
-
     margin-left:auto;
+
+    color:black;
+
+    background:#d3b06b;
 }
 
 h1{
 
     font-size:2rem;
 
-    margin-bottom:10px;
+    margin-bottom:18px;
 }
 
 h2{
-
-    font-size:1.4rem;
 
     margin-bottom:15px;
 }
 
 .welcome{
 
-    opacity:.7;
+    opacity:.75;
 
-    margin-bottom:25px;
+    margin-bottom:15px;
+}
+
+.app-transition{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transition:1s;
+
+    z-index:20;
+}
+
+.app-transition.show{
+
+    opacity:1;
+}
+
+.app-icon{
+
+    width:100px;
+    height:100px;
+
+    border-radius:28px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    font-size:40px;
+
+    background:
+    linear-gradient(
+    135deg,
+    #d3b06b,
+    #f2d48e
+    );
+
+    color:#111;
+
+    margin-bottom:18px;
+
+    box-shadow:
+    0 0 50px rgba(211,176,107,.45);
+}
+
+.app-title{
+
+    font-size:1.15rem;
+    font-weight:600;
 }
 
 .card{
@@ -183,13 +263,11 @@ h2{
     background:
     linear-gradient(
     135deg,
-    rgba(255,255,255,.12),
+    rgba(255,255,255,.10),
     rgba(255,255,255,.04)
     );
 
-    backdrop-filter:blur(20px);
-
-    border-radius:22px;
+    border-radius:20px;
 
     padding:18px;
 
@@ -199,8 +277,7 @@ h2{
 
     opacity:0;
 
-    transform:
-    translateX(-30px);
+    transform:translateX(-30px);
 
     transition:.7s;
 }
@@ -214,56 +291,64 @@ h2{
 
 .card.confirmed{
 
-    border-color:#46c267;
+    border-color:#4ec46c;
+
+    background:
+    linear-gradient(
+    135deg,
+    rgba(78,196,108,.25),
+    rgba(78,196,108,.08)
+    );
 
     box-shadow:
-    0 0 25px rgba(70,194,103,.35);
+    0 0 25px rgba(78,196,108,.25);
 }
 
 .success{
 
     background:
-    rgba(70,194,103,.15);
+    rgba(78,196,108,.12);
 
-    border:1px solid rgba(70,194,103,.4);
+    border:1px solid rgba(78,196,108,.35);
 
     padding:18px;
 
-    border-radius:18px;
+    border-radius:16px;
 
     margin-bottom:12px;
 }
 
+.final-copy{
+
+    text-align:center;
+
+    margin-top:120px;
+}
+
 .logo{
+
+    margin-top:30px;
 
     color:#d3b06b;
 
-    margin-top:20px;
+    font-weight:600;
 
     text-shadow:
     0 0 20px rgba(211,176,107,.5);
 }
 
-.hidden{
-
-    opacity:0;
-}
-
 @keyframes floatPhone{
 
     0%{
-        transform:
-        translateY(0px);
+        transform:translateY(0px);
     }
 
     50%{
-        transform:
-        translateY(-12px);
+        transform:translateY(-12px);
     }
 
     100%{
-        transform:
-        translateY(0px);
+        transform:translateY(0px);
     }
 }
 
