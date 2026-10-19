@@ -1,150 +1,188 @@
-const chat =
-document.getElementById("chat");
+const tl = gsap.timeline();
 
-const dashboard =
-document.getElementById("dashboard");
+const progress =
+document.querySelector(".progress-fill");
 
-const summary =
-document.getElementById("summary");
+const title =
+document.querySelector(".card-title");
 
-const closing =
-document.getElementById("closing");
+const status =
+document.querySelector(".card-status");
 
-const transition =
-document.querySelector(".app-transition");
+function setProgress(value){
 
-const incoming =
-document.querySelector(".incoming");
-
-const outgoing =
-document.querySelector(".outgoing");
-
-function activateCard(selector){
-
-    document
-    .querySelector(selector)
-    .classList.add("show");
+    progress.style.width =
+    value + "%";
 
 }
 
-function confirmCard(selector){
+tl
 
-    document
-    .querySelector(selector)
-    .classList.add("confirmed");
-
+.fromTo(
+".notification",
+{
+    y:-80,
+    opacity:0
+},
+{
+    y:0,
+    opacity:1,
+    duration:1
 }
+)
 
-// CHAT
+.fromTo(
+".reply",
+{
+    y:20,
+    opacity:0
+},
+{
+    y:0,
+    opacity:1,
+    duration:.8
+},
+"+=1"
+)
 
-setTimeout(() => {
+.to(
+".notification",
+{
+    scale:.85,
+    opacity:.3,
+    duration:.8
+},
+"+=1"
+)
 
-    incoming.classList.add("show");
+.to(
+".reply",
+{
+    scale:.85,
+    opacity:.3,
+    duration:.8
+},
+"<"
+)
 
-}, 500);
+.to(
+".app-badge",
+{
+    opacity:1,
+    duration:1
+}
+)
 
-setTimeout(() => {
+.to(
+".action-card",
+{
+    opacity:1,
+    duration:.8
+}
+)
 
-    outgoing.classList.add("show");
+.call(()=>{
 
-}, 2500);
+    title.innerHTML =
+    "🅿 Parking Premium";
 
-// TRANSICIÓN APP
+    status.innerHTML =
+    "Reservando...";
 
-setTimeout(() => {
+    setProgress(20);
 
-    chat.classList.remove("active");
+})
 
-    transition.classList.add("show");
+.to({}, {duration:2})
 
-}, 5000);
+.call(()=>{
 
-setTimeout(() => {
+    status.innerHTML =
+    "✅ Confirmado";
 
-    transition.classList.remove("show");
+    setProgress(35);
 
-    dashboard.classList.add("active");
+})
 
-}, 7000);
+.to({}, {duration:1.5})
 
-// PARKING
+.call(()=>{
 
-setTimeout(() => {
+    title.innerHTML =
+    "🍽 Restaurant";
 
-    activateCard(".parking");
+    status.innerHTML =
+    "Reservando mesa...";
 
-}, 8000);
+    setProgress(60);
 
-setTimeout(() => {
+})
 
-    confirmCard(".parking");
+.to({}, {duration:2})
 
-}, 9500);
+.call(()=>{
 
-// RESTAURANTE
+    status.innerHTML =
+    "✅ Mesa Confirmada";
 
-setTimeout(() => {
+    setProgress(75);
 
-    activateCard(".restaurant");
+})
 
-}, 11000);
+.to({}, {duration:1.5})
 
-setTimeout(() => {
+.call(()=>{
 
-    confirmCard(".restaurant");
+    title.innerHTML =
+    "🎁 Duty Free";
 
-}, 12500);
+    status.innerHTML =
+    "Aplicando 15% OFF";
 
-// REGALO
+    setProgress(90);
 
-setTimeout(() => {
+})
 
-    activateCard(".gift");
+.to({}, {duration:2})
 
-}, 14000);
+.call(()=>{
 
-setTimeout(() => {
+    status.innerHTML =
+    "✅ Regalo Comprado";
 
-    confirmCard(".gift");
+    setProgress(100);
 
-}, 15500);
+})
 
-// RESUMEN
+.to(
+".action-card",
+{
+    opacity:0,
+    duration:.8
+}
+)
 
-setTimeout(() => {
+.to(
+".stack",
+{
+    opacity:1,
+    duration:1
+}
+)
 
-    dashboard.classList.remove("active");
+.to(
+".stack",
+{
+    opacity:0,
+    duration:1
+},
+"+=2"
+)
 
-    summary.classList.add("active");
-
-}, 19000);
-
-// CIERRE
-
-setTimeout(() => {
-
-    summary.classList.remove("active");
-
-    closing.classList.add("active");
-
-}, 23000);
-
-// PHONE 3D
-
-const phone =
-document.querySelector(".phone");
-
-window.addEventListener("mousemove", e => {
-
-    const x =
-    (e.clientX / window.innerWidth - .5) * 10;
-
-    const y =
-    (e.clientY / window.innerHeight - .5) * 10;
-
-    phone.style.transform =
-    `translateY(-8px)
-     rotateY(${x}deg)
-     rotateX(${-y}deg)`;
-
-});
+.to(
+".closing",
+{
+    opacity:1,
+    duration:1.5
+}
+);
