@@ -1,193 +1,150 @@
-const screens = {
+const chat =
+document.getElementById("chat");
 
-chat:
-document.getElementById("chat"),
+const dashboard =
+document.getElementById("dashboard");
 
-dashboard:
-document.getElementById("dashboard"),
+const summary =
+document.getElementById("summary");
 
-summary:
-document.getElementById("summary"),
+const closing =
+document.getElementById("closing");
 
-closing:
-document.getElementById("closing")
+const transition =
+document.querySelector(".app-transition");
 
-};
+const incoming =
+document.querySelector(".incoming");
 
-// ----------
+const outgoing =
+document.querySelector(".outgoing");
 
-function showScreen(screen){
+function activateCard(selector){
 
-document
-.querySelectorAll(".screen")
-.forEach(s =>
-s.classList.remove("active")
-);
-
-screen.classList.add("active");
-
-}
-
-// ----------
-
-function showMessage(selector){
-
-const message =
-document.querySelector(selector);
-
-message.classList.add("show");
+    document
+    .querySelector(selector)
+    .classList.add("show");
 
 }
-
-// ----------
-
-function showCard(selector){
-
-const card =
-document.querySelector(selector);
-
-card.classList.add("show");
-
-}
-
-// ----------
 
 function confirmCard(selector){
 
-const card =
-document.querySelector(selector);
-
-card.classList.add("confirmed");
-
-card.innerHTML =
-"✓ " + card.innerHTML;
+    document
+    .querySelector(selector)
+    .classList.add("confirmed");
 
 }
 
-// ----------
-// INICIO
-// ----------
+// CHAT
 
-showMessage(".incoming");
+setTimeout(() => {
 
-// ----------
-// RESPUESTA
-// ----------
+    incoming.classList.add("show");
 
-setTimeout(()=>{
+}, 500);
 
-showMessage(".outgoing");
+setTimeout(() => {
 
-},2000);
+    outgoing.classList.add("show");
 
-// ----------
-// APP
-// ----------
+}, 2500);
 
-setTimeout(()=>{
+// TRANSICIÓN APP
 
-showScreen(
-screens.dashboard
-);
+setTimeout(() => {
 
-},4500);
+    chat.classList.remove("active");
 
-// ----------
+    transition.classList.add("show");
+
+}, 5000);
+
+setTimeout(() => {
+
+    transition.classList.remove("show");
+
+    dashboard.classList.add("active");
+
+}, 7000);
+
 // PARKING
-// ----------
 
-setTimeout(()=>{
+setTimeout(() => {
 
-showCard(".parking");
+    activateCard(".parking");
 
-},5500);
+}, 8000);
 
-setTimeout(()=>{
+setTimeout(() => {
 
-confirmCard(".parking");
+    confirmCard(".parking");
 
-},7500);
+}, 9500);
 
-// ----------
 // RESTAURANTE
-// ----------
 
-setTimeout(()=>{
+setTimeout(() => {
 
-showCard(".restaurant");
+    activateCard(".restaurant");
 
-},9000);
+}, 11000);
 
-setTimeout(()=>{
+setTimeout(() => {
 
-confirmCard(".restaurant");
+    confirmCard(".restaurant");
 
-},11000);
+}, 12500);
 
-// ----------
 // REGALO
-// ----------
 
-setTimeout(()=>{
+setTimeout(() => {
 
-showCard(".gift");
+    activateCard(".gift");
 
-},12500);
+}, 14000);
 
-setTimeout(()=>{
+setTimeout(() => {
 
-confirmCard(".gift");
+    confirmCard(".gift");
 
-},14500);
+}, 15500);
 
-// ----------
 // RESUMEN
-// ----------
 
-setTimeout(()=>{
+setTimeout(() => {
 
-showScreen(
-screens.summary
-);
+    dashboard.classList.remove("active");
 
-},18000);
+    summary.classList.add("active");
 
-// ----------
+}, 19000);
+
 // CIERRE
-// ----------
 
-setTimeout(()=>{
+setTimeout(() => {
 
-showScreen(
-screens.closing
-);
+    summary.classList.remove("active");
 
-},22000);
+    closing.classList.add("active");
 
-// ----------
+}, 23000);
+
 // PHONE 3D
-// ----------
 
 const phone =
 document.querySelector(".phone");
 
-window.addEventListener(
-"mousemove",
-e=>{
+window.addEventListener("mousemove", e => {
 
-const x =
-(e.clientX /
-window.innerWidth -.5) * 8;
+    const x =
+    (e.clientX / window.innerWidth - .5) * 10;
 
-const y =
-(e.clientY /
-window.innerHeight -.5) * 8;
+    const y =
+    (e.clientY / window.innerHeight - .5) * 10;
 
-phone.style.transform =
-`
-translateY(-6px)
-rotateY(${x}deg)
-rotateX(${-y}deg)
-`;
+    phone.style.transform =
+    `translateY(-8px)
+     rotateY(${x}deg)
+     rotateX(${-y}deg)`;
 
 });
