@@ -7,183 +7,347 @@ box-sizing:border-box;
 body{
 
 height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
 overflow:hidden;
 
 font-family:"Segoe UI",sans-serif;
 
 background:
 radial-gradient(
-circle at center,
-#1e2738,
-#040b14 75%
+circle,
+#1b2537,
+#050b14 75%
 );
 
-display:flex;
-justify-content:center;
-align-items:center;
-
-color:white;
 }
+
+/* TELEFONO */
 
 .phone{
 
-width:min(360px,72vw);
-height:min(740px,82vh);
+width:min(330px,60vw);
+height:70vh;
+
+background:#efeae2;
+
+border-radius:40px;
+
+overflow:hidden;
 
 position:relative;
 
-overflow:hidden;
-
-border-radius:42px;
-
-background:
-linear-gradient(
-180deg,
-#151d2b,
-#0b1119
-);
-
-border:
-1px solid rgba(255,255,255,.08);
-
 box-shadow:
-0 0 60px rgba(211,176,107,.15),
-0 50px 120px rgba(0,0,0,.65);
+0 40px 100px rgba(0,0,0,.45);
 
-animation:
-floatPhone 6s infinite ease-in-out;
 }
 
-.dynamic-island{
+/* HEADER */
 
-position:absolute;
+.chat-header{
 
-top:12px;
-left:50%;
+height:80px;
 
-transform:translateX(-50%);
+background:#075e54;
 
-width:120px;
-height:28px;
-
-border-radius:999px;
-
-background:black;
-
-transition:.8s;
-}
-
-.progress-track{
-
-position:absolute;
-
-top:58px;
-left:25px;
-right:25px;
-
-height:4px;
-
-background:
-rgba(255,255,255,.08);
-
-border-radius:999px;
-
-overflow:hidden;
-}
-
-.progress-bar{
-
-width:0%;
-height:100%;
-
-background:
-linear-gradient(
-90deg,
-#d3b06b,
-#f8d58a
-);
-}
-
-.story-card{
-
-position:absolute;
-
-top:160px;
-left:25px;
-right:25px;
-
-padding:24px;
-
-border-radius:28px;
-
-background:
-linear-gradient(
-135deg,
-rgba(255,255,255,.14),
-rgba(255,255,255,.04)
-);
-
-backdrop-filter:blur(30px);
-
-opacity:1;
-}
-
-.card-header{
-
-font-size:.8rem;
-
-opacity:.6;
-
-margin-bottom:10px;
-}
-
-.card-title{
-
-font-size:1.4rem;
-
-font-weight:600;
-
-margin-bottom:12px;
-}
-
-.card-body{
-
-opacity:.75;
-}
-
-.final-screen{
-
-position:absolute;
-
-inset:0;
+color:white;
 
 display:flex;
-flex-direction:column;
 
+align-items:center;
+
+padding:0 18px;
+}
+
+.avatar{
+
+width:44px;
+height:44px;
+
+border-radius:50%;
+
+background:white;
+
+display:flex;
 justify-content:center;
 align-items:center;
 
-text-align:center;
+color:#075e54;
 
-padding:40px;
+font-size:20px;
+}
+
+.contact{
+
+margin-left:12px;
+
+font-weight:600;
+}
+
+.contact span{
+
+display:block;
+
+font-size:.75rem;
+
+opacity:.8;
+}
+
+/* CHAT */
+
+#chat{
+
+position:absolute;
+
+top:80px;
+bottom:60px;
+
+left:0;
+right:0;
+
+padding:20px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:10px;
+
+overflow:hidden;
+
+}
+
+/* MENSAJES */
+
+.message{
+
+max-width:78%;
+
+padding:12px 14px 24px;
+
+position:relative;
+
+line-height:1.4;
+
+font-size:.95rem;
+}
+
+.incoming{
+
+background:white;
+
+align-self:flex-start;
+
+border-radius:18px 18px 18px 4px;
+}
+
+.outgoing{
+
+background:#DCF8C6;
+
+align-self:flex-end;
+
+border-radius:18px 18px 4px 18px;
+}
+
+.meta{
+
+position:absolute;
+
+bottom:6px;
+right:10px;
+
+font-size:.65rem;
+
+display:flex;
+align-items:center;
+gap:5px;
+
+color:#777;
+}
+
+.checks{
+
+color:#53bdeb;
+
+font-size:.72rem;
+
+font-weight:bold;
+}
+
+/* BUSINESS CARD */
+
+.business-card{
+
+background:white;
+
+border-left:4px solid #25D366;
+
+padding:12px;
+
+border-radius:12px;
+
+margin-top:8px;
+}
+
+.business-title{
+
+font-weight:700;
+
+margin-bottom:4px;
+}
+
+.business-detail{
+
+font-size:.85rem;
+
+color:#555;
+}
+
+/* TYPING */
+
+#typing{
+
+position:absolute;
+
+bottom:0;
+
+left:0;
+right:0;
+
+height:60px;
+
+display:flex;
+
+align-items:center;
+
+padding-left:20px;
+
+background:white;
 
 opacity:0;
 }
 
-.brand{
+.typing-dots{
 
-margin-top:25px;
-
-color:#d3b06b;
-
-font-weight:600;
+display:flex;
+gap:5px;
 }
 
-@keyframes floatPhone{
+.typing-dots span{
+
+width:8px;
+height:8px;
+
+border-radius:50%;
+
+background:#777;
+
+animation:bounce 1s infinite;
+}
+
+.typing-dots span:nth-child(2){
+
+animation-delay:.2s;
+}
+
+.typing-dots span:nth-child(3){
+
+animation-delay:.4s;
+}
+
+@keyframes bounce{
 
 50%{
-transform:
-translateY(-10px);
+transform:translateY(-4px);
+}
+
+}
+
+#saas-scene{
+
+position:fixed;
+
+inset:0;
+
+background:#050B14;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+opacity:0;
+
+z-index:99999;
+}
+
+.saas-slide{
+
+position:absolute;
+
+text-align:center;
+
+opacity:0;
+}
+
+.saas-number{
+
+font-size:5rem;
+
+font-weight:700;
+
+color:white;
+}
+
+.saas-subtitle{
+
+font-size:1.6rem;
+
+color:#A8BCCF;
+
+margin-top:10px;
+}
+
+.saas-word{
+
+font-size:3rem;
+
+font-weight:600;
+
+color:#7AB8E8;
+
+margin:.5rem 0;
+}
+
+.saas-message{
+
+font-size:4rem;
+
+font-weight:700;
+
+color:white;
+}
+
+.saas-logo{
+
+font-size:5rem;
+
+font-weight:700;
+
+color:white;
+}
+
+.saas-logo-sub{
+
+font-size:1.5rem;
+
+color:#7AB8E8;
+
+margin-top:12px;
 }
 
 }
