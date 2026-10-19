@@ -1,0 +1,163 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#030912;
+    font-family:"Segoe UI",sans-serif;
+    height:100vh;
+    overflow:hidden;
+}
+
+.stage{
+
+    height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    radial-gradient(
+        circle at center,
+        #0e1520,
+        #030912
+    );
+}
+
+.phone{
+
+    width:360px;
+
+    height:760px;
+
+    background:#0f1722;
+
+    border-radius:45px;
+
+    overflow:hidden;
+
+    border:8px solid #222;
+
+    box-shadow:
+    0 40px 80px rgba(0,0,0,.6);
+
+    position:relative;
+}
+
+.screen{
+
+    position:absolute;
+
+    inset:0;
+
+    padding:40px 25px;
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    transition:1s;
+
+    pointer-events:none;
+}
+
+.screen.active{
+
+    opacity:1;
+
+    transform:none;
+}
+
+.message{
+
+    max-width:80%;
+
+    padding:16px;
+
+    border-radius:20px;
+
+    margin-bottom:15px;
+
+    line-height:1.4;
+}
+
+.incoming{
+
+    background:#222f44;
+
+    color:white;
+}
+
+.outgoing{
+
+    background:#d3b06b;
+
+    color:black;
+
+    margin-left:auto;
+}
+
+.hidden{
+    opacity:0;
+}
+
+h1{
+
+    font-size:2rem;
+
+    margin-bottom:20px;
+}
+
+h2{
+
+    margin-bottom:20px;
+}
+
+.welcome{
+
+    opacity:.7;
+
+    margin-bottom:30px;
+}
+
+.card{
+
+    background:#182333;
+
+    padding:18px;
+
+    border-radius:20px;
+
+    margin-bottom:15px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transform:translateX(-40px);
+
+    opacity:0;
+}
+
+.success{
+
+    background:#102b1f;
+
+    padding:18px;
+
+    border-radius:16px;
+
+    margin-bottom:12px;
+}
+
+.logo{
+
+    margin-top:30px;
+
+    color:#d3b06b;
+
+    font-weight:600;
+}
