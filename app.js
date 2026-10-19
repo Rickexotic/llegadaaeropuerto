@@ -1,194 +1,212 @@
 const card =
-document.querySelect*r(".story-card");
+document.querySelector(".story-card");
 
 const header =
-*ocument.querySelector(".card-heade*");
+document.querySelector(".card-header");
 
 const title =
-document.queryS*lector(".card-title");
+document.querySelector(".card-title");
 
-const desc*iption =
-document.querySelector(".*ard-description");
+const body =
+document.querySelector(".card-body");
 
-const progress*=
-document.querySelector(".progres*-bar");
+const progress =
+document.querySelector(".progress-bar");
 
 const island =
-document.q*erySelector(".dynamic-island");
+document.querySelector(".dynamic-island");
 
-f*nction updateProgress(value){
+function setProgress(value){
 
-pro*ress.style.width =
-value + "%";
+    progress.style.width =
+    value + "%";
 
-}*
-const tl =
-gsap.timeline();
+}
 
-// W*atsApp
+const tl = gsap.timeline();
 
-tl.call(()=>{
+// WhatsApp
 
-updateProgr*ss(10);
+tl.to({},{
 
-})
+duration:1,
 
-.to(".story-card",{
-o*acity:1,
-duration:.*
-})
+onStart:()=>{
 
-.to({}, {duration:2})
+setProgress(10);
 
-// Rep*y
+}
 
-.call(()=>{
+});
 
-header.innerHTML =*"Respuesta";
+// Respuesta
 
-title.innerHTML =
-"O* 👍";
+tl.to({},{
 
-description.inner*TML =
+duration:2,
+
+onStart:()=>{
+
+header.textContent =
+"Respuesta";
+
+title.textContent =
+"Ok 👍";
+
+body.textContent =
 "No hay problema";
 
-updatePr*gress(20);
+setProgress(20);
 
-island.style.backgroun* =
-"#d3b06b*;
+island.style.background =
+"#d3b06b";
 
-})
+}
 
-// Club
+});
 
-.to({}, {duration:*})
+// Club Beneficios
 
-.call(()=>{
+tl.to({},{
 
-header.innerHTML*=
-"*lub Beneficios";
+duration:2,
 
-title.innerHTML *
-"✈ Prepar*ndo llegada";
+onStart:()=>{
 
-description.innerHT*L =
-"Buscando beneficios disponibl*s";
+header.textContent =
+"Club Beneficios";
 
-updateProgress(35);
+title.textContent =
+"✈ Preparando llegada";
 
-})
+body.textContent =
+"Buscando beneficios";
 
-// P*rking
+setProgress(35);
 
-.to({}, {duration:2})
+}
 
-.cal*(()=>{
+});
 
-header.innerHTML =
-"Parkin*";
+// Parking
 
-title.innerHTML =
-"🅿 Parking *remium";
+tl.to({},{
 
-description.innerHTML =
-*Reservando...*;
+duration:2,
 
-updateProgress(50);
+onStart:()=>{
 
-})
+header.textContent =
+"Parking";
 
-// Par*ing OK
+title.textContent =
+"🅿 Parking Premium";
 
-.to({}, {duration:1.5})
+body.textContent =
+"Reservando...";
 
-.*all(()=>{
+setProgress(55);
 
-description.innerHTML =*"✅ Confirmado";
+}
 
-updateProgress(60*;
+});
 
-})
+// Parking OK
 
-// Restaurant*
-.to({}, {duration:1.5})
+tl.to({},{
 
-.call(()*>{
+duration:1.5,
 
-header.innerHTML =
-"Restaurant*;
+onStart:()=>{
 
-title.innerHTML =
-"🍽 Mesa para*2";
+body.textContent =
+"✅ Confirmado";
 
-description.innerHTML =
-"Rese*vando...";
+setProgress(65);
 
-updateProgress(75);
+}
 
-}*
+});
+
+// Restaurant
+
+tl.to({},{
+
+duration:2,
+
+onStart:()=>{
+
+header.textContent =
+"Restaurant";
+
+title.textContent =
+"🍽 Mesa para 2";
+
+body.textContent =
+"Reservando mesa";
+
+setProgress(80);
+
+}
+
+});
 
 // Restaurant OK
 
-.to({}, {durat*on:1.5*)
+tl.to({},{
 
-.call(()=>{
+duration:1.5,
 
-description.innerH*ML =
+onStart:()=>{
+
+body.textContent =
 "✅ Mesa Confirmada";
 
-updateP*ogress(85);
+setProgress(90);
 
-})
+}
+
+});
 
 // Gift
 
-*to({}, {duration:1.5})
+tl.to({},{
 
-.call(()=>*
+duration:2,
 
-header.innerHTML*=
+onStart:()=>{
+
+header.textContent =
 "Duty Free";
 
-title.innerHTML =
-*🎁 Regalo de bienvenida";
+title.textContent =
+"🎁 Regalo de bienvenida";
 
-descrip*ion.innerHTML =
-"Aplicando 15% OFF*;
+body.textContent =
+"Aplicando 15% OFF";
 
-updateProgress(95);
+setProgress(100);
 
-})
+}
 
-// Gif* OK
-
-.to({}, {duration:1.5})
-
-.cal*(()=>{
-
-description.innerHTML =
-"✅*Compra realizada";
-
-updateProgress*100*;
-
-})
+});
 
 // Final
 
-.to(".story-card"*{
+tl.to(card,{
 
-*cale:.85,
+opacity:0,
 
-opacity:*,
+scale:.85,
 
 duration:1
 
-})
+});
 
-.to(".closing",*
+tl.to(".final-screen",{
 
 opacity:1,
 
 duration:1.5
 
 });
-``*
