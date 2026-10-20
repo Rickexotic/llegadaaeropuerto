@@ -21,6 +21,78 @@ body{
 }
 
 /* =========================================================
+   INTRO (search bar + logo Outside)
+   ========================================================= */
+
+#intro{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--app-bg);
+  z-index:9998; /* sobre stage, bajo controles */
+}
+
+.intro-search{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:min(520px, 86vw);
+  padding:14px 14px 14px 18px;
+  border-radius:999px;
+  color:#fff;
+  font-size:clamp(16px, 2.2vw, 22px);
+  background:rgba(255,255,255,.13);
+  -webkit-backdrop-filter:blur(20px);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 14px 40px rgba(0,0,0,.4);
+  opacity:0;
+}
+
+.intro-icon{
+  opacity:.75;
+  flex-shrink:0;
+}
+
+#introTyped{
+  white-space:pre;
+}
+
+.intro-caret{
+  width:2px;
+  height:1.2em;
+  background:#fff;
+  margin-left:-8px;
+  animation:caretBlink .8s steps(1) infinite;
+}
+
+@keyframes caretBlink{
+  50%{ opacity:0; }
+}
+
+.intro-go{
+  margin-left:auto;
+  padding:8px 16px;
+  border:0;
+  border-radius:999px;
+  font-size:.75em;
+  font-weight:600;
+  color:#05070d;
+  background:linear-gradient(90deg,#7de3ff,#a7b8ff);
+  pointer-events:none;
+}
+
+.intro-logo{
+  position:absolute;
+  width:min(300px, 60vw);
+  height:auto;
+  opacity:0;
+}
+
+/* =========================================================
    NOTIFICACIONES VIDRIO (apiladas desde abajo)
    ========================================================= */
 
@@ -168,7 +240,8 @@ body{
   align-items:center;
   gap:12px;
   z-index:10000;
-  pointer-events:auto;
+  opacity:0;               /* oculto hasta terminar intro */
+  pointer-events:none;     /* se habilita al terminar intro */
 }
 
 #playBtn{
@@ -219,6 +292,7 @@ body{
   opacity:0;
   z-index:9999;
   perspective:1000px;
+  pointer-events:none;
 }
 
 .vignette{
@@ -336,6 +410,43 @@ body{
   pointer-events:none;
 }
 
+/* Replay */
+.replay-btn{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  z-index:10001;
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.30);
+  background:rgba(255,255,255,.14);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .35s ease;
+}
+
+.replay-btn.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* Mejor rendimiento slide final */
+#slide4,
+#slide4 .saas-logo,
+#slide4 .saas-logo-sub,
+#slide4 .cta-pill{
+  will-change:transform, opacity;
+  backface-visibility:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+}
+
 /* =========================================================
    MOVIL (solo ajustes finos)
    ========================================================= */
@@ -364,42 +475,4 @@ body{
     width:92vw;
     bottom:14px;
   }
-.replay-btn{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  z-index:10001;
-  padding:10px 16px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.30);
-  background:rgba(255,255,255,.14);
-  -webkit-backdrop-filter:blur(14px);
-  backdrop-filter:blur(14px);
-  color:#fff;
-  font-size:14px;
-  cursor:pointer;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .35s ease;
-}
-
-.replay-btn.show{
-  opacity:1;
-  pointer-events:auto;
-}
-
-#saas-scene{
-  pointer-events:none;
-}
-  #slide4,
-#slide4 .saas-logo,
-#slide4 .saas-logo-sub,
-#slide4 .cta-pill{
-  will-change:transform, opacity;
-  backface-visibility:hidden;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:geometricPrecision;
-}
-  
 }
