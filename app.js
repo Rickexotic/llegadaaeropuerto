@@ -127,7 +127,7 @@ function clearNotifs(){
 /* ---------- Datos ---------- */
 const SIWA = { avatar:"assets/Siwa.png", name:"Siwa" };
 const WOKI = { avatar:"assets/Woki.png", name:"Woki" };
-const APP  = { appIcon:"assets/wassap.png", app:"Club Beneficios" };
+const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
 
 /* ---------- Secuencia ---------- */
 
