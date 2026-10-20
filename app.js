@@ -350,189 +350,144 @@ addMessage(
 );
 
 },23000);
+// ---------------------
+// TRANSICIÓN SAAS FINAL (AE STYLE)
+// ---------------------
 
-// ---------------------
-// TRANSICIÓN SAAS FINAL
-// ---------------------
+function splitChars(selector){
+    const el = document.querySelector(selector);
+    if(!el) return [];
+    const text = el.textContent.trim();
+    el.textContent = "";
+    return [...text].map(ch=>{
+        const span = document.createElement("span");
+        span.className = "char";
+        span.textContent = ch === " " ? "\u00A0" : ch;
+        el.appendChild(span);
+        return span;
+    });
+}
 
 setTimeout(()=>{
 
-typing.style.display = "none";
+    typing.style.display = "none";
 
-gsap.to(".phone",{
+    gsap.to(".phone",{
+        scale:1.25,
+        opacity:0,
+        filter:"blur(22px)",
+        rotationX:-10,
+        y:-90,
+        duration:1.4,
+        ease:"power4.inOut"
+    });
 
-    scale:1.4,
+    const scene = document.createElement("div");
+    scene.id = "saas-scene";
 
-    opacity:0,
+    scene.innerHTML = `
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="noise"></div>
 
-    filter:"blur(20px)",
-
-    rotationX:-8,
-
-    y:-80,
-
-    duration:1.6,
-
-    ease:"power4.out"
-
-});
-
-const scene =
-document.createElement("div");
-
-scene.id = "saas-scene";
-
-scene.innerHTML =
-
-`
-<div id="slide1" class="saas-slide">
-
-    <div class="saas-number">
-        26,5 millones
+    <div id="slide1" class="saas-slide">
+        <div class="saas-number gradient-text">26,5 millones</div>
+        <div class="saas-subtitle">de pasajeros</div>
     </div>
 
-    <div class="saas-subtitle">
-        de pasajeros
+    <div id="slide2" class="saas-slide">
+        <div class="saas-word">Retail</div>
+        <div class="saas-word">Gastronomía</div>
+        <div class="saas-word">Parking</div>
+        <div class="saas-word">Experiencias</div>
     </div>
 
-</div>
-
-<div id="slide2" class="saas-slide">
-
-    <div class="saas-word">
-        Retail
+    <div id="slide3" class="saas-slide">
+        <div class="saas-message gradient-text" id="connectedText">Todo conectado.</div>
+        <div class="shine"></div>
     </div>
 
-    <div class="saas-word">
-        Gastronomía
+    <div id="slide4" class="saas-slide">
+        <div class="saas-logo gradient-text" id="logoMain">Club Beneficios</div>
+        <div class="saas-logo-sub">Aeropuerto Santiago</div>
     </div>
+    `;
 
-    <div class="saas-word">
-        Parking
-    </div>
+    document.body.appendChild(scene);
 
-    <div class="saas-word">
-        Experiencias
-    </div>
+    const connectedChars = splitChars("#connectedText");
+    const logoChars = splitChars("#logoMain");
 
-</div>
+    gsap.set("#saas-scene",{opacity:0});
+    gsap.to("#saas-scene",{opacity:1,duration:.8});
 
-<div id="slide3" class="saas-slide">
+    gsap.to(".orb-1",{
+        x:80,y:-50,repeat:-1,yoyo:true,duration:6,ease:"sine.inOut"
+    });
+    gsap.to(".orb-2",{
+        x:-70,y:40,repeat:-1,yoyo:true,duration:7,ease:"sine.inOut"
+    });
 
-    <div class="saas-message">
-        Todo conectado.
-    </div>
+    const tl = gsap.timeline({delay:.7});
 
-</div>
+    tl.fromTo("#slide1",
+    {
+        opacity:0, scale:.55, y:100, filter:"blur(16px)"
+    },
+    {
+        opacity:1, scale:1, y:0, filter:"blur(0px)",
+        duration:1.2, ease:"power4.out"
+    })
+    .fromTo(".saas-number",
+    {letterSpacing:"0.25em", opacity:.6},
+    {letterSpacing:"0.02em", opacity:1, duration:.9, ease:"power3.out"},
+    "<0.1")
+    .to("#slide1",
+    {
+        opacity:0, scale:1.15, y:-40, filter:"blur(14px)",
+        duration:.9, ease:"power3.in"
+    },"+=1.2")
 
-<div id="slide4" class="saas-slide">
+    .fromTo("#slide2",
+    {opacity:0},
+    {opacity:1,duration:.5})
+    .from(".saas-word",
+    {
+        opacity:0, y:28, filter:"blur(8px)",
+        stagger:.16, duration:.65, ease:"power3.out"
+    },"<")
+    .to(".saas-word",
+    {
+        y:-18, opacity:0, filter:"blur(8px)",
+        stagger:.08, duration:.45, ease:"power2.in"
+    },"+=1.2")
+    .to("#slide2",{opacity:0,duration:.25},"<")
 
-    <div class="saas-logo">
-        Club Beneficios
-    </div>
+    .fromTo("#slide3",
+    {opacity:0, y:20},
+    {opacity:1, y:0, duration:.5, ease:"power2.out"})
+    .from(connectedChars,
+    {
+        opacity:0, y:22, rotateX:-90, transformOrigin:"50% 50% -10",
+        stagger:.03, duration:.55, ease:"back.out(2)"
+    },"<")
+    .fromTo(".shine",
+    {x:"-120%"},
+    {x:"120%", duration:1.1, ease:"power2.inOut"},
+    "+=.1")
+    .to("#slide3",
+    {opacity:0, y:-26, filter:"blur(8px)", duration:.6, ease:"power2.in"},
+    "+=1.0")
 
-    <div class="saas-logo-sub">
-        Aeropuerto Santiago
-    </div>
-
-</div>
-`;
-
-document.body.appendChild(scene);
-
-gsap.to(scene,{
-    opacity:1,
-    duration:1
-});
-
-const tl = gsap.timeline({
-    delay:1
-});
-
-tl
-
-.fromTo("#slide1",{
-
-    opacity:0,
-
-    scale:.4,
-
-    y:120,
-
-    filter:"blur(25px)"
-
-},{
-    opacity:1,
-
-    scale:1,
-
-    y:0,
-
-    filter:"blur(0px)",
-
-    duration:1.4,
-
-    ease:"power4.out"
-
-})
-
-.to("#slide1",{
-
-    opacity:0,
-
-    scale:1.25,
-
-    y:-60,
-
-    filter:"blur(20px)",
-
-    duration:1
-
-},"+=1.5")
-
-.to("#slide2",{
-    opacity:1,
-    duration:1
-})
-
-.call(()=>{
-
-gsap.from(".saas-word",{
-
-    opacity:0,
-
-    y:40,
-
-    stagger:.4,
-
-    duration:.8,
-
-    ease:"power3.out"
-
-});
-
-})
-
-.to("#slide2",{
-    opacity:0,
-    y:-50,
-    duration:.8
-},"+=2")
-
-.to("#slide3",{
-    opacity:1,
-    duration:1
-})
-
-.to("#slide3",{
-    opacity:0,
-    y:-50,
-    duration:.8
-},"+=2")
-
-.to("#slide4",{
-    opacity:1,
-    duration:1.2
-});
+    .fromTo("#slide4",
+    {opacity:0, scale:.92, filter:"blur(10px)"},
+    {opacity:1, scale:1, filter:"blur(0px)", duration:.9, ease:"power3.out"})
+    .from(logoChars,
+    {
+        opacity:0, y:16, stagger:.025, duration:.45, ease:"power2.out"
+    },"<.05")
+    .from(".saas-logo-sub",
+    {opacity:0, y:14, duration:.5},
+    "<.15");
 
 },27000);
