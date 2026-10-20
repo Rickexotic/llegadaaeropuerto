@@ -1,34 +1,48 @@
-const notificationSound = document.getElementById("notificationSound");
 const notifs = document.getElementById("notifs");
 const playBtn = document.getElementById("playBtn");
 const progressBar = document.getElementById("progressBar");
 
 /* ---------- Audio ---------- */
 let audioUnlocked = false;
+let appMusicStarted = false;
 
-// Un sonido por tipo de evento. Cuando tengas el audio de la App, solo cambia la ruta de "app".
 const SOUNDS = {
   whatsapp: new Audio("assets/notification.wav"),
-  app:      null // ej: new Audio("assets/app.wav")
+  appMusic: new Audio("assets/1.mp3")
 };
 
-Object.values(SOUNDS).forEach(a => { if(a){ a.preload = "auto"; a.volume = 0.5; } });
+SOUNDS.whatsapp.preload = "auto";
+SOUNDS.whatsapp.volume = 0.5;
 
-// Debe llamarse desde un clic del usuario (el botón Play)
+SOUNDS.appMusic.preload = "auto";
+SOUNDS.appMusic.volume = 0.35;
+SOUNDS.appMusic.loop = true;
+
+// Debe llamarse desde un clic del usuario (botón Play)
 function unlockAudioFromUserGesture(){
   if(audioUnlocked) return;
   audioUnlocked = true;
-  Object.values(SOUNDS).forEach(a=>{
-    if(!a) return;
-    a.play().then(()=>{ a.pause(); a.currentTime = 0; }).catch(()=>{});
-  });
+
+  // Warm-up corto para desbloquear audio en navegadores móviles
+  SOUNDS.whatsapp.play()
+    .then(()=>{
+      SOUNDS.whatsapp.pause();
+      SOUNDS.whatsapp.currentTime = 0;
+    })
+    .catch(()=>{});
 }
 
-function playSound(key){
-  const a = SOUNDS[key];
-  if(!audioUnlocked || !a) return;
-  a.currentTime = 0;
-  a.play().catch(()=>{});
+function playWhatsappNotification(){
+  if(!audioUnlocked) return;
+  SOUNDS.whatsapp.currentTime = 0;
+  SOUNDS.whatsapp.play().catch(()=>{});
+}
+
+function startAppMusic(){
+  if(!audioUnlocked || appMusicStarted) return;
+  appMusicStarted = true;
+  SOUNDS.appMusic.currentTime = 0;
+  SOUNDS.appMusic.play().catch(()=>{});
 }
 
 /* ---------- Notificaciones ---------- */
@@ -46,7 +60,13 @@ function showNotif({
   mode = "contact" // "contact" | "app"
 }){
 
-  playSound(mode === "contact" ? "whatsapp" : "app");
+  if(mode === "contact"){
+    // Siwa/Woki
+    playWhatsappNotification();
+  }else{
+    // Desde App/Beneficios en adelante
+    startAppMusic();
+  }
 
   const wrap = document.createElement("div");
   wrap.className = "notif-wrap";
@@ -94,7 +114,7 @@ function showNotif({
   const lastIndex = items.length - 1; // más nuevo (abajo)
 
   items.forEach((w,i)=>{
-    const distanceFromNewest = lastIndex - i; // 0 = nuevo, 1 = uno arriba, etc.
+    const distanceFromNewest = lastIndex - i;
 
     if(distanceFromNewest === 0) return;
 
@@ -297,10 +317,8 @@ master.to({}, {duration:TOTAL_DURATION});
 if(playBtn){
   playBtn.addEventListener("click", ()=>{
     unlockAudioFromUserGesture();
-
     playBtn.disabled = true;
     playBtn.textContent = "⏵";
-
     master.play(0);
   });
 }
