@@ -73,7 +73,7 @@ function showNotif({
         ${rightVisual}
     </div>`;
 
-    notifs.prepend(wrap);
+    notifs.appendChild(wrap);
 
     gsap.from(wrap,{
         height:0,
@@ -89,27 +89,33 @@ function showNotif({
         ease:"back.out(1.5)"
     });
 
-    [...notifs.children].forEach((w,i)=>{
+    const items = [...notifs.children];
+const lastIndex = items.length - 1; // el mas nuevo (abajo)
 
-        if(i === 0) return;
+items.forEach((w,i)=>{
 
-        if(i >= MAX_VISIBLE){
-            gsap.to(w,{
-                opacity:0,
-                duration:.32,
-                onComplete:()=>w.remove()
-            });
-            return;
-        }
+    const distanceFromNewest = lastIndex - i; // 0 = nuevo, 1 = uno arriba, etc.
 
-        gsap.to(w.firstElementChild,{
-            scale:1 - i*.04,
-            opacity:Math.max(1 - i*.18, .42),
-            duration:.42,
-            ease:"power2.out"
+    if(distanceFromNewest === 0) return;
+
+    if(distanceFromNewest >= MAX_VISIBLE){
+        gsap.to(w,{
+            opacity:0,
+            duration:.32,
+            onComplete:()=>w.remove()
         });
+        return;
+    }
 
+    gsap.to(w.firstElementChild,{
+        scale:1 - distanceFromNewest*.04,
+        opacity:Math.max(1 - distanceFromNewest*.18, .42),
+        duration:.42,
+        ease:"power2.out"
     });
+
+});
+
 }
 
 function clearNotifs(){
