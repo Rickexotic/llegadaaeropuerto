@@ -81,13 +81,11 @@ function showNotif({
         ease:"power3.out"
     });
 
-    gsap.from(wrap.firstElementChild,{
-        y:40,
-        scale:.92,
-        opacity:0,
-        duration:.62,
-        ease:"back.out(1.5)"
-    });
+   gsap.fromTo(
+  wrap.firstElementChild,
+  { y:18, scale:.98, opacity:0, filter:"blur(3px)" },
+  { y:0,  scale:1,   opacity:1, filter:"blur(0px)", duration:.55, ease:"power2.out" }
+);
 
     const items = [...notifs.children];
 const lastIndex = items.length - 1; // el mas nuevo (abajo)
