@@ -345,7 +345,7 @@ const MARIA = { avatar: "assets/Siwa.png", name: "María" };
 const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
 const APP  = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
-/* ---------- Escena intermedia (texto tipo AE) ---------- */
+/* ---------- Escena intermedia (texto tipo AE - impacto) ---------- */
 const bridge = document.createElement("div");
 bridge.id = "bridge-scene";
 bridge.innerHTML = `
@@ -354,11 +354,11 @@ bridge.innerHTML = `
   <div class="bridge-orb bridge-orb-2"></div>
   <div class="bridge-noise"></div>
 
-  <div class="bridge-lines">
+  <div class="bridge-lines" id="bridge-lines">
     <div class="bridge-line" id="b1">Buscando comercios...</div>
     <div class="bridge-line" id="b2">Encontrando beneficios...</div>
-    <div class="bridge-line" id="b3">Cargando ofertas... 
-    <div class="bridge-line" id="b4">Y alguna sorpresa...</div>
+    <div class="bridge-line" id="b3">Cargando ofertas...</div>
+    <div class="bridge-line bridge-accent" id="b4">Y alguna sorpresa...</div>
   </div>
 `;
 document.body.appendChild(bridge);
@@ -377,42 +377,59 @@ bridgeStyle.textContent = `
     z-index:9000;
     overflow:hidden;
   }
+
   .bridge-lines{
-    width:min(860px, 90vw);
+    width:min(920px, 92vw);
     text-align:center;
     padding:0 18px;
   }
+
   .bridge-line{
     opacity:0;
-    transform:translateY(14px) scale(.985);
-    color:#eaf0ff;
-    text-shadow:0 0 24px rgba(125,180,255,.18);
+    transform:translateY(22px) scale(.95);
+    color:#eef3ff;
     letter-spacing:.01em;
-    font-weight:750;
-    line-height:1.3;
-    margin:14px 0;
-    font-size:clamp(22px, 4.4vw, 52px);
+    font-weight:800;
+    line-height:1.15;
+    margin:10px 0;
+    font-size:clamp(28px, 5.4vw, 68px);
+    text-shadow:
+      0 0 8px rgba(125,180,255,.35),
+      0 0 24px rgba(125,180,255,.20),
+      0 10px 28px rgba(0,0,0,.35);
   }
+
+  .bridge-accent{
+    background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 38%,#ffffff 55%,#8db4ff 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 14px rgba(125,220,255,.4));
+  }
+
   .bridge-vignette{
     position:absolute;
     inset:0;
-    background:radial-gradient(circle at center, transparent 38%, rgba(0,0,0,.42) 100%);
+    background:radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.52) 100%);
     pointer-events:none;
   }
+
   .bridge-orb{
     position:absolute;
     border-radius:50%;
-    filter:blur(85px);
-    opacity:.16;
+    filter:blur(95px);
+    opacity:.2;
     pointer-events:none;
   }
-  .bridge-orb-1{ width:300px; height:300px; background:#4f86ff; top:14%; left:10%; }
-  .bridge-orb-2{ width:260px; height:260px; background:#7f5dff; right:12%; bottom:12%; }
+
+  .bridge-orb-1{ width:360px; height:360px; background:#4f86ff; top:8%; left:8%; }
+  .bridge-orb-2{ width:320px; height:320px; background:#7f5dff; right:8%; bottom:8%; }
+
   .bridge-noise{
     position:absolute;
     inset:0;
-    opacity:.06;
-    background-image:radial-gradient(rgba(255,255,255,.6) .6px, transparent .6px);
+    opacity:.08;
+    background-image:radial-gradient(rgba(255,255,255,.65) .6px, transparent .6px);
     background-size:3px 3px;
     mix-blend-mode:soft-light;
     pointer-events:none;
@@ -427,29 +444,41 @@ function buildBridgeTimeline() {
   const tl = gsap.timeline();
 
   tl.fromTo("#bridge-scene",
-    { opacity:0 },
-    { opacity:1, duration:.55, ease:"power2.out" }, 0);
+    { opacity:0, scale:1.02 },
+    { opacity:1, scale:1, duration:.35, ease:"power2.out" }, 0);
 
+  // Línea 1
   tl.fromTo("#b1",
-    { opacity:0, y:18, filter:"blur(7px)" },
-    { opacity:1, y:0, filter:"blur(0px)", duration:.6, ease:"power3.out" }, 0.15)
-    .to("#b1",
-      { opacity:.45, y:-6, duration:.35, ease:"power2.inOut" }, "+=0.65");
+    { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
+    { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, 0.08)
+    .to("#b1", { scale:1, duration:.16, ease:"power2.out" }, ">")
+    .to("#b1", { opacity:.32, y:-8, duration:.22, ease:"power2.inOut" }, "+=0.28");
 
+  // Línea 2
   tl.fromTo("#b2",
-    { opacity:0, y:18, filter:"blur(7px)" },
-    { opacity:1, y:0, filter:"blur(0px)", duration:.6, ease:"power3.out" }, ">");
-  tl.to("#b2",
-    { opacity:.55, y:-4, duration:.35, ease:"power2.inOut" }, "+=0.65");
+    { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
+    { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, ">-0.04")
+    .to("#b2", { scale:1, duration:.16, ease:"power2.out" }, ">")
+    .to("#b2", { opacity:.4, y:-7, duration:.22, ease:"power2.inOut" }, "+=0.26");
 
+  // Línea 3
   tl.fromTo("#b3",
-    { opacity:0, y:18, filter:"blur(7px)" },
-    { opacity:1, y:0, filter:"blur(0px)", duration:.72, ease:"power3.out" }, ">");
-  tl.to("#b3",
-    { textShadow:"0 0 36px rgba(140,200,255,.45)", duration:.45, yoyo:true, repeat:1, ease:"sine.inOut" }, "+=0.1");
+    { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
+    { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.4, ease:"power4.out" }, ">-0.03")
+    .to("#b3", { scale:1, duration:.16, ease:"power2.out" }, ">")
+    .to("#b3", { opacity:.5, y:-6, duration:.2, ease:"power2.inOut" }, "+=0.22");
 
-  tl.to("#bridge-scene",
-    { opacity:0, duration:.55, ease:"power2.inOut" }, "+=0.55");
+  // Línea 4 remate
+  tl.fromTo("#b4",
+    { opacity:0, y:36, scale:.88, filter:"blur(12px)" },
+    { opacity:1, y:0, scale:1.08, filter:"blur(0px)", duration:.52, ease:"back.out(1.6)" }, ">-0.02")
+    .to("#b4", { scale:1, duration:.22, ease:"power3.out" }, ">")
+    .to("#b4",
+      { textShadow:"0 0 12px rgba(160,220,255,.55), 0 0 34px rgba(125,180,255,.35)", duration:.18, yoyo:true, repeat:2 }, "<")
+    .to("#bridge-lines, #bridge-scene",
+      { x:1.2, duration:.03, repeat:3, yoyo:true, ease:"none" }, "<0.04")
+    .to("#bridge-scene",
+      { opacity:0, scale:.985, duration:.38, ease:"power2.inOut" }, "+=0.35");
 
   return tl;
 }
@@ -593,10 +622,10 @@ master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Llego a las 21:00",
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* NUEVO BLOQUE TEXTO tipo After Effects */
+/* BLOQUE TEXTO "impacto" */
 master.add(buildBridgeTimeline(), 6.0);
 
-/* Beneficios app (arrancan después del bloque intermedio) */
+/* Beneficios app */
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 10.6);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 12.3);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 14.2);
@@ -628,7 +657,7 @@ master.call(() => {
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:49" }); }, null, 22.7);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 24.5);
 
-/* Escena final desplazada */
+/* Escena final */
 master.add(buildSaaSTimeline(), 26.6);
 
 const END = master.duration();
@@ -665,8 +694,9 @@ replayBtn.addEventListener("click", ()=>{
 
   gsap.set("#stage", { clearProps: "all" });
   gsap.set("#saas-scene", { opacity: 0 });
-  gsap.set("#bridge-scene", { opacity: 0 });
-  gsap.set("#b1, #b2, #b3", { clearProps: "all" });
+  gsap.set("#bridge-scene", { opacity: 0, scale: 1 });
+  gsap.set("#b1, #b2, #b3, #b4", { clearProps: "all" });
+  gsap.set("#bridge-lines", { clearProps: "all" });
   gsap.set("#introSearch", { clearProps: "all" });
   gsap.set("#introLogo", { clearProps: "all" });
   gsap.set("#introGo", { clearProps: "all" });
