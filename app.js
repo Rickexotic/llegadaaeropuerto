@@ -137,21 +137,42 @@ introTl
     { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
   .to("#introLogo", { scale: 1.2, duration: 1, ease: "none" }, 3.5)
    // salida con efecto neón tintineando
+  // salida DRAMÁTICA: neón + parpadeos extra + electric shake
   .to("#introLogo", {
-    duration: .7,
+    duration: 1.05,
     ease: "none",
     keyframes: [
-      { opacity: 1, filter: "drop-shadow(0 0 6px rgba(125,220,255,.55)) brightness(1.15)", duration: .08 },
-      { opacity: .25, filter: "drop-shadow(0 0 2px rgba(125,220,255,.25)) brightness(.85)", duration: .06 },
-      { opacity: .95, filter: "drop-shadow(0 0 10px rgba(125,220,255,.75)) brightness(1.25)", duration: .09 },
-      { opacity: .18, filter: "drop-shadow(0 0 1px rgba(125,220,255,.15)) brightness(.75)", duration: .06 },
-      { opacity: .78, filter: "drop-shadow(0 0 8px rgba(125,220,255,.6)) brightness(1.12)", duration: .08 },
-      { opacity: .1, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.7)", duration: .07 },
-      { opacity: .55, filter: "drop-shadow(0 0 6px rgba(125,220,255,.45)) brightness(1.05)", duration: .09 },
-      { opacity: 0, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.65) blur(1px)", duration: .17 }
+      { opacity: 1, filter: "drop-shadow(0 0 8px rgba(125,220,255,.65)) brightness(1.22)", duration: .08 },
+      { opacity: .22, filter: "drop-shadow(0 0 2px rgba(125,220,255,.22)) brightness(.82)", duration: .05 },
+      { opacity: .98, filter: "drop-shadow(0 0 12px rgba(125,220,255,.85)) brightness(1.34)", duration: .08 },
+      { opacity: .15, filter: "drop-shadow(0 0 1px rgba(125,220,255,.15)) brightness(.72)", duration: .05 },
+
+      { opacity: .86, filter: "drop-shadow(0 0 9px rgba(125,220,255,.62)) brightness(1.16)", duration: .07 },
+      { opacity: .12, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.70)", duration: .05 }, // extra flicker 1
+      { opacity: .74, filter: "drop-shadow(0 0 8px rgba(125,220,255,.55)) brightness(1.10)", duration: .07 },
+      { opacity: .08, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.66)", duration: .05 }, // extra flicker 2
+
+      { opacity: .64, filter: "drop-shadow(0 0 7px rgba(125,220,255,.45)) brightness(1.02)", duration: .08 },
+      { opacity: .05, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.62)", duration: .06 }, // extra flicker 3
+      { opacity: .42, filter: "drop-shadow(0 0 5px rgba(125,220,255,.35)) brightness(.92)", duration: .08 },
+
+      { opacity: 0, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.60) blur(1.4px)", duration: .23 }
     ]
   }, 4.5)
-  .to("#intro", { opacity: 0, duration: .35, ease: "power2.out" }, 5.12);
+  // pequeño shake eléctrico
+  .to("#introLogo", {
+    keyframes: [
+      { x: 1.5, y: -0.5, rotation: .25, duration: .03 },
+      { x: -1.8, y: 0.8, rotation: -.25, duration: .03 },
+      { x: 1.2, y: 0.4, rotation: .2, duration: .03 },
+      { x: -1.2, y: -0.6, rotation: -.2, duration: .03 },
+      { x: 0.8, y: 0.3, rotation: .12, duration: .03 },
+      { x: 0, y: 0, rotation: 0, duration: .04 }
+    ],
+    ease: "none"
+  }, 4.58)
+  // se va toda la capa de intro
+  .to("#intro", { opacity: 0, duration: .35, ease: "power2.out" }, 5.35);
 
 /* ---------- Audio ---------- */
 const MUSIC_VOLUME = 0.35;
