@@ -153,68 +153,101 @@ addMessage(
 
 // ----------
 
+const notifs = document.getElementById("notifs");
+const appPanel = document.getElementById("appPanel");
+
+function showNotif({avatar, appIcon="assets/wassap.png", app="WhatsApp", name, text, time="ahora"}){
+
+    playNotification();
+
+    const wrap = document.createElement("div");
+    wrap.className = "notif-wrap";
+
+    wrap.innerHTML = `
+    <div class="notif">
+        <img class="app-icon" src="${appIcon}" alt="">
+        <div class="body">
+            <div class="top"><span>${app}</span><span>${time}</span></div>
+            <div class="name">${name}</div>
+            <div class="msg">${text}</div>
+        </div>
+        ${avatar ? `<img class="avatar-img" src="${avatar}" alt="">` : ""}
+    </div>`;
+
+    notifs.appendChild(wrap);
+
+    gsap.from(wrap,{
+        height:0,
+        duration:.5,
+        ease:"power3.out"
+    });
+
+    gsap.from(wrap.firstElementChild,{
+        y:-70,
+        scale:.9,
+        opacity:0,
+        duration:.7,
+        ease:"back.out(1.6)"
+    });
+}
+
+// Notificación 1: Siwa
 setTimeout(()=>{
+    showNotif({
+        avatar:"assets/Siwa.png",
+        name:"Siwa",
+        text:"Hola 👋"
+    });
+},500);
 
-playNotification();
+// Notificación 2: Siwa
+setTimeout(()=>{
+    showNotif({
+        avatar:"assets/Siwa.png",
+        name:"Siwa",
+        text:"Llego a las 21:00"
+    });
+},2000);
 
-addMessage(
-"incoming",
-"Llego a las 21:00",
-"20:58"
-);
+// Notificación 3: Woki
+setTimeout(()=>{
+    showNotif({
+        avatar:"assets/Woki.png",
+        name:"Woki",
+        text:"Te espero en el aeropuerto 🙌"
+    });
+},3600);
 
-},2200);
+// Las notificaciones suben y se van
+setTimeout(()=>{
+    gsap.to(notifs,{
+        y:-120,
+        opacity:0,
+        duration:.8,
+        ease:"power3.in"
+    });
+},5200);
 
-// ----------
+// Entra el diálogo con la app
+setTimeout(()=>{
+    gsap.fromTo(appPanel,
+        {opacity:0, y:60, scale:.95},
+        {opacity:1, y:0, scale:1, duration:.8, ease:"power3.out"}
+    );
+},5800);
 
 setTimeout(()=>{
+    playNotification();
+    addMessage("outgoing","Hola Club Beneficios, mi pasajero llega 21:00","20:59",true);
+},6800);
 
-typingOn();
-
-},3200);
-
-// ----------
-
-setTimeout(()=>{
-
-typingOff();
-
-playNotification();
-
-addMessage(
-"outgoing",
-"Perfecto 👍",
-"20:59",
-true
-);
-
-},4800);
-
-// ----------
+setTimeout(()=>{ typingOn(); },7800);
 
 setTimeout(()=>{
-
-typingOn();
-
-},6000);
-
-// ----------
-
-setTimeout(()=>{
-
-typingOff();
-
-playNotification();
-
-addMessage(
-"outgoing",
-"Déjame revisar beneficios",
-"20:59",
-true
-);
-
-},7600);
-
+    typingOff();
+    playNotification();
+    addMessage("incoming","¡Hola! Revisemos tus beneficios 🎁","21:00");
+},9000);
 // ----------
 
 setTimeout(()=>{
@@ -374,7 +407,7 @@ setTimeout(()=>{
     typing.style.display = "none";
 
     // Salida del teléfono con look más "camera move"
-    gsap.to(".phone",{
+   gsap.to("#stage",{
         scale:1.32,
         opacity:0,
         filter:"blur(24px)",
