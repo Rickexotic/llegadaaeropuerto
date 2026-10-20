@@ -406,10 +406,9 @@ setTimeout(()=>{
         <div class="saas-word">Experiencias</div>
     </div>
 
-    <div id="slide3" class="saas-slide">
-        <div class="saas-message gradient-text" id="connectedText">Todo conectado.</div>
-        <div class="shine"></div>
-    </div>
+  <div id="slide3" class="saas-slide">
+    <div class="saas-message" id="connectedText">Todo conectado.</div>
+</div>
 
     <div id="slide4" class="saas-slide">
        <div class="saas-logo" id="logoMain">Club Beneficios</div>
@@ -470,27 +469,21 @@ setTimeout(()=>{
     .to("#slide2",{opacity:0,duration:.2},"<")
 
     // Slide 3
-    .fromTo("#slide3",
-    {opacity:0,y:24,scale:.97},
-    {opacity:1,y:0,scale:1,duration:.5,ease:"power2.out"})
-    .from(connectedChars,
-    {
-        opacity:0,
-        y:22,
-        rotateX:-90,
-        transformOrigin:"50% 50% -12",
-        stagger:.028,
-        duration:.55,
-        ease:"back.out(2)"
-    },"<")
-    .fromTo(".shine",
-    {x:"-130%", opacity:0},
-    {x:"130%", opacity:1, duration:1.05, ease:"power2.inOut"},
-    "+=.08")
-    .to("#slide3",
-    {opacity:0,y:-24,filter:"blur(8px)",duration:.58,ease:"power2.in"},
-    "+=.95")
-
+   .fromTo("#slide3",
+{opacity:0},
+{opacity:1, duration:.5, ease:"power2.out"})
+.from(connectedChars,
+{
+    opacity:0,
+    y:24,
+    stagger:.03,
+    duration:.5,
+    ease:"power3.out"
+},"<")
+.to("#slide3",
+{opacity:0, y:-24, duration:.6, ease:"power2.in"},
+"+=1.2")
+        
     // Slide 4 (logo final)
    .fromTo("#slide4",
 {opacity:0, scale:.94},
