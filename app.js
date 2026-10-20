@@ -345,6 +345,114 @@ const MARIA = { avatar: "assets/Siwa.png", name: "María" };
 const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
 const APP  = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
+/* ---------- Escena intermedia (texto tipo AE) ---------- */
+const bridge = document.createElement("div");
+bridge.id = "bridge-scene";
+bridge.innerHTML = `
+  <div class="bridge-vignette"></div>
+  <div class="bridge-orb bridge-orb-1"></div>
+  <div class="bridge-orb bridge-orb-2"></div>
+  <div class="bridge-noise"></div>
+
+  <div class="bridge-lines">
+    <div class="bridge-line" id="b1">Buscando comercios….</div>
+    <div class="bridge-line" id="b2">Encontrando beneficios….</div>
+    <div class="bridge-line" id="b3">Cargando ofertas…. Y alguna sorpresa....</div>
+  </div>
+`;
+document.body.appendChild(bridge);
+
+const bridgeStyle = document.createElement("style");
+bridgeStyle.textContent = `
+  #bridge-scene{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--app-bg);
+    opacity:0;
+    pointer-events:none;
+    z-index:9000;
+    overflow:hidden;
+  }
+  .bridge-lines{
+    width:min(860px, 90vw);
+    text-align:center;
+    padding:0 18px;
+  }
+  .bridge-line{
+    opacity:0;
+    transform:translateY(14px) scale(.985);
+    color:#eaf0ff;
+    text-shadow:0 0 24px rgba(125,180,255,.18);
+    letter-spacing:.01em;
+    font-weight:750;
+    line-height:1.3;
+    margin:14px 0;
+    font-size:clamp(22px, 4.4vw, 52px);
+  }
+  .bridge-vignette{
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at center, transparent 38%, rgba(0,0,0,.42) 100%);
+    pointer-events:none;
+  }
+  .bridge-orb{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(85px);
+    opacity:.16;
+    pointer-events:none;
+  }
+  .bridge-orb-1{ width:300px; height:300px; background:#4f86ff; top:14%; left:10%; }
+  .bridge-orb-2{ width:260px; height:260px; background:#7f5dff; right:12%; bottom:12%; }
+  .bridge-noise{
+    position:absolute;
+    inset:0;
+    opacity:.06;
+    background-image:radial-gradient(rgba(255,255,255,.6) .6px, transparent .6px);
+    background-size:3px 3px;
+    mix-blend-mode:soft-light;
+    pointer-events:none;
+  }
+`;
+document.head.appendChild(bridgeStyle);
+
+gsap.to(".bridge-orb-1",{x:30,y:-18,repeat:-1,yoyo:true,duration:7.5,ease:"sine.inOut"});
+gsap.to(".bridge-orb-2",{x:-26,y:16,repeat:-1,yoyo:true,duration:8.5,ease:"sine.inOut"});
+
+function buildBridgeTimeline() {
+  const tl = gsap.timeline();
+
+  tl.fromTo("#bridge-scene",
+    { opacity:0 },
+    { opacity:1, duration:.55, ease:"power2.out" }, 0);
+
+  tl.fromTo("#b1",
+    { opacity:0, y:18, filter:"blur(7px)" },
+    { opacity:1, y:0, filter:"blur(0px)", duration:.6, ease:"power3.out" }, 0.15)
+    .to("#b1",
+      { opacity:.45, y:-6, duration:.35, ease:"power2.inOut" }, "+=0.65");
+
+  tl.fromTo("#b2",
+    { opacity:0, y:18, filter:"blur(7px)" },
+    { opacity:1, y:0, filter:"blur(0px)", duration:.6, ease:"power3.out" }, ">");
+  tl.to("#b2",
+    { opacity:.55, y:-4, duration:.35, ease:"power2.inOut" }, "+=0.65");
+
+  tl.fromTo("#b3",
+    { opacity:0, y:18, filter:"blur(7px)" },
+    { opacity:1, y:0, filter:"blur(0px)", duration:.72, ease:"power3.out" }, ">");
+  tl.to("#b3",
+    { textShadow:"0 0 36px rgba(140,200,255,.45)", duration:.45, yoyo:true, repeat:1, ease:"sine.inOut" }, "+=0.1");
+
+  tl.to("#bridge-scene",
+    { opacity:0, duration:.55, ease:"power2.inOut" }, "+=0.55");
+
+  return tl;
+}
+
 /* ---------- Escena final ---------- */
 function splitChars(selector){
   const el = document.querySelector(selector);
@@ -478,15 +586,20 @@ const master = gsap.timeline({
   }
 });
 
+/* Conversación WhatsApp */
 master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
 master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Llego a las 21:00", time:"20:45"}); }, null, 1.9);
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 6.2);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 7.9);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 9.8);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 11.7);
+/* NUEVO BLOQUE TEXTO tipo After Effects */
+master.add(buildBridgeTimeline(), 6.0);
+
+/* Beneficios app (arrancan después del bloque intermedio) */
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 10.6);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 12.3);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 14.2);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 16.1);
 
 /* Canje de puntos */
 master.call(() => {
@@ -497,9 +610,9 @@ master.call(() => {
     time:"20:48",
     actions:true
   });
-}, null, 13.6);
+}, null, 18.0);
 
-master.call(()=>{ simulateRedeemClick(); }, null, 15.6);
+master.call(()=>{ simulateRedeemClick(); }, null, 20.0);
 
 master.call(() => {
   showNotif({
@@ -509,12 +622,13 @@ master.call(() => {
     status:"✅ Canje exitoso",
     time:"20:49"
   });
-}, null, 16.4);
+}, null, 20.8);
 
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:49" }); }, null, 18.3);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 20.1);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:49" }); }, null, 22.7);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 24.5);
 
-master.add(buildSaaSTimeline(), 22.2);
+/* Escena final desplazada */
+master.add(buildSaaSTimeline(), 26.6);
 
 const END = master.duration();
 master.fromTo(SOUNDS.appMusic,
@@ -537,6 +651,7 @@ playBtn.addEventListener("click", ()=>{
   if (introTyped) introTyped.textContent = "";
   typing.n = 0;
 
+  master.pause(0);
   introTl.restart(true); // Play -> Intro -> Presentación
 });
 
@@ -549,6 +664,8 @@ replayBtn.addEventListener("click", ()=>{
 
   gsap.set("#stage", { clearProps: "all" });
   gsap.set("#saas-scene", { opacity: 0 });
+  gsap.set("#bridge-scene", { opacity: 0 });
+  gsap.set("#b1, #b2, #b3", { clearProps: "all" });
   gsap.set("#introSearch", { clearProps: "all" });
   gsap.set("#introLogo", { clearProps: "all" });
   gsap.set("#introGo", { clearProps: "all" });
