@@ -50,7 +50,6 @@ function preloadAudio(src) {
     audio.src = src;
     audio.load();
 
-    // fallback timeout para no bloquear si no dispara canplaythrough
     setTimeout(() => finish(true), 2500);
   });
 }
@@ -120,7 +119,7 @@ if (playBtn) {
   playBtn.textContent = "Cargando...";
 }
 
-/* Intro timeline: se ejecuta al presionar Play */
+/* Intro timeline */
 const introTl = gsap.timeline({
   paused: true,
   onComplete: () => {
@@ -152,8 +151,6 @@ introTl
     { opacity: 0, scale: .85, filter: "blur(10px)" },
     { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
   .to("#introLogo", { scale: 1.2, duration: 1, ease: "none" }, 3.5)
-
-  // salida DRAMÁTICA: neón + parpadeos extra + electric shake
   .to("#introLogo", {
     duration: 1.05,
     ease: "none",
@@ -198,11 +195,9 @@ const SOUNDS = {
 
 SOUNDS.whatsapp.preload = "auto";
 SOUNDS.whatsapp.volume = 0.5;
-
 SOUNDS.appMusic.preload = "auto";
 SOUNDS.appMusic.volume = MUSIC_VOLUME;
 SOUNDS.appMusic.loop = true;
-
 SOUNDS.click.preload = "auto";
 SOUNDS.click.volume = 0.6;
 
@@ -215,7 +210,6 @@ function unlockAudioFromUserGesture() {
     SOUNDS.whatsapp.currentTime = 0;
   }).catch(() => {});
 
-  // desbloqueo robusto del typing.wav
   typingSound.load();
   typingSound.play().then(() => {
     typingSound.pause();
@@ -321,12 +315,7 @@ function showNotif({
 
   notifs.appendChild(wrap);
 
-  gsap.from(wrap, {
-    height: 0,
-    duration: .55,
-    ease: "power3.out"
-  });
-
+  gsap.from(wrap, { height: 0, duration: .55, ease: "power3.out" });
   gsap.fromTo(
     wrap.firstElementChild,
     { y: 18, scale: .98, opacity: 0, filter: "blur(3px)" },
@@ -341,11 +330,7 @@ function showNotif({
     if (distanceFromNewest === 0) return;
 
     if (distanceFromNewest >= MAX_VISIBLE) {
-      gsap.to(w, {
-        opacity: 0,
-        duration: .32,
-        onComplete: () => w.remove()
-      });
+      gsap.to(w, { opacity: 0, duration: .32, onComplete: () => w.remove() });
       return;
     }
 
@@ -386,7 +371,7 @@ const MARIA = { avatar: "assets/Siwa.png", name: "María" };
 const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
 const APP  = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
-/* ---------- Escena intermedia (texto tipo AE - impacto) ---------- */
+/* ---------- Escena intermedia ---------- */
 const bridge = document.createElement("div");
 bridge.id = "bridge-scene";
 bridge.innerHTML = `
@@ -407,73 +392,31 @@ document.body.appendChild(bridge);
 const bridgeStyle = document.createElement("style");
 bridgeStyle.textContent = `
   #bridge-scene{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:var(--app-bg);
-    opacity:0;
-    pointer-events:none;
-    z-index:9000;
-    overflow:hidden;
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    background:var(--app-bg); opacity:0; pointer-events:none; z-index:9000; overflow:hidden;
   }
-
-  .bridge-lines{
-    width:min(920px, 92vw);
-    text-align:center;
-    padding:0 18px;
-  }
-
+  .bridge-lines{ width:min(920px, 92vw); text-align:center; padding:0 18px; }
   .bridge-line{
-    opacity:0;
-    transform:translateY(22px) scale(.95);
-    color:#eef3ff;
-    letter-spacing:.01em;
-    font-weight:800;
-    line-height:1.15;
-    margin:10px 0;
-    font-size:clamp(28px, 5.4vw, 68px);
-    text-shadow:
-      0 0 8px rgba(125,180,255,.35),
-      0 0 24px rgba(125,180,255,.20),
-      0 10px 28px rgba(0,0,0,.35);
+    opacity:0; transform:translateY(22px) scale(.95); color:#eef3ff; letter-spacing:.01em; font-weight:800;
+    line-height:1.15; margin:10px 0; font-size:clamp(28px, 5.4vw, 68px);
+    text-shadow:0 0 8px rgba(125,180,255,.35),0 0 24px rgba(125,180,255,.20),0 10px 28px rgba(0,0,0,.35);
   }
-
   .bridge-accent{
     background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 38%,#ffffff 55%,#8db4ff 100%);
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
     filter:drop-shadow(0 0 14px rgba(125,220,255,.4));
   }
-
   .bridge-vignette{
-    position:absolute;
-    inset:0;
-    background:radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.52) 100%);
+    position:absolute; inset:0; background:radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.52) 100%);
     pointer-events:none;
   }
-
-  .bridge-orb{
-    position:absolute;
-    border-radius:50%;
-    filter:blur(95px);
-    opacity:.2;
-    pointer-events:none;
-  }
-
+  .bridge-orb{ position:absolute; border-radius:50%; filter:blur(95px); opacity:.2; pointer-events:none; }
   .bridge-orb-1{ width:360px; height:360px; background:#4f86ff; top:8%; left:8%; }
   .bridge-orb-2{ width:320px; height:320px; background:#7f5dff; right:8%; bottom:8%; }
-
   .bridge-noise{
-    position:absolute;
-    inset:0;
-    opacity:.08;
+    position:absolute; inset:0; opacity:.08;
     background-image:radial-gradient(rgba(255,255,255,.65) .6px, transparent .6px);
-    background-size:3px 3px;
-    mix-blend-mode:soft-light;
-    pointer-events:none;
+    background-size:3px 3px; mix-blend-mode:soft-light; pointer-events:none;
   }
 `;
 document.head.appendChild(bridgeStyle);
@@ -573,19 +516,10 @@ const nodesStyle = document.createElement("style");
 nodesStyle.textContent = `
   #slide3{ overflow:hidden; }
   #nodesCanvas{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    opacity:0;
-    pointer-events:none;
-    z-index:0;
+    position:absolute; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; z-index:0;
     filter: drop-shadow(0 0 10px rgba(125,220,255,.35));
   }
-  #slide3 .saas-message{
-    position:relative;
-    z-index:2;
-  }
+  #slide3 .saas-message{ position:relative; z-index:2; }
 `;
 document.head.appendChild(nodesStyle);
 
@@ -599,8 +533,8 @@ const nctx = nodesCanvas ? nodesCanvas.getContext("2d") : null;
 let nodesRAF = null;
 let nodesRunning = false;
 let nodes = [];
-const NODE_COUNT = 26;
-const LINK_DIST = 170;
+const NODE_COUNT = 5;
+const LINK_DIST = 260;
 
 function resizeNodesCanvas() {
   if (!nodesCanvas) return;
@@ -618,9 +552,9 @@ function initNodes() {
   nodes = Array.from({ length: NODE_COUNT }, () => ({
     x: Math.random() * w,
     y: Math.random() * h,
-    vx: (Math.random() * 2 - 1) * 0.35,
-    vy: (Math.random() * 2 - 1) * 0.35,
-    r: 1.6 + Math.random() * 1.8
+    vx: (Math.random() * 2 - 1) * 0.28,
+    vy: (Math.random() * 2 - 1) * 0.28,
+    r: 2.2 + Math.random() * 2.2
   }));
 }
 
@@ -641,9 +575,9 @@ function drawNodes() {
       const d = Math.sqrt(dx * dx + dy * dy);
 
       if (d < LINK_DIST) {
-        const alpha = (1 - d / LINK_DIST) * 0.45;
+        const alpha = (1 - d / LINK_DIST) * 0.62;
         nctx.strokeStyle = `rgba(125,220,255,${alpha})`;
-        nctx.lineWidth = 1;
+        nctx.lineWidth = 1.5;
         nctx.beginPath();
         nctx.moveTo(a.x, a.y);
         nctx.lineTo(b.x, b.y);
@@ -659,15 +593,15 @@ function drawNodes() {
     if (p.x < 0 || p.x > w) p.vx *= -1;
     if (p.y < 0 || p.y > h) p.vy *= -1;
 
-    const g = nctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 10);
+    const g = nctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 12);
     g.addColorStop(0, "rgba(170,240,255,.95)");
     g.addColorStop(1, "rgba(125,220,255,0)");
     nctx.fillStyle = g;
     nctx.beginPath();
-    nctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
+    nctx.arc(p.x, p.y, 12, 0, Math.PI * 2);
     nctx.fill();
 
-    nctx.fillStyle = "rgba(210,248,255,.95)";
+    nctx.fillStyle = "rgba(210,248,255,.98)";
     nctx.beginPath();
     nctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
     nctx.fill();
@@ -721,55 +655,44 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  // Slide 2 (IMPACTO GLOBAL del bloque completo)
+  // Slide 2 +50% tiempo, más suave
   tl.fromTo("#slide2",
       { opacity:0, scale:.86, y:28, filter:"blur(10px)" },
-      { opacity:1, scale:1, y:0, filter:"blur(0px)", duration:.34, ease:"power4.out" })
+      { opacity:1, scale:1, y:0, filter:"blur(0px)", duration:.51, ease:"power4.out" })
     .fromTo(".saas-word",
-      {
-        opacity:0, y:64, scale:.78, rotateX:-80, rotateZ:-2.5, filter:"blur(12px)", transformOrigin:"50% 100%"
-      },
-      {
-        opacity:1, y:0, scale:1.1, rotateX:0, rotateZ:0, filter:"blur(0px)", stagger:.08, duration:.46, ease:"back.out(2.0)"
-      },
+      { opacity:0, y:64, scale:.78, rotateX:-80, rotateZ:-2.5, filter:"blur(12px)", transformOrigin:"50% 100%" },
+      { opacity:1, y:0, scale:1.1, rotateX:0, rotateZ:0, filter:"blur(0px)", stagger:.12, duration:.69, ease:"back.out(1.7)" },
       "<")
     .to(".saas-word",
-      { scale:1, duration:.14, stagger:.04, ease:"power2.out" },
+      { scale:1, duration:.21, stagger:.06, ease:"power2.out" },
+      "<+.18")
+    .to("#slide2",
+      { scale:1.03, filter:"brightness(1.13)", duration:.24, yoyo:true, repeat:1, ease:"power2.inOut" },
       "<+.12")
-    .to("#slide2",
-      { scale:1.045, filter:"brightness(1.2)", duration:.16, yoyo:true, repeat:1, ease:"power2.inOut" },
-      "<+.08")
     .to(".saas-word",
-      { textShadow:"0 0 30px rgba(150,210,255,.7), 0 0 50px rgba(120,180,255,.45)", duration:.18, yoyo:true, repeat:1, stagger:.03, ease:"sine.inOut" },
+      { textShadow:"0 0 24px rgba(150,210,255,.62), 0 0 40px rgba(120,180,255,.38)", duration:.27, yoyo:true, repeat:1, stagger:.04, ease:"sine.inOut" },
       "<")
     .to("#slide2",
-      { x:2.2, duration:.028, repeat:5, yoyo:true, ease:"none" },
-      "<+.02")
-    .to({}, { duration:.6 })
+      { x:1.4, duration:.04, repeat:4, yoyo:true, ease:"none" },
+      "<+.03")
+    .to({}, { duration:.9 })
     .to(".saas-word",
-      { y:-40, opacity:0, scale:.84, rotateX:22, filter:"blur(10px)", stagger:.05, duration:.3, ease:"power3.in" },
+      { y:-34, opacity:0, scale:.88, rotateX:18, filter:"blur(8px)", stagger:.08, duration:.45, ease:"power3.in" },
       "<")
     .to("#slide2",
-      { opacity:0, scale:1.02, duration:.16, ease:"power2.in" },
-      "<+.1");
+      { opacity:0, scale:1.01, duration:.24, ease:"power2.in" },
+      "<+.12");
 
-  // Slide 3 con nodos neon animados
+  // Slide 3 nodos neon
   tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
     .call(() => startNodesBackground(), null, "<")
-    .fromTo("#nodesCanvas",
-      { opacity:0 },
-      { opacity:1, duration:.45, ease:"power2.out" },
-      "<+0.05")
+    .fromTo("#nodesCanvas",{ opacity:0 },{ opacity:1, duration:.45, ease:"power2.out" },"<+0.05")
     .fromTo(connectedChars,
       {opacity:0, y:24},
       {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
       "<")
-    .to("#slide3",
-      {opacity:0, y:-24, duration:.6, ease:"power2.in"},
-      "+=1.2")
-    .to("#nodesCanvas",
-      { opacity:0, duration:.3, ease:"power2.in" },
-      "<")
+    .to("#slide3",{opacity:0, y:-24, duration:.6, ease:"power2.in"},"+=1.2")
+    .to("#nodesCanvas",{ opacity:0, duration:.3, ease:"power2.in" },"<")
     .call(() => stopNodesBackground(), null, ">");
 
   tl.addLabel("s4", ">");
@@ -802,9 +725,7 @@ function buildSaaSTimeline(){
 /* ---------- Timeline maestro ---------- */
 const master = gsap.timeline({
   paused:true,
-  onUpdate:()=>{
-    progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`;
-  },
+  onUpdate:()=>{ progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`; },
   onComplete:()=>{
     progressBar.style.width = "100%";
     stopAppMusic();
@@ -818,7 +739,7 @@ master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Recuerda que llego 
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* BLOQUE TEXTO "impacto" */
+/* Música + bloque intermedio */
 master.call(() => { startAppMusic(); }, null, 6.0);
 master.add(buildBridgeTimeline(), 6.0);
 
@@ -840,7 +761,6 @@ master.call(() => {
 }, null, 18.0);
 
 master.call(()=>{ simulateRedeemClick(); }, null, 19.2);
-
 master.call(() => {
   showNotif({
     ...APP, mode:"app",
@@ -917,7 +837,6 @@ replayBtn.addEventListener("click", ()=>{
 /* ---------- Boot ---------- */
 (async function boot() {
   await preloadAssets();
-
   if (playBtn) {
     playBtn.disabled = false;
     playBtn.textContent = "▶";
