@@ -108,7 +108,7 @@ if (playBtn) {
   playBtn.textContent = "Cargando...";
 }
 
-/* Intro timeline: se ejecuta al presionar Play */
+/* Intro timeline */
 const introTl = gsap.timeline({
   paused: true,
   onComplete: () => {
@@ -140,7 +140,6 @@ introTl
     { opacity: 0, scale: .85, filter: "blur(10px)" },
     { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
   .to("#introLogo", { scale: 1.2, duration: 1, ease: "none" }, 3.5)
-  // salida DRAMÁTICA: neón + parpadeos + electric shake
   .to("#introLogo", {
     duration: 1.05,
     ease: "none",
@@ -477,28 +476,24 @@ function buildBridgeTimeline() {
     { opacity:0, scale:1.02 },
     { opacity:1, scale:1, duration:.35, ease:"power2.out" }, 0);
 
-  // Línea 1
   tl.fromTo("#b1",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, 0.08)
     .to("#b1", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b1", { opacity:.32, y:-8, duration:.22, ease:"power2.inOut" }, "+=0.28");
 
-  // Línea 2
   tl.fromTo("#b2",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, ">-0.04")
     .to("#b2", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b2", { opacity:.4, y:-7, duration:.22, ease:"power2.inOut" }, "+=0.26");
 
-  // Línea 3
   tl.fromTo("#b3",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.4, ease:"power4.out" }, ">-0.03")
     .to("#b3", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b3", { opacity:.5, y:-6, duration:.2, ease:"power2.inOut" }, "+=0.22");
 
-  // Línea 4 remate
   tl.fromTo("#b4",
     { opacity:0, y:36, scale:.88, filter:"blur(12px)" },
     { opacity:1, y:0, scale:1.08, filter:"blur(0px)", duration:.52, ease:"back.out(1.6)" }, ">-0.02")
@@ -578,7 +573,6 @@ sceneStyle.textContent = `
     position:relative;
     z-index:2;
   }
-  /* Acento fijo para "Convenios" */
   #slide2 .saas-word:last-child{
     background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 45%,#ffffff 70%);
     -webkit-background-clip:text;
@@ -599,32 +593,26 @@ let nodesRAF = null;
 let nodesRunning = false;
 let nodesStart = 0;
 
-/* 5 nodos en posiciones relativas (rodean el texto) */
+/* 5 nodos en layout irregular tipo referencia */
 const NODE_BASE = [
-  { x: .14, y: .28 },
-  { x: .50, y: .14 },
-  { x: .86, y: .30 },
-  { x: .24, y: .80 },
-  { x: .78, y: .78 }
+  { x: .03, y: .52 },
+  { x: .31, y: .20 },
+  { x: .92, y: .40 },
+  { x: .27, y: .78 },
+  { x: .86, y: .92 }
 ];
 
-/* Todas las conexiones posibles entre 5 nodos (10 enlaces), aparecen en secuencia */
-const NODE_LINKS = [];
-(function buildLinks() {
-  let order = 0;
-  for (let i = 0; i < NODE_BASE.length; i++) {
-    for (let j = i + 1; j < NODE_BASE.length; j++) {
-      NODE_LINKS.push({
-        a: i,
-        b: j,
-        delay: 0.55 + order * 0.2, // se van tendiendo uno tras otro
-        dur: 0.7,
-        pulseOffset: (order * 0.37) % 1
-      });
-      order++;
-    }
-  }
-})();
+/* Conexiones dirigidas para parecerse al esquema de referencia */
+const NODE_LINKS = [
+  { a:0, b:1, delay:0.55, dur:0.62, pulseOffset:0.08 },
+  { a:0, b:3, delay:0.72, dur:0.62, pulseOffset:0.16 },
+  { a:1, b:2, delay:0.88, dur:0.72, pulseOffset:0.24 },
+  { a:1, b:4, delay:1.04, dur:0.78, pulseOffset:0.32 },
+  { a:2, b:4, delay:1.20, dur:0.62, pulseOffset:0.40 },
+  { a:3, b:4, delay:1.36, dur:0.70, pulseOffset:0.52 },
+  { a:3, b:2, delay:1.52, dur:0.66, pulseOffset:0.64 },
+  { a:0, b:2, delay:1.68, dur:0.78, pulseOffset:0.76 }
+];
 
 function resizeNodesCanvas() {
   if (!nodesCanvas) return;
@@ -642,8 +630,8 @@ function clamp01(x) { return Math.max(0, Math.min(1, x)); }
 function nodePos(i, t, w, h) {
   const n = NODE_BASE[i];
   return {
-    x: n.x * w + Math.sin(t * 0.8 + i * 1.7) * 12,
-    y: n.y * h + Math.cos(t * 0.65 + i * 2.1) * 12
+    x: n.x * w + Math.sin(t * 0.65 + i * 1.5) * 6,
+    y: n.y * h + Math.cos(t * 0.55 + i * 1.9) * 6
   };
 }
 
@@ -658,7 +646,6 @@ function drawNodes(now) {
 
   const pts = NODE_BASE.map((_, i) => nodePos(i, t, w, h));
 
-  /* Líneas que se van conectando */
   NODE_LINKS.forEach((L) => {
     const p = easeOutCubic(clamp01((t - L.delay) / L.dur));
     if (p <= 0) return;
@@ -679,14 +666,12 @@ function drawNodes(now) {
     nctx.stroke();
     nctx.restore();
 
-    /* Punta luminosa mientras se dibuja */
     if (p < 1) {
       nctx.fillStyle = "rgba(230,250,255,.95)";
       nctx.beginPath();
       nctx.arc(ex, ey, 3, 0, Math.PI * 2);
       nctx.fill();
     } else {
-      /* Pulso viajando por la línea ya conectada */
       const u = (((t - L.delay - L.dur) * 0.35) + L.pulseOffset) % 1;
       const px = A.x + (B.x - A.x) * u;
       const py = A.y + (B.y - A.y) * u;
@@ -700,7 +685,6 @@ function drawNodes(now) {
     }
   });
 
-  /* Nodos: aparecen con "pop" escalonado + pulso */
   pts.forEach((P, i) => {
     const appear = easeOutCubic(clamp01((t - i * 0.12) / 0.45));
     if (appear <= 0) return;
@@ -768,10 +752,8 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  // Slide 2: base de la versión anterior, con variaciones (entrada alternada, ola de brillo, ritmo ~30% más lento)
+  // Slide 2 (inspirada en la adjunta + variaciones propias, menos violenta)
   tl.fromTo("#slide2", { opacity:0 }, { opacity:1, duration:.33 })
-
-    // entrada con punch + blur, alternando izquierda/derecha
     .fromTo(".saas-word",
       {
         opacity:0,
@@ -787,31 +769,19 @@ function buildSaaSTimeline(){
         stagger:.14, duration:.65, ease:"power4.out"
       },
       "<")
-
-    // asentado
     .to(".saas-word",
       { scale:1, duration:.2, stagger:.08, ease:"power2.out" },
       "<+.2")
-
-    // pulso suave de TODO el bloque
     .to("#slide2",
       { scale:1.025, duration:.3, yoyo:true, repeat:1, ease:"sine.inOut" },
       "<+.1")
-
-    // ola de brillo recorriendo todas las palabras
     .to(".saas-word",
       { textShadow:"0 0 26px rgba(140,210,255,.55), 0 0 44px rgba(120,180,255,.3)", duration:.24, yoyo:true, repeat:1, stagger:.09, ease:"sine.inOut" },
       "<")
-
-    // micro vibración sutil del bloque
     .to("#slide2",
       { x:1, duration:.05, repeat:3, yoyo:true, ease:"none" },
       "<+.05")
-
-    // lectura
     .to({}, { duration:.8 })
-
-    // salida en cascada más suave
     .to(".saas-word",
       {
         y:-30, opacity:0, scale:.92,
@@ -821,21 +791,15 @@ function buildSaaSTimeline(){
       "<")
     .to("#slide2", { opacity:0, duration:.22 }, "<+.15");
 
-  // Slide 3: red de nodos conectándose
+  // Slide 3: nodos conectándose
   tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
     .call(() => startNodesBackground(), null, "<")
-    .fromTo("#nodesCanvas",
-      { opacity:0 },
-      { opacity:1, duration:.45, ease:"power2.out" },
-      "<+0.05")
+    .fromTo("#nodesCanvas",{ opacity:0 },{ opacity:1, duration:.45, ease:"power2.out" },"<+0.05")
     .fromTo(connectedChars,
       {opacity:0, y:24},
       {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
       "<+0.2")
-    // hold más largo para ver la red completa
-    .to("#slide3",
-      {opacity:0, y:-24, duration:.6, ease:"power2.in"},
-      "+=2.4")
+    .to("#slide3",{opacity:0, y:-24, duration:.6, ease:"power2.in"},"+=2.4")
     .call(() => stopNodesBackground(), null, ">");
 
   tl.addLabel("s4", ">");
@@ -884,7 +848,7 @@ master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Recuerda que llego 
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* Música + bloque de texto "impacto" */
+/* Música + bloque texto impacto */
 master.call(()=>{ startAppMusic(); }, null, 6.0);
 master.add(buildBridgeTimeline(), 6.0);
 
@@ -945,7 +909,7 @@ playBtn.addEventListener("click", ()=>{
   typing.n = 0;
 
   master.pause(0);
-  introTl.restart(true); // Play -> Intro -> Presentación
+  introTl.restart(true);
 });
 
 replayBtn.addEventListener("click", ()=>{
