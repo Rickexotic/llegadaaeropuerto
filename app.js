@@ -136,8 +136,22 @@ introTl
     { opacity: 0, scale: .85, filter: "blur(10px)" },
     { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
   .to("#introLogo", { scale: 1.2, duration: 1, ease: "none" }, 3.5)
-  .to("#introLogo", { opacity: 0, filter: "blur(6px)", duration: .5, ease: "power2.in" }, 4.5)
-  .to("#intro", { opacity: 0, duration: .4, ease: "power2.out" }, 4.9);
+   // salida con efecto neón tintineando
+  .to("#introLogo", {
+    duration: .7,
+    ease: "none",
+    keyframes: [
+      { opacity: 1, filter: "drop-shadow(0 0 6px rgba(125,220,255,.55)) brightness(1.15)", duration: .08 },
+      { opacity: .25, filter: "drop-shadow(0 0 2px rgba(125,220,255,.25)) brightness(.85)", duration: .06 },
+      { opacity: .95, filter: "drop-shadow(0 0 10px rgba(125,220,255,.75)) brightness(1.25)", duration: .09 },
+      { opacity: .18, filter: "drop-shadow(0 0 1px rgba(125,220,255,.15)) brightness(.75)", duration: .06 },
+      { opacity: .78, filter: "drop-shadow(0 0 8px rgba(125,220,255,.6)) brightness(1.12)", duration: .08 },
+      { opacity: .1, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.7)", duration: .07 },
+      { opacity: .55, filter: "drop-shadow(0 0 6px rgba(125,220,255,.45)) brightness(1.05)", duration: .09 },
+      { opacity: 0, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.65) blur(1px)", duration: .17 }
+    ]
+  }, 4.5)
+  .to("#intro", { opacity: 0, duration: .35, ease: "power2.out" }, 5.12);
 
 /* ---------- Audio ---------- */
 const MUSIC_VOLUME = 0.35;
