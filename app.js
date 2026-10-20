@@ -680,8 +680,8 @@ const master = gsap.timeline({
 
 /* Conversación WhatsApp */
 master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
-master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Llego a las 21:00", time:"20:45"}); }, null, 1.9);
-master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
+master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Recuerda que llego a las 21:00", time:"20:45"}); }, null, 1.9);
+master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
 /* BLOQUE TEXTO "impacto" */
