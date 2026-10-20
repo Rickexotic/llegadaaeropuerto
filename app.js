@@ -819,6 +819,7 @@ master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te esp
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
 /* BLOQUE TEXTO "impacto" */
+master.call(() => { startAppMusic(); }, null, 6.0);
 master.add(buildBridgeTimeline(), 6.0);
 
 /* Beneficios app */
