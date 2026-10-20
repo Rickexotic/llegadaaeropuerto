@@ -171,13 +171,17 @@ body{
 }
 
 .notif .msg{
-  margin-top:1px;
-  font-size:.84rem;
-  line-height:1.3;
-  opacity:.92;
-  white-space:nowrap;
+  margin-top:2px;
+  font-size:.79rem;
+  line-height:1.28;
+  opacity:.94;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
   overflow:hidden;
-  text-overflow:ellipsis;
 }
 
 .notif .detail{
@@ -503,7 +507,10 @@ body{
   }
 
   .notif .name{ font-size:.9rem; }
-  .notif .msg{ font-size:.82rem; }
+  .notif .msg{
+    font-size:.77rem;
+    line-height:1.26;
+  }
 
   .avatar-stack{
     width:40px;
