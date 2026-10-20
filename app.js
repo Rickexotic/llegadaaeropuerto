@@ -1,393 +1,218 @@
-const notificationSound =
-document.getElementById(
-"notificationSound"
-);
+const notificationSound = document.getElementById("notificationSound");
+const notifs = document.getElementById("notifs");
 
+/* ---------- Audio ---------- */
 let audioUnlocked = false;
 
 function unlockAudio(){
-
     if(audioUnlocked || !notificationSound) return;
-
     notificationSound.volume = 0.5;
-
     notificationSound.play()
     .then(()=>{
         notificationSound.pause();
         notificationSound.currentTime = 0;
         audioUnlocked = true;
     })
-    .catch(()=>{
-        // Se intentará nuevamente con la próxima interacción
-    });
-
+    .catch(()=>{});
 }
 
 document.addEventListener("click", unlockAudio, { once:true });
 document.addEventListener("touchstart", unlockAudio, { once:true });
 
-const chat =
-document.getElementById(
-"chat"
-);
-
-const typing =
-document.getElementById(
-"typing"
-);
-
 function playNotification(){
-
-    if(!notificationSound) return;
-    if(!audioUnlocked) return;
-
+    if(!notificationSound || !audioUnlocked) return;
     notificationSound.currentTime = 0;
-
     notificationSound.volume = 0.5;
-
-    notificationSound.play()
-    .catch(err=>{
-        console.log(
-        "Audio bloqueado:",
-        err
-        );
+    notificationSound.play().catch(err=>{
+        console.log("Audio bloqueado:", err);
     });
-
-}
-function scrollBottom(){
-
-chat.scrollTop =
-chat.scrollHeight;
-
 }
 
-function typingOn(){
+/* ---------- Notificaciones ---------- */
+const MAX_VISIBLE = 4;
 
-gsap.to(
-typing,
-{
-opacity:1,
-duration:.3
-}
-);
-
-}
-
-function typingOff(){
-
-gsap.to(
-typing,
-{
-opacity:0,
-duration:.3
-}
-);
-
-}
-
-function addMessage(
-type,
-text,
-time,
-checks=false
-){
-
-const bubble =
-document.createElement("div");
-
-bubble.className =
-"message " + type;
-
-let checkHtml = "";
-
-if(checks){
-
-checkHtml =
-`<span class="checks">✓✓</span>`;
-
-}
-
-bubble.innerHTML =
-
-`
-<div class="text">
-${text}
-</div>
-
-<div class="meta">
-${time}
-${checkHtml}
-</div>
-`;
-
-chat.appendChild(
-bubble
-);
-
-gsap.from(
-bubble,
-{
-y:40,
-opacity:0,
-duration:.5
-}
-);
-
-scrollBottom();
-
-}
-
-// ----------
-
-setTimeout(()=>{
-
-playNotification();
-
-addMessage(
-"incoming",
-"Hola 👋",
-"20:58"
-);
-
-},500);
-
-// ----------
-
-const notifs = document.getElementById("notifs");
-const appPanel = document.getElementById("appPanel");
-
-function showNotif({avatar, appIcon="assets/wassap.png", app="WhatsApp", name, text, time="ahora"}){
+function showNotif({
+    appIcon = "assets/wassap.png",
+    app = "WhatsApp",
+    avatar = "",
+    name = "",
+    text = "",
+    detail = "",
+    status = "",
+    time = "ahora",
+    mode = "contact" // "contact" | "app"
+}){
 
     playNotification();
 
     const wrap = document.createElement("div");
     wrap.className = "notif-wrap";
 
+    const rightVisual = mode === "contact"
+      ? `
+        <div class="avatar-stack">
+            <img class="avatar-img" src="${avatar}" alt="">
+            <img class="avatar-app-badge" src="${appIcon}" alt="">
+        </div>`
+      : "";
+
+    const leftVisual = mode === "app"
+      ? `<img class="left-app-icon" src="${appIcon}" alt="">`
+      : "";
+
     wrap.innerHTML = `
     <div class="notif">
-        <img class="app-icon" src="${appIcon}" alt="">
+        ${leftVisual}
         <div class="body">
             <div class="top"><span>${app}</span><span>${time}</span></div>
             <div class="name">${name}</div>
-            <div class="msg">${text}</div>
+            ${text ? `<div class="msg">${text}</div>` : ""}
+            ${detail ? `<div class="detail">${detail}</div>` : ""}
+            ${status ? `<div class="status">${status}</div>` : ""}
         </div>
-        ${avatar ? `<img class="avatar-img" src="${avatar}" alt="">` : ""}
+        ${rightVisual}
     </div>`;
 
-    notifs.appendChild(wrap);
+    notifs.prepend(wrap);
 
     gsap.from(wrap,{
         height:0,
-        duration:.5,
+        duration:.55,
         ease:"power3.out"
     });
 
     gsap.from(wrap.firstElementChild,{
-        y:-70,
-        scale:.9,
+        y:-72,
+        scale:.92,
         opacity:0,
-        duration:.7,
-        ease:"back.out(1.6)"
+        duration:.62,
+        ease:"back.out(1.5)"
+    });
+
+    [...notifs.children].forEach((w,i)=>{
+
+        if(i === 0) return;
+
+        if(i >= MAX_VISIBLE){
+            gsap.to(w,{
+                opacity:0,
+                duration:.32,
+                onComplete:()=>w.remove()
+            });
+            return;
+        }
+
+        gsap.to(w.firstElementChild,{
+            scale:1 - i*.04,
+            opacity:Math.max(1 - i*.18, .42),
+            duration:.42,
+            ease:"power2.out"
+        });
+
     });
 }
 
-// Notificación 1: Siwa
-setTimeout(()=>{
-    showNotif({
-        avatar:"assets/Siwa.png",
-        name:"Siwa",
-        text:"Hola 👋"
+function clearNotifs(){
+    const items = [...notifs.querySelectorAll(".notif")];
+    gsap.to(items,{
+        y:-42,
+        opacity:0,
+        stagger:.07,
+        duration:.45,
+        ease:"power2.in",
+        onComplete:()=>{ notifs.innerHTML = ""; }
     });
+}
+
+/* ---------- Datos ---------- */
+const SIWA = { avatar:"assets/Siwa.png", name:"Siwa" };
+const WOKI = { avatar:"assets/Woki.png", name:"Woki" };
+const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
+
+/* ---------- Secuencia ---------- */
+
+// Parte 1: estilo conversación (Siwa/Woki)
+setTimeout(()=>{
+    showNotif({...SIWA, mode:"contact", text:"Hola 👋", time:"1m ago"});
 },500);
 
-// Notificación 2: Siwa
 setTimeout(()=>{
-    showNotif({
-        avatar:"assets/Siwa.png",
-        name:"Siwa",
-        text:"Llego a las 21:00"
-    });
-},2000);
+    showNotif({...SIWA, mode:"contact", text:"Llego a las 21:00", time:"justo ahora"});
+},1900);
 
-// Notificación 3: Woki
 setTimeout(()=>{
-    showNotif({
-        avatar:"assets/Woki.png",
-        name:"Woki",
-        text:"Te espero en el aeropuerto 🙌"
-    });
-},3600);
+    showNotif({...WOKI, mode:"contact", text:"Te espero en el aeropuerto 🙌", time:"ahora"});
+},3400);
 
-// Las notificaciones suben y se van
 setTimeout(()=>{
-    gsap.to(notifs,{
-        y:-120,
-        opacity:0,
-        duration:.8,
-        ease:"power3.in"
-    });
+    clearNotifs();
 },5200);
 
-// Entra el diálogo con la app
+// Parte 2: app aeropuerto con mismo estilo vidrio
 setTimeout(()=>{
-    gsap.fromTo(appPanel,
-        {opacity:0, y:60, scale:.95},
-        {opacity:1, y:0, scale:1, duration:.8, ease:"power3.out"}
-    );
-},5800);
-
-setTimeout(()=>{
-    playNotification();
-    addMessage("outgoing","Hola Club Beneficios, mi pasajero llega 21:00","20:59",true);
-},6800);
-
-setTimeout(()=>{ typingOn(); },7800);
+    showNotif({
+        ...APP,
+        mode:"app",
+        name:"Tu pasajero llega a las 21:00 ✈",
+        text:"Preparemos tus beneficios",
+        time:"ahora"
+    });
+},6200);
 
 setTimeout(()=>{
-    typingOff();
-    playNotification();
-    addMessage("incoming","¡Hola! Revisemos tus beneficios 🎁","21:00");
-},9000);
-// ----------
+    showNotif({
+        ...APP,
+        mode:"app",
+        name:"🅿 Parking Premium",
+        detail:"Sector P3 · Terminal Internacional",
+        status:"✅ Reserva exitosa",
+        time:"ahora"
+    });
+},7900);
 
 setTimeout(()=>{
-
-addMessage(
-"incoming",
-
-`
-<div class="business-card">
-
-<div class="business-title">
-🅿 Parking Premium
-</div>
-
-<div class="business-detail">
-Sector P3 · Terminal Internacional
-</div>
-
-<div class="business-detail">
-✅ Reserva Exitosa
-</div>
-
-</div>
-`,
-
-"21:00"
-);
-
+    showNotif({
+        ...APP,
+        mode:"app",
+        name:"🍽 Restaurant Internacional",
+        detail:"Mesa para 2 personas",
+        status:"✅ Confirmada 20:30",
+        time:"ahora"
+    });
 },9800);
 
-// ----------
+setTimeout(()=>{
+    showNotif({
+        ...APP,
+        mode:"app",
+        name:"🎁 Duty Free",
+        detail:"Regalo comprado",
+        status:"✅ 15% OFF aplicado",
+        time:"ahora"
+    });
+},11700);
 
 setTimeout(()=>{
-
-addMessage(	
-"outgoing",
-"Excelente 👌",
-"21:00",
-true
-);
-
-},12000);
-
-// ----------
+    showNotif({
+        ...APP,
+        mode:"app",
+        name:"Todo listo",
+        text:"✅ Todo listo para recibir a tu pasajero",
+        time:"ahora"
+    });
+},13600);
 
 setTimeout(()=>{
+    showNotif({
+        ...APP,
+        mode:"app",
+        name:"Aterrizaje",
+        text:"✈ Tu pasajero acaba de aterrizar",
+        time:"ahora"
+    });
+},15400);
 
-addMessage(
-"incoming",
-
-`
-<div class="business-card">
-
-<div class="business-title">
-🍽 Restaurant Internacional
-</div>
-
-<div class="business-detail">
-Mesa para 2 personas
-</div>
-
-<div class="business-detail">
-✅ Confirmada 20:30
-</div>
-
-</div>
-`,
-
-"21:00"
-);
-
-},14500);
-
-// ----------
-
-setTimeout(()=>{
-addMessage(
-"incoming",
-
-`
-<div class="business-card">
-
-<div class="business-title">
-🎁 Duty Free
-</div>
-
-<div class="business-detail">
-Regalo comprado
-</div>
-
-<div class="business-detail">
-✅ 15% OFF aplicado
-</div>
-
-</div>
-`,
-
-"21:01"
-);
-
-},17000);
-
-// ----------
-
-setTimeout(()=>{
-
-addMessage(
-"incoming",
-"✅ Todo listo para recibir a tu pasajero",
-"21:01"
-);
-
-},19500);
-
-// ----------
-
-setTimeout(()=>{
-
-typingOn();
-
-},21500);
-
-// ----------
-
-setTimeout(()=>{
-
-typingOff();
-
-addMessage(
-"incoming",
-"✈ Tu pasajero acaba de aterrizar",
-"21:01"
-);
-
-},23000);
-
-// ---------------------
-// TRANSICIÓN SAAS FINAL V2 (CINEMATIC / AE STYLE)
-// ---------------------
-
+/* ---------- SaaS final ---------- */
 function splitChars(selector){
     const el = document.querySelector(selector);
     if(!el) return [];
@@ -404,10 +229,7 @@ function splitChars(selector){
 
 setTimeout(()=>{
 
-    typing.style.display = "none";
-
-    // Salida del teléfono con look más "camera move"
-   gsap.to("#stage",{
+    gsap.to("#stage",{
         scale:1.32,
         opacity:0,
         filter:"blur(24px)",
@@ -439,12 +261,12 @@ setTimeout(()=>{
         <div class="saas-word">Experiencias</div>
     </div>
 
-  <div id="slide3" class="saas-slide">
-    <div class="saas-message" id="connectedText">Todo conectado.</div>
-</div>
+    <div id="slide3" class="saas-slide">
+        <div class="saas-message" id="connectedText">Todo conectado.</div>
+    </div>
 
     <div id="slide4" class="saas-slide">
-       <div class="saas-logo" id="logoMain">Club Beneficios</div>
+        <div class="saas-logo" id="logoMain">Club Beneficios</div>
         <div class="saas-logo-sub">Aeropuerto Santiago</div>
         <div class="cta-pill">Activa · Reserva · Disfruta</div>
     </div>
@@ -458,14 +280,12 @@ setTimeout(()=>{
     gsap.set("#saas-scene",{opacity:0});
     gsap.to("#saas-scene",{opacity:1,duration:.75,ease:"power2.out"});
 
-    // Movimiento ambiental
-  gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
-  gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
-    
+    gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
+    gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
+
     const tl = gsap.timeline({delay:.6});
 
     tl
-    // Slide 1
     .fromTo("#slide1",
     {opacity:0, scale:.58, y:110, filter:"blur(18px)"},
     {opacity:1, scale:1, y:0, filter:"blur(0px)", duration:1.2, ease:"power4.out"})
@@ -477,7 +297,6 @@ setTimeout(()=>{
     {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
     "+=1.15")
 
-    // Slide 2
     .fromTo("#slide2",{opacity:0},{opacity:1,duration:.4})
     .from(".saas-word",
     {
@@ -501,26 +320,24 @@ setTimeout(()=>{
     },"+=1.15")
     .to("#slide2",{opacity:0,duration:.2},"<")
 
-    // Slide 3
-   .fromTo("#slide3",
-{opacity:0},
-{opacity:1, duration:.5, ease:"power2.out"})
-.from(connectedChars,
-{
-    opacity:0,
-    y:24,
-    stagger:.03,
-    duration:.5,
-    ease:"power3.out"
-},"<")
-.to("#slide3",
-{opacity:0, y:-24, duration:.6, ease:"power2.in"},
-"+=1.2")
-        
-    // Slide 4 (logo final)
-   .fromTo("#slide4",
-{opacity:0, scale:.94},
-{opacity:1, scale:1, duration:.8, ease:"power3.out"})
+    .fromTo("#slide3",
+    {opacity:0},
+    {opacity:1, duration:.5, ease:"power2.out"})
+    .from(connectedChars,
+    {
+        opacity:0,
+        y:24,
+        stagger:.03,
+        duration:.5,
+        ease:"power3.out"
+    },"<")
+    .to("#slide3",
+    {opacity:0, y:-24, duration:.6, ease:"power2.in"},
+    "+=1.2")
+
+    .fromTo("#slide4",
+    {opacity:0, scale:.94},
+    {opacity:1, scale:1, duration:.8, ease:"power3.out"})
     .from(logoChars,
     {opacity:0, y:16, stagger:.022, duration:.42, ease:"power2.out"},
     "<.05")
@@ -530,8 +347,6 @@ setTimeout(()=>{
     .from(".cta-pill",
     {opacity:0, y:12, scale:.92, duration:.4, ease:"power2.out"},
     "<.12")
-
-    // Respiración final
     .to("#slide4",{scale:1.02,duration:2.4,yoyo:true,repeat:1,ease:"sine.inOut"});
-    
-},27000);
+
+},17500);
