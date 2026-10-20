@@ -1,8 +1,35 @@
+const notificationSound =
+document.getElementById(
+"notificationSound"
+);
+
 const chat =
-document.getElementById("chat");
+document.getElementById(
+"chat"
+);
 
 const typing =
-document.getElementById("typing");
+document.getElementById(
+"typing"
+);
+
+function playNotification(){
+
+    if(!notificationSound) return;
+
+    notificationSound.currentTime = 0;
+
+    notificationSound.volume = 0.5;
+
+    notificationSound.play()
+    .catch(err=>{
+        console.log(
+        "Audio bloqueado:",
+        err
+        );
+    });
+
+}
 
 function scrollBottom(){
 
@@ -91,6 +118,8 @@ scrollBottom();
 
 setTimeout(()=>{
 
+playNotification();
+
 addMessage(
 "incoming",
 "Hola 👋",
@@ -102,6 +131,8 @@ addMessage(
 // ----------
 
 setTimeout(()=>{
+
+playNotification();
 
 addMessage(
 "incoming",
@@ -125,6 +156,8 @@ setTimeout(()=>{
 
 typingOff();
 
+playNotification();
+
 addMessage(
 "outgoing",
 "Perfecto 👍",
@@ -147,6 +180,8 @@ typingOn();
 setTimeout(()=>{
 
 typingOff();
+
+playNotification();
 
 addMessage(
 "outgoing",
@@ -191,7 +226,7 @@ Sector P3 · Terminal Internacional
 
 setTimeout(()=>{
 
-addMessage(
+addMessage(	
 "outgoing",
 "Excelente 👌",
 "21:00",
@@ -233,7 +268,6 @@ Mesa para 2 personas
 // ----------
 
 setTimeout(()=>{
-
 addMessage(
 "incoming",
 
@@ -304,13 +338,19 @@ typing.style.display = "none";
 
 gsap.to(".phone",{
 
-    scale:.85,
+    scale:1.4,
 
     opacity:0,
 
-    duration:1.2,
+    filter:"blur(20px)",
 
-    ease:"power2.out"
+    rotationX:-8,
+
+    y:-80,
+
+    duration:1.6,
+
+    ease:"power4.out"
 
 });
 
@@ -388,20 +428,66 @@ const tl = gsap.timeline({
 
 tl
 
-.to("#slide1",{
+.fromTo("#slide1",{
+
+    opacity:0,
+
+    scale:.4,
+
+    y:120,
+
+    filter:"blur(25px)"
+
+},{
     opacity:1,
-    duration:1
+
+    scale:1,
+
+    y:0,
+
+    filter:"blur(0px)",
+
+    duration:1.4,
+
+    ease:"power4.out"
+
 })
 
 .to("#slide1",{
+
     opacity:0,
-    y:-50,
-    duration:.8
-},"+=2")
+
+    scale:1.25,
+
+    y:-60,
+
+    filter:"blur(20px)",
+
+    duration:1
+
+},"+=1.5")
 
 .to("#slide2",{
     opacity:1,
     duration:1
+})
+
+.call(()=>{
+
+gsap.from(".saas-word",{
+
+    opacity:0,
+
+    y:40,
+
+    stagger:.4,
+
+    duration:.8,
+
+    ease:"power3.out"
+
+});
+
 })
 
 .to("#slide2",{
