@@ -310,17 +310,17 @@ const master = gsap.timeline({
 });
 
 /* Notificaciones */
-master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Hola 👋", time:"1m ago"}); }, null, 0.5);
-master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Llego a las 21:00", time:"justo ahora"}); }, null, 1.9);
-master.call(()=>{ showNotif({...WOKI, mode:"contact", text:"Te espero en el aeropuerto 🙌", time:"ahora"}); }, null, 3.4);
+master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
+master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Llego a las 21:00", time:"20:45"}); }, null, 1.9);
+master.call(()=>{ showNotif({...WOKI, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Preparemos tus beneficios", time:"ahora" }); }, null, 6.2);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"ahora" }); }, null, 7.9);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 20:30", time:"ahora" }); }, null, 9.8);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"ahora" }); }, null, 11.7);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Todo listo", text:"✅ Todo listo para recibir a tu pasajero", time:"ahora" }); }, null, 13.6);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero acaba de aterrizar", time:"ahora" }); }, null, 15.4);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 6.2);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 7.9);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 9.8);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 11.7);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Todo listo", text:"✅ Todo listo", time:"20:48" }); }, null, 13.6);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 15.4);
 
 /* Escena final anidada: empieza a los 17.5s */
 master.add(buildSaaSTimeline(), 17.5);
