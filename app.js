@@ -319,7 +319,7 @@ master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 7.9);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 9.8);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 11.7);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Todo listo", text:"✅ Todo listo", time:"20:48" }); }, null, 13.6);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:48" }); }, null, 13.6);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 15.4);
 
 /* Escena final anidada: empieza a los 17.5s */
