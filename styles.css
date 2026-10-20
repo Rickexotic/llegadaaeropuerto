@@ -28,15 +28,25 @@ body{
    ========================================================= */
 
 #stage{
-  width:min(420px, 90vw);
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(420px, 92vw);
+  height:100dvh;
+  padding:20px 8px;
   display:flex;
-  flex-direction:column;
-  justify-content:center;
+  align-items:flex-end;   /* ancla abajo */
+  pointer-events:none;
+  z-index:20;
 }
 
 #notifs{
+  width:100%;
   display:flex;
-  flex-direction:column;
+  flex-direction:column;  /* normal: arriba->abajo */
+  justify-content:flex-end;
+  gap:8px;
 }
 
 .notif-wrap{
@@ -315,25 +325,26 @@ html, body{
 /* contenedor notificaciones fijo y centrado */
 #stage{
   position:fixed;
-  top:0;
   left:50%;
+  bottom:0;
   transform:translateX(-50%);
   width:min(420px, 92vw);
   height:100dvh;
-  padding-top:24px;
-  z-index:20;
+  padding:20px 8px;
+  display:flex;
+  align-items:flex-end;   /* ancla abajo */
   pointer-events:none;
+  z-index:20;
 }
 
 #notifs{
-  position:relative;
   width:100%;
   display:flex;
-  flex-direction:column;
+  flex-direction:column;  /* normal: arriba->abajo */
+  justify-content:flex-end;
   gap:8px;
-  padding:0 8px;
 }
-
+  
 /* tarjeta */
 .notif-wrap{
   width:100%;
@@ -419,10 +430,27 @@ img{
 
 /* móvil */
 @media (max-width:768px){
-  #stage{
-    width:92vw;
-    padding-top:18px;
-  }
+ #stage{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(420px, 92vw);
+  height:100dvh;
+  padding:20px 8px;
+  display:flex;
+  align-items:flex-end;   /* ancla abajo */
+  pointer-events:none;
+  z-index:20;
+}
+
+#notifs{
+  width:100%;
+  display:flex;
+  flex-direction:column;  /* normal: arriba->abajo */
+  justify-content:flex-end;
+  gap:8px;
+}
   .notif{ padding:11px 12px; border-radius:20px; }
 }
   
