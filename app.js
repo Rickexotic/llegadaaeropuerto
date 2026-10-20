@@ -3,8 +3,28 @@ document.getElementById(
 "notificationSound"
 );
 
-if(!audioUnlocked) return;
-if(!notificationSound) return;
+let audioUnlocked = false;
+
+function unlockAudio(){
+
+    if(audioUnlocked || !notificationSound) return;
+
+    notificationSound.volume = 0.5;
+
+    notificationSound.play()
+    .then(()=>{
+        notificationSound.pause();
+        notificationSound.currentTime = 0;
+        audioUnlocked = true;
+    })
+    .catch(()=>{
+        // Se intentará nuevamente con la próxima interacción
+    });
+
+}
+
+document.addEventListener("click", unlockAudio, { once:true });
+document.addEventListener("touchstart", unlockAudio, { once:true });
 
 const chat =
 document.getElementById(
@@ -19,6 +39,7 @@ document.getElementById(
 function playNotification(){
 
     if(!notificationSound) return;
+    if(!audioUnlocked) return;
 
     notificationSound.currentTime = 0;
 
@@ -33,7 +54,6 @@ function playNotification(){
     });
 
 }
-
 function scrollBottom(){
 
 chat.scrollTop =
