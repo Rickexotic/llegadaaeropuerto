@@ -358,9 +358,9 @@ transform:translateY(-4px);
   letter-spacing:.01em;
   line-height:1.04;
   display:inline-block;
-  text-shadow:0 0 28px rgba(124,196,255,.26);
+  color:#ffffff;
+  text-shadow:0 0 18px rgba(124,196,255,.25);
 }
-
 .saas-logo-sub{
   margin-top:14px;
   color:#c9d4ff;
@@ -411,25 +411,20 @@ transform:translateY(-4px);
 .bg-orb{
   position:absolute;
   border-radius:50%;
-  filter:blur(44px);
-  opacity:.34;
+  filter:blur(90px);
+  opacity:.14;
 }
 
 .orb-1{
-  width:350px;height:350px;
+  width:320px;height:320px;
   background:#3f7bff;
-  top:8%;left:10%;
+  top:10%;left:10%;
 }
+
 .orb-2{
-  width:300px;height:300px;
+  width:280px;height:280px;
   background:#7b5cff;
   right:10%;bottom:10%;
-}
-.orb-3{
-  width:220px;height:220px;
-  background:#19d3ff;
-  left:42%;bottom:8%;
-  opacity:.24;
 }
 
 .noise{
