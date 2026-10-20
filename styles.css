@@ -149,6 +149,12 @@ body{
   margin-left:auto;
 }
 
+/* App: alineado a la izquierda */
+.notif.side-app{
+  width:88%;
+  margin-right:auto;
+}
+
 .notif .body{
   flex:1;
   min-width:0;
@@ -525,6 +531,10 @@ body{
   .notif.side-left,
   .notif.side-right{
     width:86%;
+  }
+
+  .notif.side-app{
+    width:94%;
   }
 
   .intro-search{
