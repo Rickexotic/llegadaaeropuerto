@@ -27,12 +27,12 @@ body{
 #stage{
   position:fixed;
   left:50%;
-  top:18vh;                 /* <-- punto de inicio más arriba */
+  top:18vh;
   transform:translateX(-50%);
   width:min(420px, 92vw);
-  height:56vh;              /* <-- zona visible de apilado */
+  height:56vh;
   display:flex;
-  align-items:flex-end;     /* pila desde abajo dentro de esta caja */
+  align-items:flex-end;
   pointer-events:none;
   z-index:20;
   padding:0 8px;
@@ -152,6 +152,56 @@ body{
   object-fit:cover;
   border:2px solid rgba(10,16,32,.92);
   box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+
+/* =========================================================
+   CONTROLES PLAY + PROGRESO
+   ========================================================= */
+
+#controls{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  width:min(420px, 92vw);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  z-index:10000;
+  pointer-events:auto;
+}
+
+#playBtn{
+  width:34px;
+  height:34px;
+  flex-shrink:0;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:50%;
+  background:rgba(255,255,255,.14);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  color:#fff;
+  font-size:.8rem;
+  cursor:pointer;
+}
+
+#playBtn:disabled{
+  opacity:.45;
+  cursor:default;
+}
+
+#progress{
+  flex:1;
+  height:4px;
+  border-radius:4px;
+  background:rgba(255,255,255,.18);
+  overflow:hidden;
+}
+
+#progressBar{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#7de3ff,#a7b8ff);
 }
 
 /* =========================================================
@@ -289,15 +339,14 @@ body{
 /* =========================================================
    MOVIL (solo ajustes finos)
    ========================================================= */
-
- @media (max-width:768px){
+@media (max-width:768px){
   #stage{
     top:18vh;
     height:52vh;
     width:92vw;
     padding:0 8px;
-  
-}
+  }
+
   .notif{
     padding:11px 12px;
     border-radius:20px;
@@ -309,5 +358,10 @@ body{
   .avatar-stack{
     width:40px;
     height:40px;
+  }
+
+  #controls{
+    width:92vw;
+    bottom:14px;
   }
 }
