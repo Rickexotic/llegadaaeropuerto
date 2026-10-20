@@ -6,23 +6,29 @@ const progressBar = document.getElementById("progressBar");
 /* ---------- Audio ---------- */
 let audioUnlocked = false;
 
+// Un sonido por tipo de evento. Cuando tengas el audio de la App, solo cambia la ruta de "app".
+const SOUNDS = {
+  whatsapp: new Audio("assets/notification.wav"),
+  app:      null // ej: new Audio("assets/app.wav")
+};
+
+Object.values(SOUNDS).forEach(a => { if(a){ a.preload = "auto"; a.volume = 0.5; } });
+
+// Debe llamarse desde un clic del usuario (el botón Play)
 function unlockAudioFromUserGesture(){
-  if(audioUnlocked || !notificationSound) return;
-  notificationSound.volume = 0.5;
-  notificationSound.play()
-    .then(()=>{
-      notificationSound.pause();
-      notificationSound.currentTime = 0;
-      audioUnlocked = true;
-    })
-    .catch(()=>{});
+  if(audioUnlocked) return;
+  audioUnlocked = true;
+  Object.values(SOUNDS).forEach(a=>{
+    if(!a) return;
+    a.play().then(()=>{ a.pause(); a.currentTime = 0; }).catch(()=>{});
+  });
 }
 
-function playNotification(){
-  if(!notificationSound || !audioUnlocked) return;
-  notificationSound.currentTime = 0;
-  notificationSound.volume = 0.5;
-  notificationSound.play().catch(()=>{});
+function playSound(key){
+  const a = SOUNDS[key];
+  if(!audioUnlocked || !a) return;
+  a.currentTime = 0;
+  a.play().catch(()=>{});
 }
 
 /* ---------- Notificaciones ---------- */
@@ -40,7 +46,7 @@ function showNotif({
   mode = "contact" // "contact" | "app"
 }){
 
-  playNotification();
+  playSound(mode === "contact" ? "whatsapp" : "app");
 
   const wrap = document.createElement("div");
   wrap.className = "notif-wrap";
