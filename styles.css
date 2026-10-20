@@ -189,6 +189,35 @@ body{
   border:1px solid rgba(37,211,102,.35);
 }
 
+/* Botones dentro de notificación */
+.notif .actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.act-btn{
+  flex:1;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  font-size:.8rem;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.act-btn.primary{
+  color:#05070d;
+  border-color:transparent;
+  background:linear-gradient(90deg,#7de3ff,#a7b8ff);
+}
+
+.act-btn.selected{
+  box-shadow:0 0 0 3px rgba(125,227,255,.35);
+}
+
 /* Modo app: icono pequeno a la izquierda */
 .left-app-icon{
   width:26px;
@@ -240,8 +269,8 @@ body{
   align-items:center;
   gap:12px;
   z-index:10000;
-  opacity:0;               /* oculto hasta terminar intro */
-  pointer-events:none;     /* se habilita al terminar intro */
+  opacity:1;               /* visible al inicio */
+  pointer-events:auto;     /* clickeable al inicio */
 }
 
 #playBtn{
