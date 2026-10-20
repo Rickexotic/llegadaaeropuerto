@@ -292,10 +292,10 @@ body{
 
  @media (max-width:768px){
   #stage{
-    top:20vh;
+    top:18vh;
     height:52vh;
     width:92vw;
-    padding:0 6px;
+    padding:0 8px;
   
 }
   .notif{
