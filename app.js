@@ -661,7 +661,7 @@ master.call(()=>{ clearNotifs(); }, null, 5.2);
 master.add(buildBridgeTimeline(), 6.0);
 
 /* Beneficios app */
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 10.6);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Hola Juan. En qué te ayudamos hoy. ", text:"Comencemos", time:"20:47" }); }, null, 10.6);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 12.3);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 14.2);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 16.1);
@@ -677,7 +677,7 @@ master.call(() => {
   });
 }, null, 18.0);
 
-master.call(()=>{ simulateRedeemClick(); }, null, 20.0);
+master.call(()=>{ simulateRedeemClick(); }, null, 19.2);
 
 master.call(() => {
   showNotif({
