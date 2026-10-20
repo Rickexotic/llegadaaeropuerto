@@ -390,10 +390,8 @@ setTimeout(()=>{
 
     scene.innerHTML = `
     <div class="vignette"></div>
-    <div class="bg-grid"></div>
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
     <div class="noise"></div>
 
     <div id="slide1" class="saas-slide">
@@ -429,11 +427,9 @@ setTimeout(()=>{
     gsap.to("#saas-scene",{opacity:1,duration:.75,ease:"power2.out"});
 
     // Movimiento ambiental
-    gsap.to(".orb-1",{x:90,y:-50,repeat:-1,yoyo:true,duration:7,ease:"sine.inOut"});
-    gsap.to(".orb-2",{x:-80,y:40,repeat:-1,yoyo:true,duration:8,ease:"sine.inOut"});
-    gsap.to(".orb-3",{x:40,y:60,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
-    gsap.to(".bg-grid",{backgroundPosition:"220px 140px",duration:16,repeat:-1,ease:"none"});
-
+  gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
+  gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
+    
     const tl = gsap.timeline({delay:.6});
 
     tl
@@ -496,9 +492,9 @@ setTimeout(()=>{
     "+=.95")
 
     // Slide 4 (logo final)
-    .fromTo("#slide4",
-    {opacity:0, scale:.9, filter:"blur(12px)"},
-    {opacity:1, scale:1, filter:"blur(0px)", duration:.85, ease:"power3.out"})
+   .fromTo("#slide4",
+{opacity:0, scale:.94},
+{opacity:1, scale:1, duration:.8, ease:"power3.out"})
     .from(logoChars,
     {opacity:0, y:16, stagger:.022, duration:.42, ease:"power2.out"},
     "<.05")
