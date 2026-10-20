@@ -544,24 +544,35 @@ let nodesRAF = null;
 let nodesRunning = false;
 let nodesStart = 0;
 
+/* 7 nodos irregulares */
 const NODE_BASE = [
-  { x: .03, y: .52 },
-  { x: .31, y: .20 },
-  { x: .92, y: .40 },
-  { x: .27, y: .78 },
-  { x: .86, y: .92 }
+  { x: .06, y: .48 },
+  { x: .23, y: .22 },
+  { x: .50, y: .16 },
+  { x: .84, y: .30 },
+  { x: .92, y: .58 },
+  { x: .68, y: .84 },
+  { x: .28, y: .80 }
 ];
 
-const NODE_LINKS = [
-  { a:0, b:1, delay:0.55, dur:0.62, pulseOffset:0.08 },
-  { a:0, b:3, delay:0.72, dur:0.62, pulseOffset:0.16 },
-  { a:1, b:2, delay:0.88, dur:0.72, pulseOffset:0.24 },
-  { a:1, b:4, delay:1.04, dur:0.78, pulseOffset:0.32 },
-  { a:2, b:4, delay:1.20, dur:0.62, pulseOffset:0.40 },
-  { a:3, b:4, delay:1.36, dur:0.70, pulseOffset:0.52 },
-  { a:3, b:2, delay:1.52, dur:0.66, pulseOffset:0.64 },
-  { a:0, b:2, delay:1.68, dur:0.78, pulseOffset:0.76 }
-];
+/* conexiones sutiles (no todas) */
+const NODE_LINKS = [];
+(function buildLinks() {
+  let order = 0;
+  for (let i = 0; i < NODE_BASE.length; i++) {
+    for (let j = i + 1; j < NODE_BASE.length; j++) {
+      if (Math.abs(i - j) > 3 && !(i === 0 && j === 6)) continue;
+      NODE_LINKS.push({
+        a: i,
+        b: j,
+        delay: 0.55 + order * 0.11,
+        dur: 0.62,
+        pulseOffset: (order * 0.21) % 1
+      });
+      order++;
+    }
+  }
+})();
 
 function resizeNodesCanvas() {
   if (!nodesCanvas) return;
@@ -605,10 +616,10 @@ function drawNodes(now) {
     const ey = A.y + (B.y - A.y) * p;
 
     nctx.save();
-    nctx.shadowColor = "rgba(125,220,255,.9)";
-    nctx.shadowBlur = 10;
-    nctx.strokeStyle = `rgba(125,220,255,${0.35 + 0.35 * p})`;
-    nctx.lineWidth = 1.6;
+    nctx.shadowColor = "rgba(125,220,255,.28)";
+    nctx.shadowBlur = 4;
+    nctx.strokeStyle = `rgba(125,220,255,${0.12 + 0.16 * p})`;
+    nctx.lineWidth = 1.1;
     nctx.beginPath();
     nctx.moveTo(A.x, A.y);
     nctx.lineTo(ex, ey);
@@ -616,40 +627,40 @@ function drawNodes(now) {
     nctx.restore();
 
     if (p < 1) {
-      nctx.fillStyle = "rgba(230,250,255,.95)";
+      nctx.fillStyle = "rgba(210,245,255,.45)";
       nctx.beginPath();
-      nctx.arc(ex, ey, 3, 0, Math.PI * 2);
+      nctx.arc(ex, ey, 2.2, 0, Math.PI * 2);
       nctx.fill();
     } else {
       const u = (((t - L.delay - L.dur) * 0.35) + L.pulseOffset) % 1;
       const px = A.x + (B.x - A.x) * u;
       const py = A.y + (B.y - A.y) * u;
-      const g = nctx.createRadialGradient(px, py, 0, px, py, 9);
-      g.addColorStop(0, "rgba(230,250,255,.95)");
+      const g = nctx.createRadialGradient(px, py, 0, px, py, 6);
+      g.addColorStop(0, "rgba(210,245,255,.38)");
       g.addColorStop(1, "rgba(125,220,255,0)");
       nctx.fillStyle = g;
       nctx.beginPath();
-      nctx.arc(px, py, 9, 0, Math.PI * 2);
+      nctx.arc(px, py, 6, 0, Math.PI * 2);
       nctx.fill();
     }
   });
 
   pts.forEach((P, i) => {
-    const appear = easeOutCubic(clamp01((t - i * 0.12) / 0.45));
+    const appear = easeOutCubic(clamp01((t - i * 0.1) / 0.45));
     if (appear <= 0) return;
 
-    const pulse = 1 + 0.12 * Math.sin(t * 3 + i);
-    const r = (3.4 + 1.2 * Math.sin(t * 2 + i)) * appear;
+    const pulse = 1 + 0.1 * Math.sin(t * 2.6 + i);
+    const r = (2.8 + 0.8 * Math.sin(t * 1.9 + i)) * appear;
 
-    const g = nctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, 20 * appear * pulse);
-    g.addColorStop(0, "rgba(170,240,255,.85)");
+    const g = nctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, 12 * appear * pulse);
+    g.addColorStop(0, "rgba(170,240,255,.30)");
     g.addColorStop(1, "rgba(125,220,255,0)");
     nctx.fillStyle = g;
     nctx.beginPath();
-    nctx.arc(P.x, P.y, 20 * appear * pulse, 0, Math.PI * 2);
+    nctx.arc(P.x, P.y, 12 * appear * pulse, 0, Math.PI * 2);
     nctx.fill();
 
-    nctx.fillStyle = "rgba(220,250,255,1)";
+    nctx.fillStyle = "rgba(210,245,255,.55)";
     nctx.beginPath();
     nctx.arc(P.x, P.y, Math.max(r, 0.1), 0, Math.PI * 2);
     nctx.fill();
@@ -701,7 +712,7 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  // Slide 2 (inspirada en adjunta + variaciones propias)
+  // Slide 2 (mismo tratamiento para todos)
   tl.fromTo("#slide2", { opacity:0 }, { opacity:1, duration:.33 })
     .fromTo(".saas-word",
       {
@@ -740,10 +751,10 @@ function buildSaaSTimeline(){
       "<")
     .to("#slide2", { opacity:0, duration:.22 }, "<+.15");
 
-  // Slide 3: nodos conectándose
+  // Slide 3: red de nodos tenue
   tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
     .call(() => startNodesBackground(), null, "<")
-    .fromTo("#nodesCanvas",{ opacity:0 },{ opacity:1, duration:.45, ease:"power2.out" },"<+0.05")
+    .fromTo("#nodesCanvas",{ opacity:0 },{ opacity:.62, duration:.45, ease:"power2.out" },"<+0.05")
     .fromTo(connectedChars,
       {opacity:0, y:24},
       {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
@@ -791,17 +802,17 @@ const master = gsap.timeline({
   }
 });
 
-/* Conversación WhatsApp */
+/* Conversación WhatsApp inicial */
 master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
 master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Recuerda que llego a las 21:00", time:"20:45"}); }, null, 1.9);
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* Música + bloque texto impacto */
+/* Música + bloque texto */
 master.call(()=>{ startAppMusic(); }, null, 6.0);
 master.add(buildBridgeTimeline(), 6.0);
 
-/* Diálogo App + Juan (sin sonido de notificación para Juan) */
+/* Diálogo App + Juan (Juan en formato WhatsApp, sin sonido) */
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Hola Juan. En qué te ayudamos hoy.", text:"", time:"20:47" }); }, null, 10.6);
 
 master.call(()=>{ showNotif({ ...JUAN, mode:"contact", text:"Necesito urgente estacionamiento", time:"20:47", silent:true }); }, null, 12.1);
