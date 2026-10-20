@@ -11,9 +11,29 @@ const introTyped = document.getElementById("introTyped");
 const INTRO_TEXT = "Outside Co.";
 const typing = { n: 0 };
 
+/* Sonido de tipeo */
+const typingSound = new Audio("assets/typing.wav");
+typingSound.preload = "auto";
+typingSound.volume = 0.5;
+typingSound.loop = true; // por si el wav dura menos que el tipeo
+
+function startTypingSound() {
+  typingSound.currentTime = 0;
+  typingSound.play().catch(() => { });
+}
+
+function stopTypingSound() {
+  typingSound.pause();
+  typingSound.currentTime = 0;
+}
+
+/* Intro timeline: se ejecuta al presionar Play */
 const introTl = gsap.timeline({
+  paused: true,
   onComplete: () => {
+    intro.style.display = "none";
     controlsEl.style.pointerEvents = "auto";
+    master.play(0); // al terminar intro, inicia presentación
   }
 });
 
@@ -22,7 +42,8 @@ introTl
   .fromTo("#introSearch",
     { opacity: 0, y: 14, scale: .94 },
     { opacity: 1, y: 0, scale: 1, duration: .5, ease: "power3.out" }, 0)
-  // 2) typing texto
+  // 2) typing texto + sonido
+  .call(startTypingSound, null, 0.5)
   .to(typing, {
     n: INTRO_TEXT.length,
     duration: 1.6,
@@ -31,6 +52,7 @@ introTl
       introTyped.textContent = INTRO_TEXT.slice(0, Math.round(typing.n));
     }
   }, 0.5)
+  .call(stopTypingSound, null, 2.1)
   // 3) click visual en botón buscar
   .to("#introGo", { scale: .9, duration: .12, yoyo: true, repeat: 1, ease: "power1.inOut" }, 2.1)
   // 4) se va barra
@@ -39,9 +61,15 @@ introTl
   // 5) entra logo
   .fromTo("#introLogo",
     { opacity: 0, scale: .85, filter: "blur(10px)" },
-    { opacity: 1, scale: 1, filter: "blur(0px)", duration: .9, ease: "power3.out" }, 2.9)
-  // 6) aparece controles (play)
-  .to("#controls", { opacity: 1, duration: .4, ease: "power2.out" }, 3.8);
+    { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
+  // 6) el logo crece durante 1 segundo
+  .to("#introLogo",
+    { scale: 1.2, duration: 1, ease: "none" }, 3.5)
+  // 7) fade out del logo y del intro completo
+  .to("#introLogo",
+    { opacity: 0, filter: "blur(6px)", duration: .5, ease: "power2.in" }, 4.5)
+  .to("#intro",
+    { opacity: 0, duration: .4, ease: "power2.out" }, 4.9);
 
 /* ---------- Audio ---------- */
 const MUSIC_VOLUME = 0.35;
@@ -68,6 +96,14 @@ function unlockAudioFromUserGesture() {
     .then(() => {
       SOUNDS.whatsapp.pause();
       SOUNDS.whatsapp.currentTime = 0;
+    })
+    .catch(() => { });
+
+  // también intentamos "desbloquear" typing.wav en el gesto del usuario
+  typingSound.play()
+    .then(() => {
+      typingSound.pause();
+      typingSound.currentTime = 0;
     })
     .catch(() => { });
 }
@@ -375,18 +411,17 @@ master.fromTo(SOUNDS.appMusic,
 /* ---------- Controles ---------- */
 playBtn.addEventListener("click", () => {
   unlockAudioFromUserGesture();
+
   playBtn.disabled = true;
   playBtn.textContent = "⏵";
+  controlsEl.style.pointerEvents = "none"; // evita doble click durante intro
 
-  // esconder intro al iniciar presentación
-  gsap.to(intro, {
-    opacity: 0,
-    duration: .6,
-    ease: "power2.out",
-    onComplete: () => { intro.style.display = "none"; }
-  });
+  intro.style.display = "flex";
+  intro.style.opacity = "1";
+  introTyped.textContent = "";
+  typing.n = 0;
 
-  master.play(0);
+  introTl.restart(true); // Play -> Intro -> Presentación
 });
 
 replayBtn.addEventListener("click", () => {
@@ -394,6 +429,23 @@ replayBtn.addEventListener("click", () => {
   notifs.innerHTML = "";
   stopAppMusic();
   progressBar.style.width = "0%";
-  master.pause(0);   // vuelve todo al estado inicial
-  master.play(0);
+
+  // restaurar estados visuales para relanzar intro completa
+  gsap.set("#stage", { clearProps: "all" });
+  gsap.set("#saas-scene", { opacity: 0 });
+  gsap.set("#introSearch", { clearProps: "all" });
+  gsap.set("#introLogo", { clearProps: "all" });
+  gsap.set("#introGo", { clearProps: "all" });
+  intro.style.display = "flex";
+  intro.style.opacity = "1";
+
+  // reset timelines
+  master.pause(0);
+  introTl.pause(0);
+
+  // dejar botón listo para iniciar todo nuevamente
+  playBtn.disabled = false;
+  playBtn.textContent = "▶";
+  controlsEl.style.opacity = "1";
+  controlsEl.style.pointerEvents = "auto";
 });
