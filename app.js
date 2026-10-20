@@ -355,9 +355,10 @@ bridge.innerHTML = `
   <div class="bridge-noise"></div>
 
   <div class="bridge-lines">
-    <div class="bridge-line" id="b1">Buscando comercios….</div>
-    <div class="bridge-line" id="b2">Encontrando beneficios….</div>
-    <div class="bridge-line" id="b3">Cargando ofertas…. Y alguna sorpresa....</div>
+    <div class="bridge-line" id="b1">Buscando comercios...</div>
+    <div class="bridge-line" id="b2">Encontrando beneficios...</div>
+    <div class="bridge-line" id="b3">Cargando ofertas... 
+    <div class="bridge-line" id="b4">Y alguna sorpresa...</div>
   </div>
 `;
 document.body.appendChild(bridge);
