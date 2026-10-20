@@ -472,4 +472,121 @@ body{
     min-width: 0 !important;
   }
 
+  /* ===== Escena notificaciones (sin celular) ===== */
+#stage{
+  position:relative;
+  width:min(380px, 90vw);
+  height:80vh;
+}
+
+#notifs{
+  position:absolute;
+  top:6vh;
+  left:0;
+  right:0;
+  display:flex;
+  flex-direction:column;
+}
+
+.notif-wrap{
+  padding:5px 0;
+  overflow:hidden;
+}
+
+.notif{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:22px;
+  background:rgba(255,255,255,.14);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 12px 40px rgba(0,0,0,.35);
+  color:#fff;
+}
+
+.notif .app-icon{
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.notif .body{
+  flex:1;
+  min-width:0;
+}
+
+.notif .top{
+  display:flex;
+  justify-content:space-between;
+  font-size:.7rem;
+  opacity:.75;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.notif .name{
+  font-weight:700;
+  font-size:.95rem;
+  margin-top:2px;
+}
+
+.notif .msg{
+  font-size:.88rem;
+  opacity:.92;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.notif .avatar-img{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+/* Panel de la app (reemplaza al celular) */
+.app-panel{
+  position:absolute;
+  inset:0;
+  border-radius:28px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 30px 100px rgba(0,0,0,.45);
+  opacity:0;
+}
+
+.app-header{
+  height:80px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 18px;
+  color:#fff;
+  background:rgba(255,255,255,.08);
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+
+.app-header img{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  object-fit:cover;
+}
+
+.app-header .contact{ margin-left:0; }
+
+#typing{
+  background:rgba(255,255,255,.9);
+}
+
 }
