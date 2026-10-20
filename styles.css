@@ -26,16 +26,16 @@ body{
 
 #stage{
   position:fixed;
-  top:0;
-  bottom:0;
   left:50%;
+  top:18vh;                 /* <-- punto de inicio más arriba */
   transform:translateX(-50%);
   width:min(420px, 92vw);
-  padding:20px 8px 26vh; /* <-- antes era ~14px/20px abajo */
+  height:56vh;              /* <-- zona visible de apilado */
   display:flex;
-  align-items:flex-end;
+  align-items:flex-end;     /* pila desde abajo dentro de esta caja */
   pointer-events:none;
   z-index:20;
+  padding:0 8px;
 }
 
 #notifs{
@@ -289,12 +289,15 @@ body{
 /* =========================================================
    MOVIL (solo ajustes finos)
    ========================================================= */
-@media (max-width:768px){
 
+ @media (max-width:768px){
   #stage{
-    padding:14px 6px;
-  }
-
+    top:20vh;
+    height:52vh;
+    width:92vw;
+    padding:0 6px;
+  
+}
   .notif{
     padding:11px 12px;
     border-radius:20px;
