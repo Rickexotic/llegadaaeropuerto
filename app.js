@@ -18,12 +18,10 @@ SOUNDS.appMusic.preload = "auto";
 SOUNDS.appMusic.volume = 0.35;
 SOUNDS.appMusic.loop = true;
 
-// Debe llamarse desde un clic del usuario (botón Play)
 function unlockAudioFromUserGesture(){
   if(audioUnlocked) return;
   audioUnlocked = true;
 
-  // Warm-up corto para desbloquear audio en navegadores móviles
   SOUNDS.whatsapp.play()
     .then(()=>{
       SOUNDS.whatsapp.pause();
@@ -42,7 +40,22 @@ function startAppMusic(){
   if(!audioUnlocked || appMusicStarted) return;
   appMusicStarted = true;
   SOUNDS.appMusic.currentTime = 0;
+  SOUNDS.appMusic.volume = 0.35;
   SOUNDS.appMusic.play().catch(()=>{});
+}
+
+function fadeOutAppMusic(duration = 1.0){
+  if(!SOUNDS.appMusic || SOUNDS.appMusic.paused) return;
+  gsap.to(SOUNDS.appMusic,{
+    volume:0,
+    duration,
+    ease:"power2.out",
+    onComplete:()=>{
+      SOUNDS.appMusic.pause();
+      SOUNDS.appMusic.currentTime = 0;
+      SOUNDS.appMusic.volume = 0.35; // reset para replay futuro
+    }
+  });
 }
 
 /* ---------- Notificaciones ---------- */
@@ -57,14 +70,12 @@ function showNotif({
   detail = "",
   status = "",
   time = "ahora",
-  mode = "contact" // "contact" | "app"
+  mode = "contact"
 }){
 
   if(mode === "contact"){
-    // Siwa/Woki
     playWhatsappNotification();
   }else{
-    // Desde App/Beneficios en adelante
     startAppMusic();
   }
 
@@ -111,7 +122,7 @@ function showNotif({
   );
 
   const items = [...notifs.children];
-  const lastIndex = items.length - 1; // más nuevo (abajo)
+  const lastIndex = items.length - 1;
 
   items.forEach((w,i)=>{
     const distanceFromNewest = lastIndex - i;
@@ -154,7 +165,6 @@ const WOKI = { avatar:"assets/Woki.png", name:"Woki" };
 const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
 
 /* ---------- Timeline maestro ---------- */
-const TOTAL_DURATION = 35;
 const master = gsap.timeline({
   paused:true,
   onUpdate:()=>{
@@ -164,7 +174,7 @@ const master = gsap.timeline({
   }
 });
 
-/* Secuencia */
+/* Secuencia notificaciones */
 master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Hola 👋", time:"1m ago"}); }, null, 0.5);
 master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Llego a las 21:00", time:"justo ahora"}); }, null, 1.9);
 master.call(()=>{ showNotif({...WOKI, mode:"contact", text:"Te espero en el aeropuerto 🙌", time:"ahora"}); }, null, 3.4);
@@ -307,11 +317,20 @@ function runSaaS(){
     .from(".cta-pill",
       {opacity:0, y:12, scale:.92, duration:.4, ease:"power2.out"},
       "<.12")
-    .to("#slide4",{scale:1.02,duration:2.4,yoyo:true,repeat:1,ease:"sine.inOut"});
+    .to("#slide4",{scale:1.02,duration:2.4,yoyo:true,repeat:1,ease:"sine.inOut"})
+
+    /* 👇 NUEVO: slide 4 visible 5s + fade out */
+    .to("#slide4",{duration:5})
+    .to("#saas-scene",{opacity:0, duration:1.0, ease:"power2.inOut"}, ">");
+
+  /* Música termina exactamente con el fade out final */
+  tl.call(()=>fadeOutAppMusic(1.0), null, "-=1.0");
 }
 
 master.call(runSaaS, null, 17.5);
-master.to({}, {duration:TOTAL_DURATION});
+
+/* IMPORTANTE: que la barra llegue al 100% al terminar */
+master.call(()=>{ if(progressBar) progressBar.style.width = "100%"; });
 
 /* ---------- Play ---------- */
 if(playBtn){
