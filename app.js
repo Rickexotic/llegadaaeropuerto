@@ -3,6 +3,46 @@ const playBtn = document.getElementById("playBtn");
 const replayBtn = document.getElementById("replayBtn");
 const progressBar = document.getElementById("progressBar");
 
+/* ---------- Intro ---------- */
+const intro = document.getElementById("intro");
+const controlsEl = document.getElementById("controls");
+const introTyped = document.getElementById("introTyped");
+
+const INTRO_TEXT = "Outside Co.";
+const typing = { n: 0 };
+
+const introTl = gsap.timeline({
+  onComplete: () => {
+    controlsEl.style.pointerEvents = "auto";
+  }
+});
+
+introTl
+  // 1) entra barra
+  .fromTo("#introSearch",
+    { opacity: 0, y: 14, scale: .94 },
+    { opacity: 1, y: 0, scale: 1, duration: .5, ease: "power3.out" }, 0)
+  // 2) typing texto
+  .to(typing, {
+    n: INTRO_TEXT.length,
+    duration: 1.6,
+    ease: "none",
+    onUpdate: () => {
+      introTyped.textContent = INTRO_TEXT.slice(0, Math.round(typing.n));
+    }
+  }, 0.5)
+  // 3) click visual en botón buscar
+  .to("#introGo", { scale: .9, duration: .12, yoyo: true, repeat: 1, ease: "power1.inOut" }, 2.1)
+  // 4) se va barra
+  .to("#introSearch",
+    { opacity: 0, scale: 1.06, y: -10, filter: "blur(6px)", duration: .5, ease: "power2.in" }, 2.5)
+  // 5) entra logo
+  .fromTo("#introLogo",
+    { opacity: 0, scale: .85, filter: "blur(10px)" },
+    { opacity: 1, scale: 1, filter: "blur(0px)", duration: .9, ease: "power3.out" }, 2.9)
+  // 6) aparece controles (play)
+  .to("#controls", { opacity: 1, duration: .4, ease: "power2.out" }, 3.8);
+
 /* ---------- Audio ---------- */
 const MUSIC_VOLUME = 0.35;
 let audioUnlocked = false;
@@ -20,33 +60,33 @@ SOUNDS.appMusic.preload = "auto";
 SOUNDS.appMusic.volume = MUSIC_VOLUME;
 SOUNDS.appMusic.loop = true;
 
-function unlockAudioFromUserGesture(){
-  if(audioUnlocked) return;
+function unlockAudioFromUserGesture() {
+  if (audioUnlocked) return;
   audioUnlocked = true;
 
   SOUNDS.whatsapp.play()
-    .then(()=>{
+    .then(() => {
       SOUNDS.whatsapp.pause();
       SOUNDS.whatsapp.currentTime = 0;
     })
-    .catch(()=>{});
+    .catch(() => { });
 }
 
-function playWhatsappNotification(){
-  if(!audioUnlocked) return;
+function playWhatsappNotification() {
+  if (!audioUnlocked) return;
   SOUNDS.whatsapp.currentTime = 0;
-  SOUNDS.whatsapp.play().catch(()=>{});
+  SOUNDS.whatsapp.play().catch(() => { });
 }
 
-function startAppMusic(){
-  if(!audioUnlocked || appMusicStarted) return;
+function startAppMusic() {
+  if (!audioUnlocked || appMusicStarted) return;
   appMusicStarted = true;
   SOUNDS.appMusic.currentTime = 0;
   SOUNDS.appMusic.volume = MUSIC_VOLUME;
-  SOUNDS.appMusic.play().catch(()=>{});
+  SOUNDS.appMusic.play().catch(() => { });
 }
 
-function stopAppMusic(){
+function stopAppMusic() {
   SOUNDS.appMusic.pause();
   SOUNDS.appMusic.currentTime = 0;
   SOUNDS.appMusic.volume = MUSIC_VOLUME;
@@ -54,11 +94,11 @@ function stopAppMusic(){
 }
 
 /* ---------- Replay UI ---------- */
-function showReplayButton(){
+function showReplayButton() {
   replayBtn.classList.add("show");
 }
 
-function hideReplayButton(){
+function hideReplayButton() {
   replayBtn.classList.remove("show");
 }
 
@@ -75,11 +115,11 @@ function showNotif({
   status = "",
   time = "ahora",
   mode = "contact"
-}){
+}) {
 
-  if(mode === "contact"){
+  if (mode === "contact") {
     playWhatsappNotification();
-  }else{
+  } else {
     startAppMusic();
   }
 
@@ -113,68 +153,68 @@ function showNotif({
 
   notifs.appendChild(wrap);
 
-  gsap.from(wrap,{
-    height:0,
-    duration:.55,
-    ease:"power3.out"
+  gsap.from(wrap, {
+    height: 0,
+    duration: .55,
+    ease: "power3.out"
   });
 
   gsap.fromTo(
     wrap.firstElementChild,
-    { y:18, scale:.98, opacity:0, filter:"blur(3px)" },
-    { y:0,  scale:1,   opacity:1, filter:"blur(0px)", duration:.55, ease:"power2.out" }
+    { y: 18, scale: .98, opacity: 0, filter: "blur(3px)" },
+    { y: 0, scale: 1, opacity: 1, filter: "blur(0px)", duration: .55, ease: "power2.out" }
   );
 
   const items = [...notifs.children];
   const lastIndex = items.length - 1;
 
-  items.forEach((w,i)=>{
+  items.forEach((w, i) => {
     const distanceFromNewest = lastIndex - i;
 
-    if(distanceFromNewest === 0) return;
+    if (distanceFromNewest === 0) return;
 
-    if(distanceFromNewest >= MAX_VISIBLE){
-      gsap.to(w,{
-        opacity:0,
-        duration:.32,
-        onComplete:()=>w.remove()
+    if (distanceFromNewest >= MAX_VISIBLE) {
+      gsap.to(w, {
+        opacity: 0,
+        duration: .32,
+        onComplete: () => w.remove()
       });
       return;
     }
 
-    gsap.to(w.firstElementChild,{
-      scale:1 - distanceFromNewest*.04,
-      opacity:Math.max(1 - distanceFromNewest*.18, .42),
-      duration:.42,
-      ease:"power2.out"
+    gsap.to(w.firstElementChild, {
+      scale: 1 - distanceFromNewest * .04,
+      opacity: Math.max(1 - distanceFromNewest * .18, .42),
+      duration: .42,
+      ease: "power2.out"
     });
   });
 }
 
-function clearNotifs(){
+function clearNotifs() {
   const items = [...notifs.querySelectorAll(".notif")];
-  gsap.to(items,{
-    y:-42,
-    opacity:0,
-    stagger:.07,
-    duration:.45,
-    ease:"power2.in",
-    onComplete:()=>{ notifs.innerHTML = ""; }
+  gsap.to(items, {
+    y: -42,
+    opacity: 0,
+    stagger: .07,
+    duration: .45,
+    ease: "power2.in",
+    onComplete: () => { notifs.innerHTML = ""; }
   });
 }
 
 /* ---------- Datos ---------- */
-const MARIA = { avatar:"assets/Siwa.png", name:"María" };
-const JUAN = { avatar:"assets/Woki.png", name:"Juan" };
-const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
+const MARIA = { avatar: "assets/Siwa.png", name: "María" };
+const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
+const APP = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
 /* ---------- Escena final (se crea una sola vez, oculta) ---------- */
-function splitChars(selector){
+function splitChars(selector) {
   const el = document.querySelector(selector);
-  if(!el) return [];
+  if (!el) return [];
   const text = el.textContent.trim();
   el.textContent = "";
-  return [...text].map(ch=>{
+  return [...text].map(ch => {
     const span = document.createElement("span");
     span.className = "char";
     span.textContent = ch === " " ? "\u00A0" : ch;
@@ -218,79 +258,79 @@ document.body.appendChild(scene);
 const connectedChars = splitChars("#connectedText");
 const logoChars = splitChars("#logoMain");
 
-gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
-gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
+gsap.to(".orb-1", { x: 40, y: -25, repeat: -1, yoyo: true, duration: 9, ease: "sine.inOut" });
+gsap.to(".orb-2", { x: -35, y: 20, repeat: -1, yoyo: true, duration: 10, ease: "sine.inOut" });
 
 /* ---------- Timeline de la escena final (anidado en el maestro) ---------- */
-function buildSaaSTimeline(){
+function buildSaaSTimeline() {
   const tl = gsap.timeline();
 
   // el stage de notificaciones se desvanece y entra la escena
   tl.to("#stage",
-    {scale:1.08, opacity:0, filter:"blur(12px)", y:-20, duration:1.0, ease:"power3.inOut"}, 0);
+    { scale: 1.08, opacity: 0, filter: "blur(12px)", y: -20, duration: 1.0, ease: "power3.inOut" }, 0);
   tl.fromTo("#saas-scene",
-    {opacity:0}, {opacity:1, duration:.75, ease:"power2.out"}, 0);
+    { opacity: 0 }, { opacity: 1, duration: .75, ease: "power2.out" }, 0);
 
   tl.addLabel("s1", .6);
 
   // Slide 1
   tl.fromTo("#slide1",
-      {opacity:0, scale:.58, y:110, filter:"blur(18px)"},
-      {opacity:1, scale:1, y:0, filter:"blur(0px)", duration:1.2, ease:"power4.out"}, "s1")
+    { opacity: 0, scale: .58, y: 110, filter: "blur(18px)" },
+    { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power4.out" }, "s1")
     .fromTo(".saas-number",
-      {letterSpacing:"0.22em", textShadow:"0 0 0 rgba(120,190,255,0)"},
-      {letterSpacing:"0.02em", textShadow:"0 0 28px rgba(120,190,255,.35)", duration:.9, ease:"power3.out"},
+      { letterSpacing: "0.22em", textShadow: "0 0 0 rgba(120,190,255,0)" },
+      { letterSpacing: "0.02em", textShadow: "0 0 28px rgba(120,190,255,.35)", duration: .9, ease: "power3.out" },
       "<0.08")
     .to("#slide1",
-      {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
+      { opacity: 0, scale: 1.18, y: -46, filter: "blur(14px)", duration: .85, ease: "power3.in" },
       "+=1.15");
 
   // Slide 2
-  tl.fromTo("#slide2",{opacity:0},{opacity:1,duration:.4})
+  tl.fromTo("#slide2", { opacity: 0 }, { opacity: 1, duration: .4 })
     .fromTo(".saas-word",
-      {opacity:0, y:30, rotateX:-65, transformOrigin:"50% 100%", filter:"blur(8px)"},
-      {opacity:1, y:0, rotateX:0, filter:"blur(0px)", stagger:.14, duration:.62, ease:"power3.out"},
+      { opacity: 0, y: 30, rotateX: -65, transformOrigin: "50% 100%", filter: "blur(8px)" },
+      { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)", stagger: .14, duration: .62, ease: "power3.out" },
       "<")
     .to(".saas-word",
-      {y:-22, opacity:0, filter:"blur(8px)", stagger:.07, duration:.42, ease:"power2.in"},
+      { y: -22, opacity: 0, filter: "blur(8px)", stagger: .07, duration: .42, ease: "power2.in" },
       "+=1.15")
-    .to("#slide2",{opacity:0,duration:.2},"<");
+    .to("#slide2", { opacity: 0, duration: .2 }, "<");
 
   // Slide 3
-  tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
+  tl.fromTo("#slide3", { opacity: 0 }, { opacity: 1, duration: .5, ease: "power2.out" })
     .fromTo(connectedChars,
-      {opacity:0, y:24},
-      {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, stagger: .03, duration: .5, ease: "power3.out" },
       "<")
     .to("#slide3",
-      {opacity:0, y:-24, duration:.6, ease:"power2.in"},
+      { opacity: 0, y: -24, duration: .6, ease: "power2.in" },
       "+=1.2");
 
   // Slide 4: entra 0.8s + visible 5s + fade out 1s
   tl.addLabel("s4", ">");
   tl.fromTo("#slide4",
-      {opacity:0, scale:.94},
-      {opacity:1, scale:1, duration:.8, ease:"power3.out"}, "s4")
+    { opacity: 0, scale: .94 },
+    { opacity: 1, scale: 1, duration: .8, ease: "power3.out" }, "s4")
     .fromTo(logoChars,
-      {opacity:0, y:16},
-      {opacity:1, y:0, stagger:.022, duration:.42, ease:"power2.out"},
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, stagger: .022, duration: .42, ease: "power2.out" },
       "s4+=.05")
     .fromTo(".saas-logo-sub",
-      {opacity:0, y:14},
-      {opacity:1, y:0, duration:.45},
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: .45 },
       "s4+=.15")
     .fromTo(".cta-pill",
-      {opacity:0, y:12, scale:.92},
-      {opacity:1, y:0, scale:1, duration:.4, ease:"power2.out"},
+      { opacity: 0, y: 12, scale: .92 },
+      { opacity: 1, y: 0, scale: 1, duration: .4, ease: "power2.out" },
       "s4+=.27")
-       // 5 segundos visibles con un crecimiento sutil y continuo
+    // 5 segundos visibles con un crecimiento sutil y continuo
     .fromTo("#slide4",
-      {scale:1},
-      {scale:1.035, duration:5, ease:"none", force3D:true, immediateRender:false},
+      { scale: 1 },
+      { scale: 1.035, duration: 5, ease: "none", force3D: true, immediateRender: false },
       "s4+=.8")
     // fade out final de 1s
     .to("#saas-scene",
-      {opacity:0, duration:1.0, ease:"power2.inOut"},
+      { opacity: 0, duration: 1.0, ease: "power2.inOut" },
       "s4+=5.8");
 
   return tl;
@@ -298,11 +338,11 @@ function buildSaaSTimeline(){
 
 /* ---------- Timeline maestro ---------- */
 const master = gsap.timeline({
-  paused:true,
-  onUpdate:()=>{
-    progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`;
+  paused: true,
+  onUpdate: () => {
+    progressBar.style.width = `${(master.progress() * 100).toFixed(2)}%`;
   },
-  onComplete:()=>{
+  onComplete: () => {
     progressBar.style.width = "100%";
     stopAppMusic();
     showReplayButton();
@@ -310,17 +350,17 @@ const master = gsap.timeline({
 });
 
 /* Notificaciones */
-master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
-master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Llego a las 21:00", time:"20:45"}); }, null, 1.9);
-master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
-master.call(()=>{ clearNotifs(); }, null, 5.2);
+master.call(() => { showNotif({ ...MARIA, mode: "contact", text: "Hola 👋", time: "20:45" }); }, null, 0.5);
+master.call(() => { showNotif({ ...MARIA, mode: "contact", text: "Llego a las 21:00", time: "20:45" }); }, null, 1.9);
+master.call(() => { showNotif({ ...JUAN, mode: "contact", text: "Perfecto. Te espero 🙌", time: "20:46" }); }, null, 3.4);
+master.call(() => { clearNotifs(); }, null, 5.2);
 
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 6.2);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 7.9);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 9.8);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 11.7);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:48" }); }, null, 13.6);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 15.4);
+master.call(() => { showNotif({ ...APP, mode: "app", name: "Tu pasajero llega a las 21:00 ✈", text: "Comencemos", time: "20:47" }); }, null, 6.2);
+master.call(() => { showNotif({ ...APP, mode: "app", name: "🅿 Parking Premium", detail: "Sector P3 · Terminal Internacional", status: "✅ Reserva exitosa", time: "20:47" }); }, null, 7.9);
+master.call(() => { showNotif({ ...APP, mode: "app", name: "🍽 Restaurant Internacional", detail: "Mesa para 2 personas", status: "✅ Confirmada 21:15", time: "20:47" }); }, null, 9.8);
+master.call(() => { showNotif({ ...APP, mode: "app", name: "🎁 Duty Free", detail: "Regalo comprado", status: "✅ 15% OFF aplicado", time: "20:48" }); }, null, 11.7);
+master.call(() => { showNotif({ ...APP, mode: "app", name: "Algo más?", text: "✅ Todo listo", time: "20:48" }); }, null, 13.6);
+master.call(() => { showNotif({ ...APP, mode: "app", name: "Aterrizaje", text: "✈ Tu pasajero ya aterrizó", time: "21:00" }); }, null, 15.4);
 
 /* Escena final anidada: empieza a los 17.5s */
 master.add(buildSaaSTimeline(), 17.5);
@@ -328,19 +368,28 @@ master.add(buildSaaSTimeline(), 17.5);
 /* La música baja de volumen durante el último segundo y termina con el fade out */
 const END = master.duration();
 master.fromTo(SOUNDS.appMusic,
-  {volume:MUSIC_VOLUME},
-  {volume:0, duration:1.0, ease:"none", immediateRender:false},
+  { volume: MUSIC_VOLUME },
+  { volume: 0, duration: 1.0, ease: "none", immediateRender: false },
   END - 1.0);
 
 /* ---------- Controles ---------- */
-playBtn.addEventListener("click", ()=>{
+playBtn.addEventListener("click", () => {
   unlockAudioFromUserGesture();
   playBtn.disabled = true;
   playBtn.textContent = "⏵";
+
+  // esconder intro al iniciar presentación
+  gsap.to(intro, {
+    opacity: 0,
+    duration: .6,
+    ease: "power2.out",
+    onComplete: () => { intro.style.display = "none"; }
+  });
+
   master.play(0);
 });
 
-replayBtn.addEventListener("click", ()=>{
+replayBtn.addEventListener("click", () => {
   hideReplayButton();
   notifs.innerHTML = "";
   stopAppMusic();
