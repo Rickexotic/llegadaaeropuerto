@@ -3,6 +3,9 @@ document.getElementById(
 "notificationSound"
 );
 
+if(!audioUnlocked) return;
+if(!notificationSound) return;
+
 const chat =
 document.getElementById(
 "chat"
