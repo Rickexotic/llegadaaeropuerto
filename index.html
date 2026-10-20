@@ -2,21 +2,24 @@
 <html lang="es">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Club Beneficios Santiago</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Club Beneficios Santiago</title>
-
-<link rel="stylesheet" href="styles.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 
 <body>
   <div id="stage">
     <div id="notifs"></div>
+  </div>
+
+  <div id="controls" aria-label="Controles de reproducción">
+    <button id="playBtn" aria-label="Play">▶</button>
+    <div id="progress" aria-hidden="true">
+      <div id="progressBar"></div>
+    </div>
   </div>
 
   <audio id="notificationSound" src="assets/notification.wav" preload="auto"></audio>
