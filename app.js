@@ -1,8 +1,10 @@
 const notifs = document.getElementById("notifs");
 const playBtn = document.getElementById("playBtn");
+const replayBtn = document.getElementById("replayBtn");
 const progressBar = document.getElementById("progressBar");
 
 /* ---------- Audio ---------- */
+const MUSIC_VOLUME = 0.35;
 let audioUnlocked = false;
 let appMusicStarted = false;
 
@@ -15,7 +17,7 @@ SOUNDS.whatsapp.preload = "auto";
 SOUNDS.whatsapp.volume = 0.5;
 
 SOUNDS.appMusic.preload = "auto";
-SOUNDS.appMusic.volume = 0.35;
+SOUNDS.appMusic.volume = MUSIC_VOLUME;
 SOUNDS.appMusic.loop = true;
 
 function unlockAudioFromUserGesture(){
@@ -40,22 +42,24 @@ function startAppMusic(){
   if(!audioUnlocked || appMusicStarted) return;
   appMusicStarted = true;
   SOUNDS.appMusic.currentTime = 0;
-  SOUNDS.appMusic.volume = 0.35;
+  SOUNDS.appMusic.volume = MUSIC_VOLUME;
   SOUNDS.appMusic.play().catch(()=>{});
 }
 
-function fadeOutAppMusic(duration = 1.0){
-  if(!SOUNDS.appMusic || SOUNDS.appMusic.paused) return;
-  gsap.to(SOUNDS.appMusic,{
-    volume:0,
-    duration,
-    ease:"power2.out",
-    onComplete:()=>{
-      SOUNDS.appMusic.pause();
-      SOUNDS.appMusic.currentTime = 0;
-      SOUNDS.appMusic.volume = 0.35; // reset para replay futuro
-    }
-  });
+function stopAppMusic(){
+  SOUNDS.appMusic.pause();
+  SOUNDS.appMusic.currentTime = 0;
+  SOUNDS.appMusic.volume = MUSIC_VOLUME;
+  appMusicStarted = false;
+}
+
+/* ---------- Replay UI ---------- */
+function showReplayButton(){
+  replayBtn.classList.add("show");
+}
+
+function hideReplayButton(){
+  replayBtn.classList.remove("show");
 }
 
 /* ---------- Notificaciones ---------- */
@@ -164,30 +168,7 @@ const SIWA = { avatar:"assets/Siwa.png", name:"Siwa" };
 const WOKI = { avatar:"assets/Woki.png", name:"Woki" };
 const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
 
-/* ---------- Timeline maestro ---------- */
-const master = gsap.timeline({
-  paused:true,
-  onUpdate:()=>{
-    if(progressBar){
-      progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`;
-    }
-  }
-});
-
-/* Secuencia notificaciones */
-master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Hola 👋", time:"1m ago"}); }, null, 0.5);
-master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Llego a las 21:00", time:"justo ahora"}); }, null, 1.9);
-master.call(()=>{ showNotif({...WOKI, mode:"contact", text:"Te espero en el aeropuerto 🙌", time:"ahora"}); }, null, 3.4);
-master.call(()=>{ clearNotifs(); }, null, 5.2);
-
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Preparemos tus beneficios", time:"ahora" }); }, null, 6.2);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"ahora" }); }, null, 7.9);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 20:30", time:"ahora" }); }, null, 9.8);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"ahora" }); }, null, 11.7);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Todo listo", text:"✅ Todo listo para recibir a tu pasajero", time:"ahora" }); }, null, 13.6);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero acaba de aterrizar", time:"ahora" }); }, null, 15.4);
-
-/* ---------- SaaS final ---------- */
+/* ---------- Escena final (se crea una sola vez, oculta) ---------- */
 function splitChars(selector){
   const el = document.querySelector(selector);
   if(!el) return [];
@@ -202,142 +183,168 @@ function splitChars(selector){
   });
 }
 
-function runSaaS(){
-  gsap.to("#stage",{
-    scale:1.08,
-    opacity:0,
-    filter:"blur(12px)",
-    y:-20,
-    duration:1.0,
-    ease:"power3.inOut"
-  });
+const scene = document.createElement("div");
+scene.id = "saas-scene";
+scene.innerHTML = `
+  <div class="vignette"></div>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="noise"></div>
 
-  const scene = document.createElement("div");
-  scene.id = "saas-scene";
+  <div id="slide1" class="saas-slide">
+    <div class="saas-number gradient-text">26,5 millones</div>
+    <div class="saas-subtitle">de pasajeros al año</div>
+  </div>
 
-  scene.innerHTML = `
-    <div class="vignette"></div>
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="noise"></div>
+  <div id="slide2" class="saas-slide">
+    <div class="saas-word">Retail</div>
+    <div class="saas-word">Gastronomía</div>
+    <div class="saas-word">Parking</div>
+    <div class="saas-word">Experiencias</div>
+  </div>
 
-    <div id="slide1" class="saas-slide">
-      <div class="saas-number gradient-text">26,5 millones</div>
-      <div class="saas-subtitle">de pasajeros al año</div>
-    </div>
+  <div id="slide3" class="saas-slide">
+    <div class="saas-message" id="connectedText">Todo conectado.</div>
+  </div>
 
-    <div id="slide2" class="saas-slide">
-      <div class="saas-word">Retail</div>
-      <div class="saas-word">Gastronomía</div>
-      <div class="saas-word">Parking</div>
-      <div class="saas-word">Experiencias</div>
-    </div>
+  <div id="slide4" class="saas-slide">
+    <div class="saas-logo" id="logoMain">Club Beneficios</div>
+    <div class="saas-logo-sub">Aeropuerto Santiago</div>
+    <div class="cta-pill">Activa · Reserva · Disfruta</div>
+  </div>
+`;
+document.body.appendChild(scene);
 
-    <div id="slide3" class="saas-slide">
-      <div class="saas-message" id="connectedText">Todo conectado.</div>
-    </div>
+const connectedChars = splitChars("#connectedText");
+const logoChars = splitChars("#logoMain");
 
-    <div id="slide4" class="saas-slide">
-      <div class="saas-logo" id="logoMain">Club Beneficios</div>
-      <div class="saas-logo-sub">Aeropuerto Santiago</div>
-      <div class="cta-pill">Activa · Reserva · Disfruta</div>
-    </div>
-  `;
+gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
+gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
 
-  document.body.appendChild(scene);
+/* ---------- Timeline de la escena final (anidado en el maestro) ---------- */
+function buildSaaSTimeline(){
+  const tl = gsap.timeline();
 
-  const connectedChars = splitChars("#connectedText");
-  const logoChars = splitChars("#logoMain");
+  // el stage de notificaciones se desvanece y entra la escena
+  tl.to("#stage",
+    {scale:1.08, opacity:0, filter:"blur(12px)", y:-20, duration:1.0, ease:"power3.inOut"}, 0);
+  tl.fromTo("#saas-scene",
+    {opacity:0}, {opacity:1, duration:.75, ease:"power2.out"}, 0);
 
-  gsap.set("#saas-scene",{opacity:0});
-  gsap.to("#saas-scene",{opacity:1,duration:.75,ease:"power2.out"});
+  tl.addLabel("s1", .6);
 
-  gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
-  gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
-
-  const tl = gsap.timeline({delay:.6});
-
-  tl
-    .fromTo("#slide1",
+  // Slide 1
+  tl.fromTo("#slide1",
       {opacity:0, scale:.58, y:110, filter:"blur(18px)"},
-      {opacity:1, scale:1, y:0, filter:"blur(0px)", duration:1.2, ease:"power4.out"})
+      {opacity:1, scale:1, y:0, filter:"blur(0px)", duration:1.2, ease:"power4.out"}, "s1")
     .fromTo(".saas-number",
       {letterSpacing:"0.22em", textShadow:"0 0 0 rgba(120,190,255,0)"},
       {letterSpacing:"0.02em", textShadow:"0 0 28px rgba(120,190,255,.35)", duration:.9, ease:"power3.out"},
       "<0.08")
     .to("#slide1",
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
-      "+=1.15")
+      "+=1.15");
 
-    .fromTo("#slide2",{opacity:0},{opacity:1,duration:.4})
-    .from(".saas-word",
-      {
-        opacity:0,
-        y:30,
-        rotateX:-65,
-        transformOrigin:"50% 100%",
-        filter:"blur(8px)",
-        stagger:.14,
-        duration:.62,
-        ease:"power3.out"
-      },"<")
+  // Slide 2
+  tl.fromTo("#slide2",{opacity:0},{opacity:1,duration:.4})
+    .fromTo(".saas-word",
+      {opacity:0, y:30, rotateX:-65, transformOrigin:"50% 100%", filter:"blur(8px)"},
+      {opacity:1, y:0, rotateX:0, filter:"blur(0px)", stagger:.14, duration:.62, ease:"power3.out"},
+      "<")
     .to(".saas-word",
-      {
-        y:-22,
-        opacity:0,
-        filter:"blur(8px)",
-        stagger:.07,
-        duration:.42,
-        ease:"power2.in"
-      },"+=1.15")
-    .to("#slide2",{opacity:0,duration:.2},"<")
+      {y:-22, opacity:0, filter:"blur(8px)", stagger:.07, duration:.42, ease:"power2.in"},
+      "+=1.15")
+    .to("#slide2",{opacity:0,duration:.2},"<");
 
-    .fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
-    .from(connectedChars,
-      {
-        opacity:0,
-        y:24,
-        stagger:.03,
-        duration:.5,
-        ease:"power3.out"
-      },"<")
+  // Slide 3
+  tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
+    .fromTo(connectedChars,
+      {opacity:0, y:24},
+      {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
+      "<")
     .to("#slide3",
       {opacity:0, y:-24, duration:.6, ease:"power2.in"},
-      "+=1.2")
+      "+=1.2");
 
-    .fromTo("#slide4",
+  // Slide 4: entra 0.8s + visible 5s + fade out 1s
+  tl.addLabel("s4", ">");
+  tl.fromTo("#slide4",
       {opacity:0, scale:.94},
-      {opacity:1, scale:1, duration:.8, ease:"power3.out"})
-    .from(logoChars,
-      {opacity:0, y:16, stagger:.022, duration:.42, ease:"power2.out"},
-      "<.05")
-    .from(".saas-logo-sub",
-      {opacity:0, y:14, duration:.45},
-      "<.15")
-    .from(".cta-pill",
-      {opacity:0, y:12, scale:.92, duration:.4, ease:"power2.out"},
-      "<.12")
-    .to("#slide4",{scale:1.02,duration:2.4,yoyo:true,repeat:1,ease:"sine.inOut"})
+      {opacity:1, scale:1, duration:.8, ease:"power3.out"}, "s4")
+    .fromTo(logoChars,
+      {opacity:0, y:16},
+      {opacity:1, y:0, stagger:.022, duration:.42, ease:"power2.out"},
+      "s4+=.05")
+    .fromTo(".saas-logo-sub",
+      {opacity:0, y:14},
+      {opacity:1, y:0, duration:.45},
+      "s4+=.15")
+    .fromTo(".cta-pill",
+      {opacity:0, y:12, scale:.92},
+      {opacity:1, y:0, scale:1, duration:.4, ease:"power2.out"},
+      "s4+=.27")
+    // 5 segundos visibles (con un leve pulso)
+    .fromTo("#slide4",
+      {scale:1},
+      {scale:1.02, duration:5, ease:"sine.inOut", immediateRender:false},
+      "s4+=.8")
+    // fade out final de 1s
+    .to("#saas-scene",
+      {opacity:0, duration:1.0, ease:"power2.inOut"},
+      "s4+=5.8");
 
-    /* 👇 NUEVO: slide 4 visible 5s + fade out */
-    .to("#slide4",{duration:5})
-    .to("#saas-scene",{opacity:0, duration:1.0, ease:"power2.inOut"}, ">");
-
-  /* Música termina exactamente con el fade out final */
-  tl.call(()=>fadeOutAppMusic(1.0), null, "-=1.0");
+  return tl;
 }
 
-master.call(runSaaS, null, 17.5);
+/* ---------- Timeline maestro ---------- */
+const master = gsap.timeline({
+  paused:true,
+  onUpdate:()=>{
+    progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`;
+  },
+  onComplete:()=>{
+    progressBar.style.width = "100%";
+    stopAppMusic();
+    showReplayButton();
+  }
+});
 
-/* IMPORTANTE: que la barra llegue al 100% al terminar */
-master.call(()=>{ if(progressBar) progressBar.style.width = "100%"; });
+/* Notificaciones */
+master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Hola 👋", time:"1m ago"}); }, null, 0.5);
+master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Llego a las 21:00", time:"justo ahora"}); }, null, 1.9);
+master.call(()=>{ showNotif({...WOKI, mode:"contact", text:"Te espero en el aeropuerto 🙌", time:"ahora"}); }, null, 3.4);
+master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* ---------- Play ---------- */
-if(playBtn){
-  playBtn.addEventListener("click", ()=>{
-    unlockAudioFromUserGesture();
-    playBtn.disabled = true;
-    playBtn.textContent = "⏵";
-    master.play(0);
-  });
-}
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Preparemos tus beneficios", time:"ahora" }); }, null, 6.2);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"ahora" }); }, null, 7.9);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 20:30", time:"ahora" }); }, null, 9.8);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"ahora" }); }, null, 11.7);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Todo listo", text:"✅ Todo listo para recibir a tu pasajero", time:"ahora" }); }, null, 13.6);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero acaba de aterrizar", time:"ahora" }); }, null, 15.4);
+
+/* Escena final anidada: empieza a los 17.5s */
+master.add(buildSaaSTimeline(), 17.5);
+
+/* La música baja de volumen durante el último segundo y termina con el fade out */
+const END = master.duration();
+master.fromTo(SOUNDS.appMusic,
+  {volume:MUSIC_VOLUME},
+  {volume:0, duration:1.0, ease:"none", immediateRender:false},
+  END - 1.0);
+
+/* ---------- Controles ---------- */
+playBtn.addEventListener("click", ()=>{
+  unlockAudioFromUserGesture();
+  playBtn.disabled = true;
+  playBtn.textContent = "⏵";
+  master.play(0);
+});
+
+replayBtn.addEventListener("click", ()=>{
+  hideReplayButton();
+  notifs.innerHTML = "";
+  stopAppMusic();
+  progressBar.style.width = "0%";
+  master.pause(0);   // vuelve todo al estado inicial
+  master.play(0);
+});
