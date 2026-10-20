@@ -17,10 +17,23 @@ overflow:hidden;
 font-family:"Segoe UI",sans-serif;
 
 background:
+
 radial-gradient(
-circle,
-#1b2537,
-#050b14 75%
+circle at 20% 20%,
+rgba(122,184,232,.15),
+transparent 30%
+),
+
+radial-gradient(
+circle at 80% 70%,
+rgba(122,184,232,.10),
+transparent 35%
+),
+
+radial-gradient(
+circle at 50% 50%,
+#102137,
+#050B14 75%
 );
 
 }
@@ -30,9 +43,10 @@ circle,
 .phone{
 
 width:min(330px,60vw);
-height:70vh;
+height:80vh;
 
 background:#efeae2;
+backdrop-filter:blur(10px);
 
 border-radius:40px;
 
@@ -41,7 +55,8 @@ overflow:hidden;
 position:relative;
 
 box-shadow:
-0 40px 100px rgba(0,0,0,.45);
+0 0 80px rgba(122,184,232,.12),
+0 40px 120px rgba(0,0,0,.45);
 
 }
 
@@ -348,6 +363,31 @@ font-size:1.5rem;
 color:#7AB8E8;
 
 margin-top:12px;
+}
+
+.saas-message{
+
+font-size:6rem;
+
+font-weight:700;
+
+color:white;
+
+line-height:1;
+}
+.saas-logo{
+
+font-size:6rem;
+
+font-weight:700;
+
+color:white;
+
+text-shadow:
+0 0 40px rgba(122,184,232,.25),
+0 0 80px rgba(122,184,232,.15);
+
+letter-spacing:-2px;
 }
 
 }
