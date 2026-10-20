@@ -463,4 +463,15 @@ body{
   background: var(--app-bg) !important;
 }
 
+/* ===== Móvil: el teléfono ocupa 90% del ancho ===== */
+@media (max-width: 768px){
+
+  .phone{
+    width: 90vw !important;
+    max-width: 90vw !important;
+    min-width: 0 !important;
+  }
+
+}
+
 }
