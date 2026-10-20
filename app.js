@@ -260,11 +260,12 @@ function showNotif({
   time = "ahora",
   mode = "contact",
   actions = false,
-  side = "left"
+  side = "left",
+  silent = false
 }) {
 
   if (mode === "contact") {
-    playWhatsappNotification();
+    if (!silent) playWhatsappNotification();
   } else {
     startAppMusic();
   }
@@ -285,7 +286,7 @@ function showNotif({
   const rightVisual =
     (mode === "contact" && side === "right") ? avatarHtml : "";
 
-  const sideClass = mode === "contact" ? `side-${side}` : "";
+  const sideClass = mode === "contact" ? `side-${side}` : "side-app";
 
   wrap.innerHTML = `
     <div class="notif ${sideClass}">
@@ -324,7 +325,6 @@ function showNotif({
 
   items.forEach((w, i) => {
     const distanceFromNewest = lastIndex - i;
-
     if (distanceFromNewest === 0) return;
 
     if (distanceFromNewest >= MAX_VISIBLE) {
@@ -518,14 +518,17 @@ const sceneStyle = document.createElement("style");
 sceneStyle.textContent = `
   #slide3{ overflow:hidden; }
   #nodesCanvas{
-    position:absolute; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; z-index:0;
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
+    pointer-events:none;
+    z-index:0;
   }
-  #slide3 .saas-message{ position:relative; z-index:2; }
-  #slide2 .saas-word:last-child{
-    background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 45%,#ffffff 70%);
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
+  #slide3 .saas-message{
+    position:relative;
+    z-index:2;
   }
 `;
 document.head.appendChild(sceneStyle);
@@ -698,7 +701,7 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  // Slide 2 (inspirada en la adjunta + variaciones propias)
+  // Slide 2 (inspirada en adjunta + variaciones propias)
   tl.fromTo("#slide2", { opacity:0 }, { opacity:1, duration:.33 })
     .fromTo(".saas-word",
       {
@@ -794,15 +797,21 @@ master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Recuerda que llego 
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* Música + bloque de texto */
+/* Música + bloque texto impacto */
 master.call(()=>{ startAppMusic(); }, null, 6.0);
 master.add(buildBridgeTimeline(), 6.0);
 
-/* Beneficios app */
+/* Diálogo App + Juan (sin sonido de notificación para Juan) */
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Hola Juan. En qué te ayudamos hoy.", text:"", time:"20:47" }); }, null, 10.6);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 12.3);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 14.2);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 16.1);
+
+master.call(()=>{ showNotif({ ...JUAN, mode:"contact", text:"Necesito urgente estacionamiento", time:"20:47", silent:true }); }, null, 12.1);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 13.6);
+
+master.call(()=>{ showNotif({ ...JUAN, mode:"contact", text:"Me gustaría algo para comer. Somos 2", time:"20:47", silent:true }); }, null, 15.1);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 16.6);
+
+master.call(()=>{ showNotif({ ...JUAN, mode:"contact", text:"A lo mejor algún regalo", time:"20:48", silent:true }); }, null, 18.1);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 19.6);
 
 /* Canje de puntos */
 master.call(() => {
@@ -813,9 +822,9 @@ master.call(() => {
     time:"20:48",
     actions:true
   });
-}, null, 18.0);
+}, null, 21.3);
 
-master.call(()=>{ simulateRedeemClick(); }, null, 19.2);
+master.call(()=>{ simulateRedeemClick(); }, null, 22.5);
 
 master.call(() => {
   showNotif({
@@ -825,13 +834,16 @@ master.call(() => {
     status:"✅ Canje exitoso",
     time:"20:49"
   });
-}, null, 20.8);
+}, null, 23.7);
 
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:49" }); }, null, 22.7);
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 24.5);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", time:"20:49" }); }, null, 25.4);
+master.call(()=>{ showNotif({ ...JUAN, mode:"contact", text:"Sorpréndeme", time:"20:49", silent:true }); }, null, 26.9);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"✅ Todo listo", time:"20:49" }); }, null, 28.4);
+
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 30.1);
 
 /* Escena final */
-master.add(buildSaaSTimeline(), 26.6);
+master.add(buildSaaSTimeline(), 32.2);
 
 const END = master.duration();
 master.fromTo(SOUNDS.appMusic,
