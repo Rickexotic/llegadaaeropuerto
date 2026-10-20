@@ -1,597 +1,30 @@
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-body{
-
-height:100vh;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-overflow:hidden;
-
-font-family:"Segoe UI",sans-serif;
-
-background:
-
-radial-gradient(
-circle at 20% 20%,
-rgba(122,184,232,.15),
-transparent 30%
-),
-
-radial-gradient(
-circle at 80% 70%,
-rgba(122,184,232,.10),
-transparent 35%
-),
-
-radial-gradient(
-circle at 50% 50%,
-#102137,
-#050B14 75%
-);
-
-}
-
-/* TELEFONO */
-
-.phone{
-
-width:min(330px,60vw);
-height:80vh;
-
-background:#efeae2;
-backdrop-filter:blur(10px);
-
-border-radius:40px;
-
-overflow:hidden;
-
-position:relative;
-
-box-shadow:
-0 0 80px rgba(122,184,232,.12),
-0 40px 120px rgba(0,0,0,.45);
-
-}
-
-/* HEADER */
-
-.chat-header{
-
-height:80px;
-
-background:#075e54;
-
-color:white;
-
-display:flex;
-
-align-items:center;
-
-padding:0 18px;
-}
-
-.avatar{
-
-width:44px;
-height:44px;
-
-border-radius:50%;
-
-background:white;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-color:#075e54;
-
-font-size:20px;
-}
-
-.contact{
-
-margin-left:12px;
-
-font-weight:600;
-}
-
-.contact span{
-
-display:block;
-
-font-size:.75rem;
-
-opacity:.8;
-}
-
-/* CHAT */
-
-#chat{
-
-position:absolute;
-
-top:80px;
-bottom:60px;
-
-left:0;
-right:0;
-
-padding:20px;
-
-display:flex;
-
-flex-direction:column;
-
-gap:10px;
-
-overflow:hidden;
-
-}
-
-/* MENSAJES */
-
-.message{
-
-max-width:78%;
-
-padding:12px 14px 24px;
-
-position:relative;
-
-line-height:1.4;
-
-font-size:.95rem;
-}
-
-.incoming{
-
-background:white;
-
-align-self:flex-start;
-
-border-radius:18px 18px 18px 4px;
-}
-
-.outgoing{
-
-background:#DCF8C6;
-
-align-self:flex-end;
-
-border-radius:18px 18px 4px 18px;
-}
-
-.meta{
-
-position:absolute;
-
-bottom:6px;
-right:10px;
-
-font-size:.65rem;
-
-display:flex;
-align-items:center;
-gap:5px;
-
-color:#777;
-}
-
-.checks{
-
-color:#53bdeb;
-
-font-size:.72rem;
-
-font-weight:bold;
-}
-
-/* BUSINESS CARD */
-
-.business-card{
-
-background:white;
-
-border-left:4px solid #25D366;
-
-padding:12px;
-
-border-radius:12px;
-
-margin-top:8px;
-}
-
-.business-title{
-
-font-weight:700;
-
-margin-bottom:4px;
-}
-
-.business-detail{
-
-font-size:.85rem;
-
-color:#555;
-}
-
-/* TYPING */
-
-#typing{
-
-position:absolute;
-
-bottom:0;
-
-left:0;
-right:0;
-
-height:60px;
-
-display:flex;
-
-align-items:center;
-
-padding-left:20px;
-
-background:white;
-
-opacity:0;
-}
-
-.typing-dots{
-
-display:flex;
-gap:5px;
-}
-
-.typing-dots span{
-
-width:8px;
-height:8px;
-
-border-radius:50%;
-
-background:#777;
-
-animation:bounce 1s infinite;
-}
-
-.typing-dots span:nth-child(2){
-
-animation-delay:.2s;
-}
-
-.typing-dots span:nth-child(3){
-
-animation-delay:.4s;
-}
-
-@keyframes bounce{
-
-50%{
-transform:translateY(-4px);
-}
-
-}
-
-#saas-scene{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:radial-gradient(1200px 700px at 20% 15%, #182448 0%, #0a1020 42%, #05070d 100%);
-  overflow:hidden;
-  opacity:0;
-  z-index:9999;
-  perspective:1000px;
-}
-
-.vignette{
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle at center, transparent 38%, rgba(0,0,0,.45) 100%);
-  pointer-events:none;
-}
-
-.bg-grid{
-  position:absolute;
-  inset:-20%;
-  background-image:
-    linear-gradient(rgba(130,170,255,.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(130,170,255,.09) 1px, transparent 1px);
-  background-size:56px 56px;
-  transform:perspective(900px) rotateX(68deg) translateY(35%);
-  transform-origin:center;
-  opacity:.25;
-}
-
-.saas-slide{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  opacity:0;
-  padding:0 24px;
-}
-
-.saas-message{
-  font-size:clamp(34px, 6vw, 90px);
-  font-weight:850;
-  line-height:1.1;
-  color:#ffffff;
-  text-shadow:0 0 18px rgba(124,196,255,.25);
-}
-
-.char{
-  display:inline-block;
-}
-
-
-.saas-number{
-  font-size:clamp(44px, 8vw, 112px);
-  font-weight:900;
-  letter-spacing:.02em;
-  line-height:1.04;
-}
-
-.saas-subtitle{
-  margin-top:10px;
-  color:#c9d7ff;
-  font-size:clamp(18px, 2.2vw, 30px);
-  opacity:.95;
-}
-
-.saas-word{
-  font-size:clamp(30px, 5vw, 72px);
-  font-weight:750;
-  color:#eef3ff;
-  margin:8px 0;
-  text-shadow:0 8px 30px rgba(0,0,0,.35);
-}
-
-
-.saas-logo{
-  font-size:clamp(40px, 6.5vw, 100px);
-  font-weight:900;
-  letter-spacing:.01em;
-  line-height:1.04;
-  display:inline-block;
-  color:#ffffff;
-  text-shadow:0 0 18px rgba(124,196,255,.25);
-}
-.saas-logo-sub{
-  margin-top:14px;
-  color:#c9d4ff;
-  font-size:clamp(16px, 2vw, 28px);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-
-.cta-pill{
-  display:inline-block;
-  margin-top:18px;
-  font-size:clamp(12px,1.2vw,15px);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  color:#dce7ff;
-  border:1px solid rgba(166,193,255,.38);
-  padding:10px 16px;
-  border-radius:999px;
-  background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
-  box-shadow:0 8px 30px rgba(46,96,255,.2);
-}
-
-.gradient-text{
-  background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 34%,#ffffff 52%,#8db4ff 100%);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-
-
-.shine{
-  position:absolute;
-  top:50%;
-  left:0;
-  width:42%;
-  height:130px;
-  transform:translateY(-50%) skewX(-20deg);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
-  filter:blur(7px);
-  pointer-events:none;
-  opacity:0;
-}
-
-.bg-orb{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(90px);
-  opacity:.14;
-}
-
-.orb-1{
-  width:320px;height:320px;
-  background:#3f7bff;
-  top:10%;left:10%;
-}
-
-.orb-2{
-  width:280px;height:280px;
-  background:#7b5cff;
-  right:10%;bottom:10%;
-}
-
-.noise{
-  position:absolute;
-  inset:0;
-  opacity:.07;
-  background-image:radial-gradient(rgba(255,255,255,.6) .6px, transparent .6px);
-  background-size:3px 3px;
-  mix-blend-mode:soft-light;
-  pointer-events:none;
-}
-/* ===== Fondo unificado para toda la experiencia ===== */
+/* ===== Fondo unico para toda la experiencia ===== */
 :root{
-  --app-bg:
-    radial-gradient(1200px 700px at 20% 15%, #182448 0%, #0a1020 42%, #05070d 100%);
+  --app-bg: radial-gradient(1200px 700px at 20% 15%, #182448 0%, #0a1020 42%, #05070d 100%);
 }
 
 html, body{
-  min-height: 100%;
-  background: var(--app-bg) fixed;
+  height:100%;
 }
 
-/* Sección chat / whatsapp */
 body{
-  background: var(--app-bg) fixed !important;
-}
-
-/* Sección SaaS final (mismo fondo exacto) */
-#saas-scene{
-  background: var(--app-bg) !important;
-}
-
-/* ===== Móvil: el teléfono ocupa 90% del ancho ===== */
-@media (max-width: 768px){
-
-  .phone{
-    width: 90vw !important;
-    max-width: 90vw !important;
-    min-width: 0 !important;
-  }
-
-  /* ===== Escena notificaciones (sin celular) ===== */
-#stage{
-  position:relative;
-  width:min(380px, 90vw);
-  height:80vh;
-}
-
-#notifs{
-  position:absolute;
-  top:6vh;
-  left:0;
-  right:0;
   display:flex;
-  flex-direction:column;
-}
-
-.notif-wrap{
-  padding:5px 0;
-  overflow:hidden;
-}
-
-.notif{
-  display:flex;
+  justify-content:center;
   align-items:center;
-  gap:12px;
-  padding:12px 14px;
-  border-radius:22px;
-  background:rgba(255,255,255,.14);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.18);
-  box-shadow:0 12px 40px rgba(0,0,0,.35);
-  color:#fff;
-}
-
-.notif .app-icon{
-  width:38px;
-  height:38px;
-  border-radius:10px;
-  object-fit:cover;
-  flex-shrink:0;
-}
-
-.notif .body{
-  flex:1;
-  min-width:0;
-}
-
-.notif .top{
-  display:flex;
-  justify-content:space-between;
-  font-size:.7rem;
-  opacity:.75;
-  text-transform:uppercase;
-  letter-spacing:.04em;
-}
-
-.notif .name{
-  font-weight:700;
-  font-size:.95rem;
-  margin-top:2px;
-}
-
-.notif .msg{
-  font-size:.88rem;
-  opacity:.92;
-  white-space:nowrap;
   overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.notif .avatar-img{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
-  flex-shrink:0;
-}
-
-/* Panel de la app (reemplaza al celular) */
-.app-panel{
-  position:absolute;
-  inset:0;
-  border-radius:28px;
-  overflow:hidden;
-  background:rgba(255,255,255,.08);
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-  border:1px solid rgba(255,255,255,.16);
-  box-shadow:0 30px 100px rgba(0,0,0,.45);
-  opacity:0;
-}
-
-.app-header{
-  height:80px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:0 18px;
-  color:#fff;
-  background:rgba(255,255,255,.08);
-  border-bottom:1px solid rgba(255,255,255,.12);
-}
-
-.app-header img{
-  width:44px;
-  height:44px;
-  border-radius:12px;
-  object-fit:cover;
-}
-
-.app-header .contact{ margin-left:0; }
-
-#typing{
-  background:rgba(255,255,255,.9);
+  font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--app-bg) fixed;
 }
 
 /* =========================================================
-   NOTIFICACIONES VIDRIO (estilo conversacion + app)
-   Compatible con app.js (showNotif mode:"contact" | "app")
+   NOTIFICACIONES VIDRIO
+   showNotif mode:"contact" | "app"
    ========================================================= */
 
 #stage{
@@ -618,13 +51,11 @@ body{
   padding:12px 14px;
   border-radius:22px;
   color:#fff;
-
   background:rgba(255,255,255,.13);
   -webkit-backdrop-filter:blur(20px);
   backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.20);
   box-shadow:0 10px 30px rgba(0,0,0,.35);
-
   transform-origin:50% 0;
 }
 
@@ -678,7 +109,7 @@ body{
   border:1px solid rgba(37,211,102,.35);
 }
 
-/* --- MODO APP: icono pequeno a la izquierda --- */
+/* Modo app: icono pequeno a la izquierda */
 .left-app-icon{
   width:28px;
   height:28px;
@@ -687,7 +118,7 @@ body{
   flex-shrink:0;
 }
 
-/* --- MODO CONTACTO: avatar derecha + badge app abajo derecha --- */
+/* Modo contacto: avatar a la derecha + badge abajo a la derecha */
 .avatar-stack{
   position:relative;
   width:42px;
@@ -715,8 +146,142 @@ body{
   box-shadow:0 2px 8px rgba(0,0,0,.35);
 }
 
-/* Ajuste movil fino */
+/* =========================================================
+   ESCENA FINAL SAAS
+   ========================================================= */
+
+#saas-scene{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--app-bg);
+  overflow:hidden;
+  opacity:0;
+  z-index:9999;
+  perspective:1000px;
+}
+
+.vignette{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at center, transparent 38%, rgba(0,0,0,.45) 100%);
+  pointer-events:none;
+}
+
+.saas-slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  opacity:0;
+  padding:0 24px;
+}
+
+.saas-number{
+  font-size:clamp(44px, 8vw, 112px);
+  font-weight:900;
+  letter-spacing:.02em;
+  line-height:1.04;
+}
+
+.saas-subtitle{
+  margin-top:10px;
+  color:#c9d7ff;
+  font-size:clamp(18px, 2.2vw, 30px);
+  opacity:.95;
+}
+
+.saas-word{
+  font-size:clamp(30px, 5vw, 72px);
+  font-weight:750;
+  color:#eef3ff;
+  margin:8px 0;
+  text-shadow:0 8px 30px rgba(0,0,0,.35);
+}
+
+.saas-message{
+  font-size:clamp(34px, 6vw, 90px);
+  font-weight:850;
+  line-height:1.1;
+  color:#fff !important;
+  text-shadow:0 0 18px rgba(124,196,255,.25);
+}
+
+.saas-logo{
+  font-size:clamp(40px, 6.5vw, 100px);
+  font-weight:900;
+  letter-spacing:.01em;
+  line-height:1.04;
+  display:inline-block;
+  color:#fff;
+  text-shadow:0 0 18px rgba(124,196,255,.25);
+}
+
+.saas-logo-sub{
+  margin-top:14px;
+  color:#c9d4ff;
+  font-size:clamp(16px, 2vw, 28px);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.cta-pill{
+  display:inline-block;
+  margin-top:18px;
+  font-size:clamp(12px,1.2vw,15px);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#dce7ff;
+  border:1px solid rgba(166,193,255,.38);
+  padding:10px 16px;
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+  box-shadow:0 8px 30px rgba(46,96,255,.2);
+}
+
+.gradient-text{
+  color:#fff;
+  background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 34%,#ffffff 52%,#8db4ff 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.char{
+  display:inline-block;
+}
+
+.bg-orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(90px);
+  opacity:.14;
+  pointer-events:none;
+}
+
+.orb-1{ width:320px; height:320px; background:#3f7bff; top:10%; left:10%; }
+.orb-2{ width:280px; height:280px; background:#7b5cff; right:10%; bottom:10%; }
+
+.noise{
+  position:absolute;
+  inset:0;
+  opacity:.07;
+  background-image:radial-gradient(rgba(255,255,255,.6) .6px, transparent .6px);
+  background-size:3px 3px;
+  mix-blend-mode:soft-light;
+  pointer-events:none;
+}
+
+/* =========================================================
+   MOVIL (solo ajustes finos)
+   ========================================================= */
 @media (max-width:768px){
+
   #stage{
     width:90vw;
   }
@@ -739,6 +304,4 @@ body{
     width:26px;
     height:26px;
   }
-  
-
 }
