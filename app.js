@@ -164,8 +164,8 @@ function clearNotifs(){
 }
 
 /* ---------- Datos ---------- */
-const SIWA = { avatar:"assets/Siwa.png", name:"María" };
-const WOKI = { avatar:"assets/Woki.png", name:"Juan" };
+const MARIA = { avatar:"assets/Siwa.png", name:"María" };
+const JUAN = { avatar:"assets/Woki.png", name:"Juan" };
 const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
 
 /* ---------- Escena final (se crea una sola vez, oculta) ---------- */
@@ -310,9 +310,9 @@ const master = gsap.timeline({
 });
 
 /* Notificaciones */
-master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
-master.call(()=>{ showNotif({...SIWA, mode:"contact", text:"Llego a las 21:00", time:"20:45"}); }, null, 1.9);
-master.call(()=>{ showNotif({...WOKI, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
+master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
+master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Llego a las 21:00", time:"20:45"}); }, null, 1.9);
+master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 6.2);
