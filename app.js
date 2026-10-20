@@ -81,8 +81,14 @@ typingSound.volume = 0.5;
 typingSound.loop = true;
 
 function startTypingSound() {
+  if (!audioUnlocked) return; // solo sonar después del click real
+  typingSound.pause();
   typingSound.currentTime = 0;
-  typingSound.play().catch(() => {});
+  typingSound.loop = true;
+  typingSound.volume = 0.75;
+  typingSound.play().catch((e) => {
+    console.warn("typing.wav bloqueado:", e);
+  });
 }
 
 function stopTypingSound() {
@@ -206,13 +212,26 @@ function unlockAudioFromUserGesture() {
     })
     .catch(() => {});
 
+    // desbloqueo robusto del typing.wav
+  typingSound.load();
   typingSound.play()
     .then(() => {
       typingSound.pause();
       typingSound.currentTime = 0;
     })
-    .catch(() => {});
-
+    .catch((e) => {
+      console.warn("No se pudo desbloquear typing.wav:", e);
+    });
+  
+typingSound.muted = true;
+typingSound.play().then(() => {
+  typingSound.pause();
+  typingSound.currentTime = 0;
+  typingSound.muted = false;
+}).catch(() => {
+  typingSound.muted = false;
+});
+  
   SOUNDS.click.play()
     .then(() => {
       SOUNDS.click.pause();
@@ -593,42 +612,88 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-   // Slide 2 (más impacto)
-  tl.fromTo("#slide2",{opacity:0},{opacity:1,duration:.25})
+   // Slide 2 (IMPACTO ALTO)
+    // Slide 2 (IMPACTO GLOBAL del bloque completo)
+  tl.fromTo("#slide2",
+      { opacity:0, scale:.86, y:28, filter:"blur(10px)" },
+      { opacity:1, scale:1, y:0, filter:"blur(0px)", duration:.34, ease:"power4.out" })
 
-    // entrada con "punch" + blur
+    // entrada potente de todas las palabras
     .fromTo(".saas-word",
-      { opacity:0, y:42, scale:.84, rotateX:-78, filter:"blur(12px)", transformOrigin:"50% 100%" },
-      { opacity:1, y:0, scale:1.04, rotateX:0, filter:"blur(0px)", stagger:.11, duration:.5, ease:"power4.out" },
+      {
+        opacity:0,
+        y:64,
+        scale:.78,
+        rotateX:-80,
+        rotateZ:-2.5,
+        filter:"blur(12px)",
+        transformOrigin:"50% 100%"
+      },
+      {
+        opacity:1,
+        y:0,
+        scale:1.1,
+        rotateX:0,
+        rotateZ:0,
+        filter:"blur(0px)",
+        stagger:.08,
+        duration:.46,
+        ease:"back.out(2.0)"
+      },
       "<")
 
-    // asentado rápido
+    // snap de asentado en cadena
     .to(".saas-word",
-      { scale:1, duration:.14, stagger:.06, ease:"power2.out" },
-      "<+.16")
-
-    // glow pulse en cadena (energía)
-    .to(".saas-word",
-      { textShadow:"0 0 22px rgba(140,200,255,.45)", duration:.18, yoyo:true, repeat:1, stagger:.05, ease:"sine.inOut" },
+      { scale:1, duration:.14, stagger:.04, ease:"power2.out" },
       "<+.12")
 
-    // remate extra para "Convenios"
-    .fromTo(".saas-word:last-child",
-      { scale:1, textShadow:"0 0 0 rgba(140,200,255,0)" },
-      { scale:1.14, textShadow:"0 0 28px rgba(170,220,255,.65)", duration:.26, yoyo:true, repeat:1, ease:"back.out(2)" },
-      ">-0.04")
-
-    // micro shake del bloque completo
+    // pulso GLOBAL del bloque (zoom + brillo + glow)
     .to("#slide2",
-      { x:1.2, duration:.03, repeat:3, yoyo:true, ease:"none" },
+      {
+        scale:1.045,
+        filter:"brightness(1.2)",
+        duration:.16,
+        yoyo:true,
+        repeat:1,
+        ease:"power2.inOut"
+      },
+      "<+.08")
+    .to(".saas-word",
+      {
+        textShadow:"0 0 30px rgba(150,210,255,.7), 0 0 50px rgba(120,180,255,.45)",
+        duration:.18,
+        yoyo:true,
+        repeat:1,
+        stagger:.03,
+        ease:"sine.inOut"
+      },
+      "<")
+
+    // micro shake eléctrico del bloque completo
+    .to("#slide2",
+      { x:2.2, duration:.028, repeat:5, yoyo:true, ease:"none" },
       "<+.02")
 
-    // salida dinámica
-    .to(".saas-word",
-      { y:-28, opacity:0, scale:.92, filter:"blur(9px)", stagger:.06, duration:.34, ease:"power2.in" },
-      "+=.85")
-    .to("#slide2",{opacity:0,duration:.16},"<");
+    // hold breve para lectura
+    .to({}, { duration:.6 })
 
+    // salida contundente en cascada
+    .to(".saas-word",
+      {
+        y:-40,
+        opacity:0,
+        scale:.84,
+        rotateX:22,
+        filter:"blur(10px)",
+        stagger:.05,
+        duration:.3,
+        ease:"power3.in"
+      },
+      "<")
+    .to("#slide2",
+      { opacity:0, scale:1.02, duration:.16, ease:"power2.in" },
+      "<+.1");
+  
   tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
     .fromTo(connectedChars,
       {opacity:0, y:24},
