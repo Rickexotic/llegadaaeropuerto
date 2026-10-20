@@ -80,8 +80,18 @@ typingSound.preload = "auto";
 typingSound.volume = 0.5;
 typingSound.loop = true;
 
+// warm-up silencioso para navegadores estrictos
+typingSound.muted = true;
+typingSound.play().then(() => {
+  typingSound.pause();
+  typingSound.currentTime = 0;
+  typingSound.muted = false;
+}).catch(() => {
+  typingSound.muted = false;
+});
+
 function startTypingSound() {
-  if (!audioUnlocked) return; // solo sonar después del click real
+  if (!audioUnlocked) return;
   typingSound.pause();
   typingSound.currentTime = 0;
   typingSound.loop = true;
@@ -116,8 +126,8 @@ const introTl = gsap.timeline({
   onComplete: () => {
     stopTypingSound();
     if (intro) intro.style.display = "none";
-    if (controlsEl) controlsEl.style.pointerEvents = "none"; // durante presentación no se usa play
-    master.play(0); // arranca presentación
+    if (controlsEl) controlsEl.style.pointerEvents = "none";
+    master.play(0);
   }
 });
 
@@ -142,7 +152,7 @@ introTl
     { opacity: 0, scale: .85, filter: "blur(10px)" },
     { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
   .to("#introLogo", { scale: 1.2, duration: 1, ease: "none" }, 3.5)
-   // salida con efecto neón tintineando
+
   // salida DRAMÁTICA: neón + parpadeos extra + electric shake
   .to("#introLogo", {
     duration: 1.05,
@@ -152,20 +162,16 @@ introTl
       { opacity: .22, filter: "drop-shadow(0 0 2px rgba(125,220,255,.22)) brightness(.82)", duration: .05 },
       { opacity: .98, filter: "drop-shadow(0 0 12px rgba(125,220,255,.85)) brightness(1.34)", duration: .08 },
       { opacity: .15, filter: "drop-shadow(0 0 1px rgba(125,220,255,.15)) brightness(.72)", duration: .05 },
-
       { opacity: .86, filter: "drop-shadow(0 0 9px rgba(125,220,255,.62)) brightness(1.16)", duration: .07 },
-      { opacity: .12, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.70)", duration: .05 }, // extra flicker 1
+      { opacity: .12, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.70)", duration: .05 },
       { opacity: .74, filter: "drop-shadow(0 0 8px rgba(125,220,255,.55)) brightness(1.10)", duration: .07 },
-      { opacity: .08, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.66)", duration: .05 }, // extra flicker 2
-
+      { opacity: .08, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.66)", duration: .05 },
       { opacity: .64, filter: "drop-shadow(0 0 7px rgba(125,220,255,.45)) brightness(1.02)", duration: .08 },
-      { opacity: .05, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.62)", duration: .06 }, // extra flicker 3
+      { opacity: .05, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.62)", duration: .06 },
       { opacity: .42, filter: "drop-shadow(0 0 5px rgba(125,220,255,.35)) brightness(.92)", duration: .08 },
-
       { opacity: 0, filter: "drop-shadow(0 0 0px rgba(125,220,255,0)) brightness(.60) blur(1.4px)", duration: .23 }
     ]
   }, 4.5)
-  // pequeño shake eléctrico
   .to("#introLogo", {
     keyframes: [
       { x: 1.5, y: -0.5, rotation: .25, duration: .03 },
@@ -177,7 +183,6 @@ introTl
     ],
     ease: "none"
   }, 4.58)
-  // se va toda la capa de intro
   .to("#intro", { opacity: 0, duration: .35, ease: "power2.out" }, 5.35);
 
 /* ---------- Audio ---------- */
@@ -205,39 +210,24 @@ function unlockAudioFromUserGesture() {
   if (audioUnlocked) return;
   audioUnlocked = true;
 
-  SOUNDS.whatsapp.play()
-    .then(() => {
-      SOUNDS.whatsapp.pause();
-      SOUNDS.whatsapp.currentTime = 0;
-    })
-    .catch(() => {});
+  SOUNDS.whatsapp.play().then(() => {
+    SOUNDS.whatsapp.pause();
+    SOUNDS.whatsapp.currentTime = 0;
+  }).catch(() => {});
 
-    // desbloqueo robusto del typing.wav
+  // desbloqueo robusto del typing.wav
   typingSound.load();
-  typingSound.play()
-    .then(() => {
-      typingSound.pause();
-      typingSound.currentTime = 0;
-    })
-    .catch((e) => {
-      console.warn("No se pudo desbloquear typing.wav:", e);
-    });
-  
-typingSound.muted = true;
-typingSound.play().then(() => {
-  typingSound.pause();
-  typingSound.currentTime = 0;
-  typingSound.muted = false;
-}).catch(() => {
-  typingSound.muted = false;
-});
-  
-  SOUNDS.click.play()
-    .then(() => {
-      SOUNDS.click.pause();
-      SOUNDS.click.currentTime = 0;
-    })
-    .catch(() => {});
+  typingSound.play().then(() => {
+    typingSound.pause();
+    typingSound.currentTime = 0;
+  }).catch((e) => {
+    console.warn("No se pudo desbloquear typing.wav:", e);
+  });
+
+  SOUNDS.click.play().then(() => {
+    SOUNDS.click.pause();
+    SOUNDS.click.currentTime = 0;
+  }).catch(() => {});
 }
 
 function playWhatsappNotification() {
@@ -271,7 +261,6 @@ function stopAppMusic() {
 function showReplayButton() {
   replayBtn.classList.add("show");
 }
-
 function hideReplayButton() {
   replayBtn.classList.remove("show");
 }
@@ -291,7 +280,6 @@ function showNotif({
   mode = "contact",
   actions = false
 }) {
-
   if (mode === "contact") {
     playWhatsappNotification();
   } else {
@@ -350,7 +338,6 @@ function showNotif({
 
   items.forEach((w, i) => {
     const distanceFromNewest = lastIndex - i;
-
     if (distanceFromNewest === 0) return;
 
     if (distanceFromNewest >= MAX_VISIBLE) {
@@ -501,28 +488,24 @@ function buildBridgeTimeline() {
     { opacity:0, scale:1.02 },
     { opacity:1, scale:1, duration:.35, ease:"power2.out" }, 0);
 
-  // Línea 1
   tl.fromTo("#b1",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, 0.08)
     .to("#b1", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b1", { opacity:.32, y:-8, duration:.22, ease:"power2.inOut" }, "+=0.28");
 
-  // Línea 2
   tl.fromTo("#b2",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, ">-0.04")
     .to("#b2", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b2", { opacity:.4, y:-7, duration:.22, ease:"power2.inOut" }, "+=0.26");
 
-  // Línea 3
   tl.fromTo("#b3",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.4, ease:"power4.out" }, ">-0.03")
     .to("#b3", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b3", { opacity:.5, y:-6, duration:.2, ease:"power2.inOut" }, "+=0.22");
 
-  // Línea 4 remate
   tl.fromTo("#b4",
     { opacity:0, y:36, scale:.88, filter:"blur(12px)" },
     { opacity:1, y:0, scale:1.08, filter:"blur(0px)", duration:.52, ease:"back.out(1.6)" }, ">-0.02")
@@ -574,6 +557,7 @@ scene.innerHTML = `
   </div>
 
   <div id="slide3" class="saas-slide">
+    <canvas id="nodesCanvas"></canvas>
     <div class="saas-message" id="connectedText">Todo conectado.</div>
   </div>
 
@@ -585,8 +569,133 @@ scene.innerHTML = `
 `;
 document.body.appendChild(scene);
 
+const nodesStyle = document.createElement("style");
+nodesStyle.textContent = `
+  #slide3{ overflow:hidden; }
+  #nodesCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
+    pointer-events:none;
+    z-index:0;
+    filter: drop-shadow(0 0 10px rgba(125,220,255,.35));
+  }
+  #slide3 .saas-message{
+    position:relative;
+    z-index:2;
+  }
+`;
+document.head.appendChild(nodesStyle);
+
 const connectedChars = splitChars("#connectedText");
 const logoChars = splitChars("#logoMain");
+
+/* ---------- Fondo nodos neon para Slide 3 ---------- */
+const nodesCanvas = document.getElementById("nodesCanvas");
+const nctx = nodesCanvas ? nodesCanvas.getContext("2d") : null;
+
+let nodesRAF = null;
+let nodesRunning = false;
+let nodes = [];
+const NODE_COUNT = 26;
+const LINK_DIST = 170;
+
+function resizeNodesCanvas() {
+  if (!nodesCanvas) return;
+  const rect = nodesCanvas.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  nodesCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
+  nodesCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
+  if (nctx) nctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function initNodes() {
+  if (!nodesCanvas) return;
+  const w = nodesCanvas.clientWidth || window.innerWidth;
+  const h = nodesCanvas.clientHeight || window.innerHeight;
+  nodes = Array.from({ length: NODE_COUNT }, () => ({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    vx: (Math.random() * 2 - 1) * 0.35,
+    vy: (Math.random() * 2 - 1) * 0.35,
+    r: 1.6 + Math.random() * 1.8
+  }));
+}
+
+function drawNodes() {
+  if (!nodesRunning || !nctx || !nodesCanvas) return;
+
+  const w = nodesCanvas.clientWidth || window.innerWidth;
+  const h = nodesCanvas.clientHeight || window.innerHeight;
+
+  nctx.clearRect(0, 0, w, h);
+
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i];
+      const b = nodes[j];
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+
+      if (d < LINK_DIST) {
+        const alpha = (1 - d / LINK_DIST) * 0.45;
+        nctx.strokeStyle = `rgba(125,220,255,${alpha})`;
+        nctx.lineWidth = 1;
+        nctx.beginPath();
+        nctx.moveTo(a.x, a.y);
+        nctx.lineTo(b.x, b.y);
+        nctx.stroke();
+      }
+    }
+  }
+
+  nodes.forEach((p) => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.x < 0 || p.x > w) p.vx *= -1;
+    if (p.y < 0 || p.y > h) p.vy *= -1;
+
+    const g = nctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 10);
+    g.addColorStop(0, "rgba(170,240,255,.95)");
+    g.addColorStop(1, "rgba(125,220,255,0)");
+    nctx.fillStyle = g;
+    nctx.beginPath();
+    nctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
+    nctx.fill();
+
+    nctx.fillStyle = "rgba(210,248,255,.95)";
+    nctx.beginPath();
+    nctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    nctx.fill();
+  });
+
+  nodesRAF = requestAnimationFrame(drawNodes);
+}
+
+function startNodesBackground() {
+  if (!nodesCanvas || nodesRunning) return;
+  resizeNodesCanvas();
+  initNodes();
+  nodesRunning = true;
+  drawNodes();
+}
+
+function stopNodesBackground() {
+  nodesRunning = false;
+  if (nodesRAF) cancelAnimationFrame(nodesRAF);
+  nodesRAF = null;
+  if (nctx && nodesCanvas) {
+    const w = nodesCanvas.clientWidth || window.innerWidth;
+    const h = nodesCanvas.clientHeight || window.innerHeight;
+    nctx.clearRect(0, 0, w, h);
+  }
+}
+
+window.addEventListener("resize", resizeNodesCanvas);
 
 gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
 gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
@@ -612,96 +721,56 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-   // Slide 2 (IMPACTO ALTO)
-    // Slide 2 (IMPACTO GLOBAL del bloque completo)
+  // Slide 2 (IMPACTO GLOBAL del bloque completo)
   tl.fromTo("#slide2",
       { opacity:0, scale:.86, y:28, filter:"blur(10px)" },
       { opacity:1, scale:1, y:0, filter:"blur(0px)", duration:.34, ease:"power4.out" })
-
-    // entrada potente de todas las palabras
     .fromTo(".saas-word",
       {
-        opacity:0,
-        y:64,
-        scale:.78,
-        rotateX:-80,
-        rotateZ:-2.5,
-        filter:"blur(12px)",
-        transformOrigin:"50% 100%"
+        opacity:0, y:64, scale:.78, rotateX:-80, rotateZ:-2.5, filter:"blur(12px)", transformOrigin:"50% 100%"
       },
       {
-        opacity:1,
-        y:0,
-        scale:1.1,
-        rotateX:0,
-        rotateZ:0,
-        filter:"blur(0px)",
-        stagger:.08,
-        duration:.46,
-        ease:"back.out(2.0)"
+        opacity:1, y:0, scale:1.1, rotateX:0, rotateZ:0, filter:"blur(0px)", stagger:.08, duration:.46, ease:"back.out(2.0)"
       },
       "<")
-
-    // snap de asentado en cadena
     .to(".saas-word",
       { scale:1, duration:.14, stagger:.04, ease:"power2.out" },
       "<+.12")
-
-    // pulso GLOBAL del bloque (zoom + brillo + glow)
     .to("#slide2",
-      {
-        scale:1.045,
-        filter:"brightness(1.2)",
-        duration:.16,
-        yoyo:true,
-        repeat:1,
-        ease:"power2.inOut"
-      },
+      { scale:1.045, filter:"brightness(1.2)", duration:.16, yoyo:true, repeat:1, ease:"power2.inOut" },
       "<+.08")
     .to(".saas-word",
-      {
-        textShadow:"0 0 30px rgba(150,210,255,.7), 0 0 50px rgba(120,180,255,.45)",
-        duration:.18,
-        yoyo:true,
-        repeat:1,
-        stagger:.03,
-        ease:"sine.inOut"
-      },
+      { textShadow:"0 0 30px rgba(150,210,255,.7), 0 0 50px rgba(120,180,255,.45)", duration:.18, yoyo:true, repeat:1, stagger:.03, ease:"sine.inOut" },
       "<")
-
-    // micro shake eléctrico del bloque completo
     .to("#slide2",
       { x:2.2, duration:.028, repeat:5, yoyo:true, ease:"none" },
       "<+.02")
-
-    // hold breve para lectura
     .to({}, { duration:.6 })
-
-    // salida contundente en cascada
     .to(".saas-word",
-      {
-        y:-40,
-        opacity:0,
-        scale:.84,
-        rotateX:22,
-        filter:"blur(10px)",
-        stagger:.05,
-        duration:.3,
-        ease:"power3.in"
-      },
+      { y:-40, opacity:0, scale:.84, rotateX:22, filter:"blur(10px)", stagger:.05, duration:.3, ease:"power3.in" },
       "<")
     .to("#slide2",
       { opacity:0, scale:1.02, duration:.16, ease:"power2.in" },
       "<+.1");
-  
+
+  // Slide 3 con nodos neon animados
   tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
+    .call(() => startNodesBackground(), null, "<")
+    .fromTo("#nodesCanvas",
+      { opacity:0 },
+      { opacity:1, duration:.45, ease:"power2.out" },
+      "<+0.05")
     .fromTo(connectedChars,
       {opacity:0, y:24},
       {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
       "<")
     .to("#slide3",
       {opacity:0, y:-24, duration:.6, ease:"power2.in"},
-      "+=1.2");
+      "+=1.2")
+    .to("#nodesCanvas",
+      { opacity:0, duration:.3, ease:"power2.in" },
+      "<")
+    .call(() => stopNodesBackground(), null, ">");
 
   tl.addLabel("s4", ">");
   tl.fromTo("#slide4",
@@ -753,7 +822,7 @@ master.call(()=>{ clearNotifs(); }, null, 5.2);
 master.add(buildBridgeTimeline(), 6.0);
 
 /* Beneficios app */
-master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Hola Juan. En qué te ayudamos hoy. ", text:"", time:"20:47" }); }, null, 10.6);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Hola Juan. En qué te ayudamos hoy.", text:"", time:"20:47" }); }, null, 10.6);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 12.3);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 14.2);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 16.1);
@@ -809,7 +878,7 @@ playBtn.addEventListener("click", ()=>{
   typing.n = 0;
 
   master.pause(0);
-  introTl.restart(true); // Play -> Intro -> Presentación
+  introTl.restart(true);
 });
 
 replayBtn.addEventListener("click", ()=>{
@@ -817,11 +886,13 @@ replayBtn.addEventListener("click", ()=>{
   notifs.innerHTML = "";
   stopAppMusic();
   stopTypingSound();
+  stopNodesBackground();
   progressBar.style.width = "0%";
 
   gsap.set("#stage", { clearProps: "all" });
   gsap.set("#saas-scene", { opacity: 0 });
   gsap.set("#bridge-scene", { opacity: 0, scale: 1 });
+  gsap.set("#nodesCanvas", { opacity: 0 });
   gsap.set("#b1, #b2, #b3, #b4", { clearProps: "all" });
   gsap.set("#bridge-lines", { clearProps: "all" });
   gsap.set("#introSearch", { clearProps: "all" });
