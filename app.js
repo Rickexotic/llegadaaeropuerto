@@ -551,6 +551,7 @@ scene.innerHTML = `
     <div class="saas-word">Gastronomía</div>
     <div class="saas-word">Parking</div>
     <div class="saas-word">Experiencias</div>
+    <div class="saas-word">Convenios</div>
   </div>
 
   <div id="slide3" class="saas-slide">
@@ -592,15 +593,41 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  tl.fromTo("#slide2",{opacity:0},{opacity:1,duration:.4})
+   // Slide 2 (más impacto)
+  tl.fromTo("#slide2",{opacity:0},{opacity:1,duration:.25})
+
+    // entrada con "punch" + blur
     .fromTo(".saas-word",
-      {opacity:0, y:30, rotateX:-65, transformOrigin:"50% 100%", filter:"blur(8px)"},
-      {opacity:1, y:0, rotateX:0, filter:"blur(0px)", stagger:.14, duration:.62, ease:"power3.out"},
+      { opacity:0, y:42, scale:.84, rotateX:-78, filter:"blur(12px)", transformOrigin:"50% 100%" },
+      { opacity:1, y:0, scale:1.04, rotateX:0, filter:"blur(0px)", stagger:.11, duration:.5, ease:"power4.out" },
       "<")
+
+    // asentado rápido
     .to(".saas-word",
-      {y:-22, opacity:0, filter:"blur(8px)", stagger:.07, duration:.42, ease:"power2.in"},
-      "+=1.15")
-    .to("#slide2",{opacity:0,duration:.2},"<");
+      { scale:1, duration:.14, stagger:.06, ease:"power2.out" },
+      "<+.16")
+
+    // glow pulse en cadena (energía)
+    .to(".saas-word",
+      { textShadow:"0 0 22px rgba(140,200,255,.45)", duration:.18, yoyo:true, repeat:1, stagger:.05, ease:"sine.inOut" },
+      "<+.12")
+
+    // remate extra para "Convenios"
+    .fromTo(".saas-word:last-child",
+      { scale:1, textShadow:"0 0 0 rgba(140,200,255,0)" },
+      { scale:1.14, textShadow:"0 0 28px rgba(170,220,255,.65)", duration:.26, yoyo:true, repeat:1, ease:"back.out(2)" },
+      ">-0.04")
+
+    // micro shake del bloque completo
+    .to("#slide2",
+      { x:1.2, duration:.03, repeat:3, yoyo:true, ease:"none" },
+      "<+.02")
+
+    // salida dinámica
+    .to(".saas-word",
+      { y:-28, opacity:0, scale:.92, filter:"blur(9px)", stagger:.06, duration:.34, ease:"power2.in" },
+      "+=.85")
+    .to("#slide2",{opacity:0,duration:.16},"<");
 
   tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
     .fromTo(connectedChars,
