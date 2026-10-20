@@ -15,61 +15,65 @@ const typing = { n: 0 };
 const typingSound = new Audio("assets/typing.wav");
 typingSound.preload = "auto";
 typingSound.volume = 0.5;
-typingSound.loop = true; // por si el wav dura menos que el tipeo
+typingSound.loop = true;
 
 function startTypingSound() {
   typingSound.currentTime = 0;
-  typingSound.play().catch(() => { });
+  typingSound.play().catch(() => {});
 }
-
 function stopTypingSound() {
   typingSound.pause();
   typingSound.currentTime = 0;
+}
+
+/* Estado inicial seguro */
+if (intro) {
+  intro.style.display = "none";
+  intro.style.opacity = "1";
+}
+if (controlsEl) {
+  controlsEl.style.opacity = "1";
+  controlsEl.style.pointerEvents = "auto";
+}
+if (playBtn) {
+  playBtn.disabled = false;
+  playBtn.textContent = "▶";
 }
 
 /* Intro timeline: se ejecuta al presionar Play */
 const introTl = gsap.timeline({
   paused: true,
   onComplete: () => {
-    intro.style.display = "none";
-    controlsEl.style.pointerEvents = "auto";
-    master.play(0); // al terminar intro, inicia presentación
+    stopTypingSound();
+    if (intro) intro.style.display = "none";
+    if (controlsEl) controlsEl.style.pointerEvents = "none"; // durante presentación no se usa play
+    master.play(0); // arranca presentación
   }
 });
 
 introTl
-  // 1) entra barra
   .fromTo("#introSearch",
     { opacity: 0, y: 14, scale: .94 },
     { opacity: 1, y: 0, scale: 1, duration: .5, ease: "power3.out" }, 0)
-  // 2) typing texto + sonido
   .call(startTypingSound, null, 0.5)
   .to(typing, {
     n: INTRO_TEXT.length,
     duration: 1.6,
     ease: "none",
     onUpdate: () => {
-      introTyped.textContent = INTRO_TEXT.slice(0, Math.round(typing.n));
+      if (introTyped) introTyped.textContent = INTRO_TEXT.slice(0, Math.round(typing.n));
     }
   }, 0.5)
   .call(stopTypingSound, null, 2.1)
-  // 3) click visual en botón buscar
   .to("#introGo", { scale: .9, duration: .12, yoyo: true, repeat: 1, ease: "power1.inOut" }, 2.1)
-  // 4) se va barra
   .to("#introSearch",
     { opacity: 0, scale: 1.06, y: -10, filter: "blur(6px)", duration: .5, ease: "power2.in" }, 2.5)
-  // 5) entra logo
   .fromTo("#introLogo",
     { opacity: 0, scale: .85, filter: "blur(10px)" },
     { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
-  // 6) el logo crece durante 1 segundo
-  .to("#introLogo",
-    { scale: 1.2, duration: 1, ease: "none" }, 3.5)
-  // 7) fade out del logo y del intro completo
-  .to("#introLogo",
-    { opacity: 0, filter: "blur(6px)", duration: .5, ease: "power2.in" }, 4.5)
-  .to("#intro",
-    { opacity: 0, duration: .4, ease: "power2.out" }, 4.9);
+  .to("#introLogo", { scale: 1.2, duration: 1, ease: "none" }, 3.5)
+  .to("#introLogo", { opacity: 0, filter: "blur(6px)", duration: .5, ease: "power2.in" }, 4.5)
+  .to("#intro", { opacity: 0, duration: .4, ease: "power2.out" }, 4.9);
 
 /* ---------- Audio ---------- */
 const MUSIC_VOLUME = 0.35;
@@ -97,21 +101,20 @@ function unlockAudioFromUserGesture() {
       SOUNDS.whatsapp.pause();
       SOUNDS.whatsapp.currentTime = 0;
     })
-    .catch(() => { });
+    .catch(() => {});
 
-  // también intentamos "desbloquear" typing.wav en el gesto del usuario
   typingSound.play()
     .then(() => {
       typingSound.pause();
       typingSound.currentTime = 0;
     })
-    .catch(() => { });
+    .catch(() => {});
 }
 
 function playWhatsappNotification() {
   if (!audioUnlocked) return;
   SOUNDS.whatsapp.currentTime = 0;
-  SOUNDS.whatsapp.play().catch(() => { });
+  SOUNDS.whatsapp.play().catch(() => {});
 }
 
 function startAppMusic() {
@@ -119,7 +122,7 @@ function startAppMusic() {
   appMusicStarted = true;
   SOUNDS.appMusic.currentTime = 0;
   SOUNDS.appMusic.volume = MUSIC_VOLUME;
-  SOUNDS.appMusic.play().catch(() => { });
+  SOUNDS.appMusic.play().catch(() => {});
 }
 
 function stopAppMusic() {
@@ -133,7 +136,6 @@ function stopAppMusic() {
 function showReplayButton() {
   replayBtn.classList.add("show");
 }
-
 function hideReplayButton() {
   replayBtn.classList.remove("show");
 }
@@ -152,7 +154,6 @@ function showNotif({
   time = "ahora",
   mode = "contact"
 }) {
-
   if (mode === "contact") {
     playWhatsappNotification();
   } else {
@@ -242,9 +243,9 @@ function clearNotifs() {
 /* ---------- Datos ---------- */
 const MARIA = { avatar: "assets/Siwa.png", name: "María" };
 const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
-const APP = { appIcon: "assets/App.png", app: "Club Beneficios" };
+const APP  = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
-/* ---------- Escena final (se crea una sola vez, oculta) ---------- */
+/* ---------- Escena final ---------- */
 function splitChars(selector) {
   const el = document.querySelector(selector);
   if (!el) return [];
@@ -297,11 +298,9 @@ const logoChars = splitChars("#logoMain");
 gsap.to(".orb-1", { x: 40, y: -25, repeat: -1, yoyo: true, duration: 9, ease: "sine.inOut" });
 gsap.to(".orb-2", { x: -35, y: 20, repeat: -1, yoyo: true, duration: 10, ease: "sine.inOut" });
 
-/* ---------- Timeline de la escena final (anidado en el maestro) ---------- */
 function buildSaaSTimeline() {
   const tl = gsap.timeline();
 
-  // el stage de notificaciones se desvanece y entra la escena
   tl.to("#stage",
     { scale: 1.08, opacity: 0, filter: "blur(12px)", y: -20, duration: 1.0, ease: "power3.inOut" }, 0);
   tl.fromTo("#saas-scene",
@@ -309,10 +308,9 @@ function buildSaaSTimeline() {
 
   tl.addLabel("s1", .6);
 
-  // Slide 1
   tl.fromTo("#slide1",
-    { opacity: 0, scale: .58, y: 110, filter: "blur(18px)" },
-    { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power4.out" }, "s1")
+      { opacity: 0, scale: .58, y: 110, filter: "blur(18px)" },
+      { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power4.out" }, "s1")
     .fromTo(".saas-number",
       { letterSpacing: "0.22em", textShadow: "0 0 0 rgba(120,190,255,0)" },
       { letterSpacing: "0.02em", textShadow: "0 0 28px rgba(120,190,255,.35)", duration: .9, ease: "power3.out" },
@@ -321,7 +319,6 @@ function buildSaaSTimeline() {
       { opacity: 0, scale: 1.18, y: -46, filter: "blur(14px)", duration: .85, ease: "power3.in" },
       "+=1.15");
 
-  // Slide 2
   tl.fromTo("#slide2", { opacity: 0 }, { opacity: 1, duration: .4 })
     .fromTo(".saas-word",
       { opacity: 0, y: 30, rotateX: -65, transformOrigin: "50% 100%", filter: "blur(8px)" },
@@ -332,7 +329,6 @@ function buildSaaSTimeline() {
       "+=1.15")
     .to("#slide2", { opacity: 0, duration: .2 }, "<");
 
-  // Slide 3
   tl.fromTo("#slide3", { opacity: 0 }, { opacity: 1, duration: .5, ease: "power2.out" })
     .fromTo(connectedChars,
       { opacity: 0, y: 24 },
@@ -342,11 +338,10 @@ function buildSaaSTimeline() {
       { opacity: 0, y: -24, duration: .6, ease: "power2.in" },
       "+=1.2");
 
-  // Slide 4: entra 0.8s + visible 5s + fade out 1s
   tl.addLabel("s4", ">");
   tl.fromTo("#slide4",
-    { opacity: 0, scale: .94 },
-    { opacity: 1, scale: 1, duration: .8, ease: "power3.out" }, "s4")
+      { opacity: 0, scale: .94 },
+      { opacity: 1, scale: 1, duration: .8, ease: "power3.out" }, "s4")
     .fromTo(logoChars,
       { opacity: 0, y: 16 },
       { opacity: 1, y: 0, stagger: .022, duration: .42, ease: "power2.out" },
@@ -359,12 +354,10 @@ function buildSaaSTimeline() {
       { opacity: 0, y: 12, scale: .92 },
       { opacity: 1, y: 0, scale: 1, duration: .4, ease: "power2.out" },
       "s4+=.27")
-    // 5 segundos visibles con un crecimiento sutil y continuo
     .fromTo("#slide4",
       { scale: 1 },
       { scale: 1.035, duration: 5, ease: "none", force3D: true, immediateRender: false },
       "s4+=.8")
-    // fade out final de 1s
     .to("#saas-scene",
       { opacity: 0, duration: 1.0, ease: "power2.inOut" },
       "s4+=5.8");
@@ -385,7 +378,6 @@ const master = gsap.timeline({
   }
 });
 
-/* Notificaciones */
 master.call(() => { showNotif({ ...MARIA, mode: "contact", text: "Hola 👋", time: "20:45" }); }, null, 0.5);
 master.call(() => { showNotif({ ...MARIA, mode: "contact", text: "Llego a las 21:00", time: "20:45" }); }, null, 1.9);
 master.call(() => { showNotif({ ...JUAN, mode: "contact", text: "Perfecto. Te espero 🙌", time: "20:46" }); }, null, 3.4);
@@ -398,10 +390,8 @@ master.call(() => { showNotif({ ...APP, mode: "app", name: "🎁 Duty Free", det
 master.call(() => { showNotif({ ...APP, mode: "app", name: "Algo más?", text: "✅ Todo listo", time: "20:48" }); }, null, 13.6);
 master.call(() => { showNotif({ ...APP, mode: "app", name: "Aterrizaje", text: "✈ Tu pasajero ya aterrizó", time: "21:00" }); }, null, 15.4);
 
-/* Escena final anidada: empieza a los 17.5s */
 master.add(buildSaaSTimeline(), 17.5);
 
-/* La música baja de volumen durante el último segundo y termina con el fade out */
 const END = master.duration();
 master.fromTo(SOUNDS.appMusic,
   { volume: MUSIC_VOLUME },
@@ -414,36 +404,39 @@ playBtn.addEventListener("click", () => {
 
   playBtn.disabled = true;
   playBtn.textContent = "⏵";
-  controlsEl.style.pointerEvents = "none"; // evita doble click durante intro
+  controlsEl.style.pointerEvents = "none";
 
-  intro.style.display = "flex";
-  intro.style.opacity = "1";
-  introTyped.textContent = "";
+  if (intro) {
+    intro.style.display = "flex";
+    intro.style.opacity = "1";
+  }
+  if (introTyped) introTyped.textContent = "";
   typing.n = 0;
 
-  introTl.restart(true); // Play -> Intro -> Presentación
+  introTl.restart(true);
 });
 
 replayBtn.addEventListener("click", () => {
   hideReplayButton();
   notifs.innerHTML = "";
   stopAppMusic();
+  stopTypingSound();
   progressBar.style.width = "0%";
 
-  // restaurar estados visuales para relanzar intro completa
   gsap.set("#stage", { clearProps: "all" });
   gsap.set("#saas-scene", { opacity: 0 });
   gsap.set("#introSearch", { clearProps: "all" });
   gsap.set("#introLogo", { clearProps: "all" });
   gsap.set("#introGo", { clearProps: "all" });
-  intro.style.display = "flex";
-  intro.style.opacity = "1";
 
-  // reset timelines
+  if (intro) {
+    intro.style.display = "none";
+    intro.style.opacity = "1";
+  }
+
   master.pause(0);
   introTl.pause(0);
 
-  // dejar botón listo para iniciar todo nuevamente
   playBtn.disabled = false;
   playBtn.textContent = "▶";
   controlsEl.style.opacity = "1";
