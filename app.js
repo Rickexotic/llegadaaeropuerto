@@ -283,10 +283,10 @@ function buildSaaSTimeline(){
       {opacity:0, y:12, scale:.92},
       {opacity:1, y:0, scale:1, duration:.4, ease:"power2.out"},
       "s4+=.27")
-    // 5 segundos visibles (con un leve pulso)
+       // 5 segundos visibles con un crecimiento sutil y continuo
     .fromTo("#slide4",
       {scale:1},
-      {scale:1.02, duration:5, ease:"sine.inOut", immediateRender:false},
+      {scale:1.035, duration:5, ease:"none", force3D:true, immediateRender:false},
       "s4+=.8")
     // fade out final de 1s
     .to("#saas-scene",
