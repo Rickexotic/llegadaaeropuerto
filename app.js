@@ -73,7 +73,6 @@ const introTyped = document.getElementById("introTyped");
 const INTRO_TEXT = "Outside Co.";
 const typing = { n: 0 };
 
-/* Sonido de tipeo */
 const typingSound = new Audio("assets/typing.wav");
 typingSound.preload = "auto";
 typingSound.volume = 0.75;
@@ -94,7 +93,6 @@ function stopTypingSound() {
   typingSound.currentTime = 0;
 }
 
-/* Estado inicial seguro */
 if (intro) {
   intro.style.display = "none";
   intro.style.opacity = "1";
@@ -108,7 +106,6 @@ if (playBtn) {
   playBtn.textContent = "Cargando...";
 }
 
-/* Intro timeline */
 const introTl = gsap.timeline({
   paused: true,
   onComplete: () => {
@@ -184,11 +181,9 @@ const SOUNDS = {
 
 SOUNDS.whatsapp.preload = "auto";
 SOUNDS.whatsapp.volume = 0.5;
-
 SOUNDS.appMusic.preload = "auto";
 SOUNDS.appMusic.volume = MUSIC_VOLUME;
 SOUNDS.appMusic.loop = true;
-
 SOUNDS.click.preload = "auto";
 SOUNDS.click.volume = 0.6;
 
@@ -264,7 +259,8 @@ function showNotif({
   status = "",
   time = "ahora",
   mode = "contact",
-  actions = false
+  actions = false,
+  side = "left"
 }) {
 
   if (mode === "contact") {
@@ -276,20 +272,23 @@ function showNotif({
   const wrap = document.createElement("div");
   wrap.className = "notif-wrap";
 
-  const rightVisual = mode === "contact"
-    ? `
-      <div class="avatar-stack">
-        <img class="avatar-img" src="${avatar}" alt="">
-        <img class="avatar-app-badge" src="${appIcon}" alt="">
-      </div>`
-    : "";
+  const avatarHtml = `
+    <div class="avatar-stack">
+      <img class="avatar-img" src="${avatar}" alt="">
+      <img class="avatar-app-badge" src="${appIcon}" alt="">
+    </div>`;
 
-  const leftVisual = mode === "app"
-    ? `<img class="left-app-icon" src="${appIcon}" alt="">`
-    : "";
+  const leftVisual =
+    mode === "app" ? `<img class="left-app-icon" src="${appIcon}" alt="">` :
+    (mode === "contact" && side === "left") ? avatarHtml : "";
+
+  const rightVisual =
+    (mode === "contact" && side === "right") ? avatarHtml : "";
+
+  const sideClass = mode === "contact" ? `side-${side}` : "";
 
   wrap.innerHTML = `
-    <div class="notif">
+    <div class="notif ${sideClass}">
       ${leftVisual}
       <div class="body">
         <div class="top"><span>${app}</span><span>${time}</span></div>
@@ -370,11 +369,11 @@ function simulateRedeemClick() {
 }
 
 /* ---------- Datos ---------- */
-const MARIA = { avatar: "assets/Siwa.png", name: "María" };
-const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
-const APP  = { appIcon: "assets/App.png", app: "Club Beneficios" };
+const MARIA = { avatar: "assets/Siwa.png", name: "María", side: "left" };
+const JUAN  = { avatar: "assets/Woki.png", name: "Juan", side: "right" };
+const APP   = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
-/* ---------- Escena intermedia (texto tipo AE - impacto) ---------- */
+/* ---------- Escena intermedia ---------- */
 const bridge = document.createElement("div");
 bridge.id = "bridge-scene";
 bridge.innerHTML = `
@@ -395,73 +394,31 @@ document.body.appendChild(bridge);
 const bridgeStyle = document.createElement("style");
 bridgeStyle.textContent = `
   #bridge-scene{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:var(--app-bg);
-    opacity:0;
-    pointer-events:none;
-    z-index:9000;
-    overflow:hidden;
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    background:var(--app-bg); opacity:0; pointer-events:none; z-index:9000; overflow:hidden;
   }
-
-  .bridge-lines{
-    width:min(920px, 92vw);
-    text-align:center;
-    padding:0 18px;
-  }
-
+  .bridge-lines{ width:min(920px, 92vw); text-align:center; padding:0 18px; }
   .bridge-line{
-    opacity:0;
-    transform:translateY(22px) scale(.95);
-    color:#eef3ff;
-    letter-spacing:.01em;
-    font-weight:800;
-    line-height:1.15;
-    margin:10px 0;
-    font-size:clamp(28px, 5.4vw, 68px);
-    text-shadow:
-      0 0 8px rgba(125,180,255,.35),
-      0 0 24px rgba(125,180,255,.20),
-      0 10px 28px rgba(0,0,0,.35);
+    opacity:0; transform:translateY(22px) scale(.95); color:#eef3ff; letter-spacing:.01em; font-weight:800;
+    line-height:1.15; margin:10px 0; font-size:clamp(28px, 5.4vw, 68px);
+    text-shadow:0 0 8px rgba(125,180,255,.35),0 0 24px rgba(125,180,255,.20),0 10px 28px rgba(0,0,0,.35);
   }
-
   .bridge-accent{
     background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 38%,#ffffff 55%,#8db4ff 100%);
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
     filter:drop-shadow(0 0 14px rgba(125,220,255,.4));
   }
-
   .bridge-vignette{
-    position:absolute;
-    inset:0;
-    background:radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.52) 100%);
+    position:absolute; inset:0; background:radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.52) 100%);
     pointer-events:none;
   }
-
-  .bridge-orb{
-    position:absolute;
-    border-radius:50%;
-    filter:blur(95px);
-    opacity:.2;
-    pointer-events:none;
-  }
-
+  .bridge-orb{ position:absolute; border-radius:50%; filter:blur(95px); opacity:.2; pointer-events:none; }
   .bridge-orb-1{ width:360px; height:360px; background:#4f86ff; top:8%; left:8%; }
   .bridge-orb-2{ width:320px; height:320px; background:#7f5dff; right:8%; bottom:8%; }
-
   .bridge-noise{
-    position:absolute;
-    inset:0;
-    opacity:.08;
+    position:absolute; inset:0; opacity:.08;
     background-image:radial-gradient(rgba(255,255,255,.65) .6px, transparent .6px);
-    background-size:3px 3px;
-    mix-blend-mode:soft-light;
-    pointer-events:none;
+    background-size:3px 3px; mix-blend-mode:soft-light; pointer-events:none;
   }
 `;
 document.head.appendChild(bridgeStyle);
@@ -561,18 +518,9 @@ const sceneStyle = document.createElement("style");
 sceneStyle.textContent = `
   #slide3{ overflow:hidden; }
   #nodesCanvas{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    opacity:0;
-    pointer-events:none;
-    z-index:0;
+    position:absolute; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; z-index:0;
   }
-  #slide3 .saas-message{
-    position:relative;
-    z-index:2;
-  }
+  #slide3 .saas-message{ position:relative; z-index:2; }
   #slide2 .saas-word:last-child{
     background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 45%,#ffffff 70%);
     -webkit-background-clip:text;
@@ -593,7 +541,6 @@ let nodesRAF = null;
 let nodesRunning = false;
 let nodesStart = 0;
 
-/* 5 nodos en layout irregular tipo referencia */
 const NODE_BASE = [
   { x: .03, y: .52 },
   { x: .31, y: .20 },
@@ -602,7 +549,6 @@ const NODE_BASE = [
   { x: .86, y: .92 }
 ];
 
-/* Conexiones dirigidas para parecerse al esquema de referencia */
 const NODE_LINKS = [
   { a:0, b:1, delay:0.55, dur:0.62, pulseOffset:0.08 },
   { a:0, b:3, delay:0.72, dur:0.62, pulseOffset:0.16 },
@@ -752,7 +698,7 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  // Slide 2 (inspirada en la adjunta + variaciones propias, menos violenta)
+  // Slide 2 (inspirada en la adjunta + variaciones propias)
   tl.fromTo("#slide2", { opacity:0 }, { opacity:1, duration:.33 })
     .fromTo(".saas-word",
       {
@@ -848,7 +794,7 @@ master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Recuerda que llego 
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* Música + bloque texto impacto */
+/* Música + bloque de texto */
 master.call(()=>{ startAppMusic(); }, null, 6.0);
 master.add(buildBridgeTimeline(), 6.0);
 
