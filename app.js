@@ -3,6 +3,69 @@ const playBtn = document.getElementById("playBtn");
 const replayBtn = document.getElementById("replayBtn");
 const progressBar = document.getElementById("progressBar");
 
+/* ---------- Precarga de assets ---------- */
+const PRELOAD_IMAGES = [
+  "assets/outside.png",
+  "assets/wassap.png",
+  "assets/Siwa.png",
+  "assets/Woki.png",
+  "assets/App.png"
+];
+
+const PRELOAD_AUDIOS = [
+  "assets/typing.wav",
+  "assets/click.wav",
+  "assets/notification.wav",
+  "assets/1.mp3"
+];
+
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ src, ok: true });
+    img.onerror = () => resolve({ src, ok: false });
+    img.src = src;
+  });
+}
+
+function preloadAudio(src) {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    let done = false;
+
+    const finish = (ok) => {
+      if (done) return;
+      done = true;
+      audio.removeEventListener("canplaythrough", onReady);
+      audio.removeEventListener("error", onError);
+      resolve({ src, ok });
+    };
+
+    const onReady = () => finish(true);
+    const onError = () => finish(false);
+
+    audio.preload = "auto";
+    audio.addEventListener("canplaythrough", onReady, { once: true });
+    audio.addEventListener("error", onError, { once: true });
+    audio.src = src;
+    audio.load();
+
+    // fallback timeout para no bloquear si no dispara canplaythrough
+    setTimeout(() => finish(true), 2500);
+  });
+}
+
+async function preloadAssets() {
+  const imagePromises = PRELOAD_IMAGES.map(preloadImage);
+  const audioPromises = PRELOAD_AUDIOS.map(preloadAudio);
+  const results = await Promise.all([...imagePromises, ...audioPromises]);
+
+  const failed = results.filter(r => !r.ok);
+  if (failed.length) {
+    console.warn("Assets con posible fallo de carga:", failed.map(f => f.src));
+  }
+}
+
 /* ---------- Intro ---------- */
 const intro = document.getElementById("intro");
 const controlsEl = document.getElementById("controls");
@@ -37,8 +100,8 @@ if (controlsEl) {
   controlsEl.style.pointerEvents = "auto";
 }
 if (playBtn) {
-  playBtn.disabled = false;
-  playBtn.textContent = "▶";
+  playBtn.disabled = true;
+  playBtn.textContent = "Cargando...";
 }
 
 /* Intro timeline: se ejecuta al presionar Play */
@@ -451,7 +514,6 @@ master.call(() => {
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:49" }); }, null, 18.3);
 master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 20.1);
 
-/* Escena final desplazada por el nuevo bloque de canje */
 master.add(buildSaaSTimeline(), 22.2);
 
 const END = master.duration();
@@ -504,3 +566,13 @@ replayBtn.addEventListener("click", ()=>{
   controlsEl.style.opacity = "1";
   controlsEl.style.pointerEvents = "auto";
 });
+
+/* ---------- Boot ---------- */
+(async function boot() {
+  await preloadAssets();
+
+  if (playBtn) {
+    playBtn.disabled = false;
+    playBtn.textContent = "▶";
+  }
+})();
