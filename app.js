@@ -412,7 +412,7 @@ setTimeout(()=>{
     </div>
 
     <div id="slide4" class="saas-slide">
-        <div class="saas-logo gradient-text" id="logoMain">Club Beneficios</div>
+       <div class="saas-logo" id="logoMain">Club Beneficios</div>
         <div class="saas-logo-sub">Aeropuerto Santiago</div>
         <div class="cta-pill">Activa · Reserva · Disfruta</div>
     </div>
