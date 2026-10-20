@@ -21,6 +21,7 @@ function startTypingSound() {
   typingSound.currentTime = 0;
   typingSound.play().catch(() => {});
 }
+
 function stopTypingSound() {
   typingSound.pause();
   typingSound.currentTime = 0;
@@ -82,7 +83,8 @@ let appMusicStarted = false;
 
 const SOUNDS = {
   whatsapp: new Audio("assets/notification.wav"),
-  appMusic: new Audio("assets/1.mp3")
+  appMusic: new Audio("assets/1.mp3"),
+  click: new Audio("assets/click.wav")
 };
 
 SOUNDS.whatsapp.preload = "auto";
@@ -91,6 +93,9 @@ SOUNDS.whatsapp.volume = 0.5;
 SOUNDS.appMusic.preload = "auto";
 SOUNDS.appMusic.volume = MUSIC_VOLUME;
 SOUNDS.appMusic.loop = true;
+
+SOUNDS.click.preload = "auto";
+SOUNDS.click.volume = 0.6;
 
 function unlockAudioFromUserGesture() {
   if (audioUnlocked) return;
@@ -109,12 +114,25 @@ function unlockAudioFromUserGesture() {
       typingSound.currentTime = 0;
     })
     .catch(() => {});
+
+  SOUNDS.click.play()
+    .then(() => {
+      SOUNDS.click.pause();
+      SOUNDS.click.currentTime = 0;
+    })
+    .catch(() => {});
 }
 
 function playWhatsappNotification() {
   if (!audioUnlocked) return;
   SOUNDS.whatsapp.currentTime = 0;
   SOUNDS.whatsapp.play().catch(() => {});
+}
+
+function playClick() {
+  if (!audioUnlocked) return;
+  SOUNDS.click.currentTime = 0;
+  SOUNDS.click.play().catch(() => {});
 }
 
 function startAppMusic() {
@@ -136,6 +154,7 @@ function stopAppMusic() {
 function showReplayButton() {
   replayBtn.classList.add("show");
 }
+
 function hideReplayButton() {
   replayBtn.classList.remove("show");
 }
@@ -152,8 +171,10 @@ function showNotif({
   detail = "",
   status = "",
   time = "ahora",
-  mode = "contact"
+  mode = "contact",
+  actions = false
 }) {
+
   if (mode === "contact") {
     playWhatsappNotification();
   } else {
@@ -184,6 +205,11 @@ function showNotif({
         ${text ? `<div class="msg">${text}</div>` : ""}
         ${detail ? `<div class="detail">${detail}</div>` : ""}
         ${status ? `<div class="status">${status}</div>` : ""}
+        ${actions ? `
+          <div class="actions">
+            <button class="act-btn" data-act="pay" tabindex="-1">Pagar</button>
+            <button class="act-btn primary" data-act="redeem" tabindex="-1">Canjear puntos</button>
+          </div>` : ""}
       </div>
       ${rightVisual}
     </div>`;
@@ -240,18 +266,29 @@ function clearNotifs() {
   });
 }
 
+function simulateRedeemClick() {
+  const redeem = notifs.querySelector('.act-btn[data-act="redeem"]');
+  const pay = notifs.querySelector('.act-btn[data-act="pay"]');
+  if (!redeem) return;
+
+  playClick();
+  redeem.classList.add("selected");
+  gsap.fromTo(redeem, { scale: 1 }, { scale: .92, duration: .1, yoyo: true, repeat: 1, ease: "power1.inOut" });
+  if (pay) gsap.to(pay, { opacity: .35, duration: .3 });
+}
+
 /* ---------- Datos ---------- */
 const MARIA = { avatar: "assets/Siwa.png", name: "María" };
 const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
 const APP  = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
 /* ---------- Escena final ---------- */
-function splitChars(selector) {
+function splitChars(selector){
   const el = document.querySelector(selector);
-  if (!el) return [];
+  if(!el) return [];
   const text = el.textContent.trim();
   el.textContent = "";
-  return [...text].map(ch => {
+  return [...text].map(ch=>{
     const span = document.createElement("span");
     span.className = "char";
     span.textContent = ch === " " ? "\u00A0" : ch;
@@ -295,71 +332,71 @@ document.body.appendChild(scene);
 const connectedChars = splitChars("#connectedText");
 const logoChars = splitChars("#logoMain");
 
-gsap.to(".orb-1", { x: 40, y: -25, repeat: -1, yoyo: true, duration: 9, ease: "sine.inOut" });
-gsap.to(".orb-2", { x: -35, y: 20, repeat: -1, yoyo: true, duration: 10, ease: "sine.inOut" });
+gsap.to(".orb-1",{x:40,y:-25,repeat:-1,yoyo:true,duration:9,ease:"sine.inOut"});
+gsap.to(".orb-2",{x:-35,y:20,repeat:-1,yoyo:true,duration:10,ease:"sine.inOut"});
 
-function buildSaaSTimeline() {
+function buildSaaSTimeline(){
   const tl = gsap.timeline();
 
   tl.to("#stage",
-    { scale: 1.08, opacity: 0, filter: "blur(12px)", y: -20, duration: 1.0, ease: "power3.inOut" }, 0);
+    {scale:1.08, opacity:0, filter:"blur(12px)", y:-20, duration:1.0, ease:"power3.inOut"}, 0);
   tl.fromTo("#saas-scene",
-    { opacity: 0 }, { opacity: 1, duration: .75, ease: "power2.out" }, 0);
+    {opacity:0}, {opacity:1, duration:.75, ease:"power2.out"}, 0);
 
   tl.addLabel("s1", .6);
 
   tl.fromTo("#slide1",
-      { opacity: 0, scale: .58, y: 110, filter: "blur(18px)" },
-      { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power4.out" }, "s1")
+      {opacity:0, scale:.58, y:110, filter:"blur(18px)"},
+      {opacity:1, scale:1, y:0, filter:"blur(0px)", duration:1.2, ease:"power4.out"}, "s1")
     .fromTo(".saas-number",
-      { letterSpacing: "0.22em", textShadow: "0 0 0 rgba(120,190,255,0)" },
-      { letterSpacing: "0.02em", textShadow: "0 0 28px rgba(120,190,255,.35)", duration: .9, ease: "power3.out" },
+      {letterSpacing:"0.22em", textShadow:"0 0 0 rgba(120,190,255,0)"},
+      {letterSpacing:"0.02em", textShadow:"0 0 28px rgba(120,190,255,.35)", duration:.9, ease:"power3.out"},
       "<0.08")
     .to("#slide1",
-      { opacity: 0, scale: 1.18, y: -46, filter: "blur(14px)", duration: .85, ease: "power3.in" },
+      {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  tl.fromTo("#slide2", { opacity: 0 }, { opacity: 1, duration: .4 })
+  tl.fromTo("#slide2",{opacity:0},{opacity:1,duration:.4})
     .fromTo(".saas-word",
-      { opacity: 0, y: 30, rotateX: -65, transformOrigin: "50% 100%", filter: "blur(8px)" },
-      { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)", stagger: .14, duration: .62, ease: "power3.out" },
+      {opacity:0, y:30, rotateX:-65, transformOrigin:"50% 100%", filter:"blur(8px)"},
+      {opacity:1, y:0, rotateX:0, filter:"blur(0px)", stagger:.14, duration:.62, ease:"power3.out"},
       "<")
     .to(".saas-word",
-      { y: -22, opacity: 0, filter: "blur(8px)", stagger: .07, duration: .42, ease: "power2.in" },
+      {y:-22, opacity:0, filter:"blur(8px)", stagger:.07, duration:.42, ease:"power2.in"},
       "+=1.15")
-    .to("#slide2", { opacity: 0, duration: .2 }, "<");
+    .to("#slide2",{opacity:0,duration:.2},"<");
 
-  tl.fromTo("#slide3", { opacity: 0 }, { opacity: 1, duration: .5, ease: "power2.out" })
+  tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
     .fromTo(connectedChars,
-      { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, stagger: .03, duration: .5, ease: "power3.out" },
+      {opacity:0, y:24},
+      {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
       "<")
     .to("#slide3",
-      { opacity: 0, y: -24, duration: .6, ease: "power2.in" },
+      {opacity:0, y:-24, duration:.6, ease:"power2.in"},
       "+=1.2");
 
   tl.addLabel("s4", ">");
   tl.fromTo("#slide4",
-      { opacity: 0, scale: .94 },
-      { opacity: 1, scale: 1, duration: .8, ease: "power3.out" }, "s4")
+      {opacity:0, scale:.94},
+      {opacity:1, scale:1, duration:.8, ease:"power3.out"}, "s4")
     .fromTo(logoChars,
-      { opacity: 0, y: 16 },
-      { opacity: 1, y: 0, stagger: .022, duration: .42, ease: "power2.out" },
+      {opacity:0, y:16},
+      {opacity:1, y:0, stagger:.022, duration:.42, ease:"power2.out"},
       "s4+=.05")
     .fromTo(".saas-logo-sub",
-      { opacity: 0, y: 14 },
-      { opacity: 1, y: 0, duration: .45 },
+      {opacity:0, y:14},
+      {opacity:1, y:0, duration:.45},
       "s4+=.15")
     .fromTo(".cta-pill",
-      { opacity: 0, y: 12, scale: .92 },
-      { opacity: 1, y: 0, scale: 1, duration: .4, ease: "power2.out" },
+      {opacity:0, y:12, scale:.92},
+      {opacity:1, y:0, scale:1, duration:.4, ease:"power2.out"},
       "s4+=.27")
     .fromTo("#slide4",
-      { scale: 1 },
-      { scale: 1.035, duration: 5, ease: "none", force3D: true, immediateRender: false },
+      {scale:1},
+      {scale:1.035, duration:5, ease:"none", force3D:true, immediateRender:false},
       "s4+=.8")
     .to("#saas-scene",
-      { opacity: 0, duration: 1.0, ease: "power2.inOut" },
+      {opacity:0, duration:1.0, ease:"power2.inOut"},
       "s4+=5.8");
 
   return tl;
@@ -367,39 +404,64 @@ function buildSaaSTimeline() {
 
 /* ---------- Timeline maestro ---------- */
 const master = gsap.timeline({
-  paused: true,
-  onUpdate: () => {
-    progressBar.style.width = `${(master.progress() * 100).toFixed(2)}%`;
+  paused:true,
+  onUpdate:()=>{
+    progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`;
   },
-  onComplete: () => {
+  onComplete:()=>{
     progressBar.style.width = "100%";
     stopAppMusic();
     showReplayButton();
   }
 });
 
-master.call(() => { showNotif({ ...MARIA, mode: "contact", text: "Hola 👋", time: "20:45" }); }, null, 0.5);
-master.call(() => { showNotif({ ...MARIA, mode: "contact", text: "Llego a las 21:00", time: "20:45" }); }, null, 1.9);
-master.call(() => { showNotif({ ...JUAN, mode: "contact", text: "Perfecto. Te espero 🙌", time: "20:46" }); }, null, 3.4);
-master.call(() => { clearNotifs(); }, null, 5.2);
+master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Hola 👋", time:"20:45"}); }, null, 0.5);
+master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Llego a las 21:00", time:"20:45"}); }, null, 1.9);
+master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Perfecto. Te espero 🙌", time:"20:46"}); }, null, 3.4);
+master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-master.call(() => { showNotif({ ...APP, mode: "app", name: "Tu pasajero llega a las 21:00 ✈", text: "Comencemos", time: "20:47" }); }, null, 6.2);
-master.call(() => { showNotif({ ...APP, mode: "app", name: "🅿 Parking Premium", detail: "Sector P3 · Terminal Internacional", status: "✅ Reserva exitosa", time: "20:47" }); }, null, 7.9);
-master.call(() => { showNotif({ ...APP, mode: "app", name: "🍽 Restaurant Internacional", detail: "Mesa para 2 personas", status: "✅ Confirmada 21:15", time: "20:47" }); }, null, 9.8);
-master.call(() => { showNotif({ ...APP, mode: "app", name: "🎁 Duty Free", detail: "Regalo comprado", status: "✅ 15% OFF aplicado", time: "20:48" }); }, null, 11.7);
-master.call(() => { showNotif({ ...APP, mode: "app", name: "Algo más?", text: "✅ Todo listo", time: "20:48" }); }, null, 13.6);
-master.call(() => { showNotif({ ...APP, mode: "app", name: "Aterrizaje", text: "✈ Tu pasajero ya aterrizó", time: "21:00" }); }, null, 15.4);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Tu pasajero llega a las 21:00 ✈", text:"Comencemos", time:"20:47" }); }, null, 6.2);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🅿 Parking Premium", detail:"Sector P3 · Terminal Internacional", status:"✅ Reserva exitosa", time:"20:47" }); }, null, 7.9);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🍽 Restaurant Internacional", detail:"Mesa para 2 personas", status:"✅ Confirmada 21:15", time:"20:47" }); }, null, 9.8);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"🎁 Duty Free", detail:"Regalo comprado", status:"✅ 15% OFF aplicado", time:"20:48" }); }, null, 11.7);
 
-master.add(buildSaaSTimeline(), 17.5);
+/* Canje de puntos */
+master.call(() => {
+  showNotif({
+    ...APP, mode:"app",
+    name:"⭐ Juan, tienes 10.000 puntos",
+    detail:"¿Quieres pagar o canjear tus puntos?",
+    time:"20:48",
+    actions:true
+  });
+}, null, 13.6);
+
+master.call(()=>{ simulateRedeemClick(); }, null, 15.6);
+
+master.call(() => {
+  showNotif({
+    ...APP, mode:"app",
+    name:"⭐ Canje de puntos",
+    detail:"10.000 puntos aplicados",
+    status:"✅ Canje exitoso",
+    time:"20:49"
+  });
+}, null, 16.4);
+
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Algo más?", text:"✅ Todo listo", time:"20:49" }); }, null, 18.3);
+master.call(()=>{ showNotif({ ...APP, mode:"app", name:"Aterrizaje", text:"✈ Tu pasajero ya aterrizó", time:"21:00" }); }, null, 20.1);
+
+/* Escena final desplazada por el nuevo bloque de canje */
+master.add(buildSaaSTimeline(), 22.2);
 
 const END = master.duration();
 master.fromTo(SOUNDS.appMusic,
-  { volume: MUSIC_VOLUME },
-  { volume: 0, duration: 1.0, ease: "none", immediateRender: false },
+  {volume:MUSIC_VOLUME},
+  {volume:0, duration:1.0, ease:"none", immediateRender:false},
   END - 1.0);
 
 /* ---------- Controles ---------- */
-playBtn.addEventListener("click", () => {
+playBtn.addEventListener("click", ()=>{
   unlockAudioFromUserGesture();
 
   playBtn.disabled = true;
@@ -413,10 +475,10 @@ playBtn.addEventListener("click", () => {
   if (introTyped) introTyped.textContent = "";
   typing.n = 0;
 
-  introTl.restart(true);
+  introTl.restart(true); // Play -> Intro -> Presentación
 });
 
-replayBtn.addEventListener("click", () => {
+replayBtn.addEventListener("click", ()=>{
   hideReplayButton();
   notifs.innerHTML = "";
   stopAppMusic();
