@@ -76,21 +76,10 @@ const typing = { n: 0 };
 /* Sonido de tipeo */
 const typingSound = new Audio("assets/typing.wav");
 typingSound.preload = "auto";
-typingSound.volume = 0.5;
+typingSound.volume = 0.75;
 typingSound.loop = true;
 
-// warm-up silencioso para navegadores estrictos
-typingSound.muted = true;
-typingSound.play().then(() => {
-  typingSound.pause();
-  typingSound.currentTime = 0;
-  typingSound.muted = false;
-}).catch(() => {
-  typingSound.muted = false;
-});
-
 function startTypingSound() {
-  if (!audioUnlocked) return;
   typingSound.pause();
   typingSound.currentTime = 0;
   typingSound.loop = true;
@@ -119,7 +108,7 @@ if (playBtn) {
   playBtn.textContent = "Cargando...";
 }
 
-/* Intro timeline */
+/* Intro timeline: se ejecuta al presionar Play */
 const introTl = gsap.timeline({
   paused: true,
   onComplete: () => {
@@ -151,6 +140,7 @@ introTl
     { opacity: 0, scale: .85, filter: "blur(10px)" },
     { opacity: 1, scale: 1, filter: "blur(0px)", duration: .6, ease: "power3.out" }, 2.9)
   .to("#introLogo", { scale: 1.2, duration: 1, ease: "none" }, 3.5)
+  // salida DRAMÁTICA: neón + parpadeos + electric shake
   .to("#introLogo", {
     duration: 1.05,
     ease: "none",
@@ -195,9 +185,11 @@ const SOUNDS = {
 
 SOUNDS.whatsapp.preload = "auto";
 SOUNDS.whatsapp.volume = 0.5;
+
 SOUNDS.appMusic.preload = "auto";
 SOUNDS.appMusic.volume = MUSIC_VOLUME;
 SOUNDS.appMusic.loop = true;
+
 SOUNDS.click.preload = "auto";
 SOUNDS.click.volume = 0.6;
 
@@ -255,6 +247,7 @@ function stopAppMusic() {
 function showReplayButton() {
   replayBtn.classList.add("show");
 }
+
 function hideReplayButton() {
   replayBtn.classList.remove("show");
 }
@@ -274,6 +267,7 @@ function showNotif({
   mode = "contact",
   actions = false
 }) {
+
   if (mode === "contact") {
     playWhatsappNotification();
   } else {
@@ -315,7 +309,12 @@ function showNotif({
 
   notifs.appendChild(wrap);
 
-  gsap.from(wrap, { height: 0, duration: .55, ease: "power3.out" });
+  gsap.from(wrap, {
+    height: 0,
+    duration: .55,
+    ease: "power3.out"
+  });
+
   gsap.fromTo(
     wrap.firstElementChild,
     { y: 18, scale: .98, opacity: 0, filter: "blur(3px)" },
@@ -327,10 +326,15 @@ function showNotif({
 
   items.forEach((w, i) => {
     const distanceFromNewest = lastIndex - i;
+
     if (distanceFromNewest === 0) return;
 
     if (distanceFromNewest >= MAX_VISIBLE) {
-      gsap.to(w, { opacity: 0, duration: .32, onComplete: () => w.remove() });
+      gsap.to(w, {
+        opacity: 0,
+        duration: .32,
+        onComplete: () => w.remove()
+      });
       return;
     }
 
@@ -371,7 +375,7 @@ const MARIA = { avatar: "assets/Siwa.png", name: "María" };
 const JUAN = { avatar: "assets/Woki.png", name: "Juan" };
 const APP  = { appIcon: "assets/App.png", app: "Club Beneficios" };
 
-/* ---------- Escena intermedia ---------- */
+/* ---------- Escena intermedia (texto tipo AE - impacto) ---------- */
 const bridge = document.createElement("div");
 bridge.id = "bridge-scene";
 bridge.innerHTML = `
@@ -392,31 +396,73 @@ document.body.appendChild(bridge);
 const bridgeStyle = document.createElement("style");
 bridgeStyle.textContent = `
   #bridge-scene{
-    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-    background:var(--app-bg); opacity:0; pointer-events:none; z-index:9000; overflow:hidden;
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--app-bg);
+    opacity:0;
+    pointer-events:none;
+    z-index:9000;
+    overflow:hidden;
   }
-  .bridge-lines{ width:min(920px, 92vw); text-align:center; padding:0 18px; }
+
+  .bridge-lines{
+    width:min(920px, 92vw);
+    text-align:center;
+    padding:0 18px;
+  }
+
   .bridge-line{
-    opacity:0; transform:translateY(22px) scale(.95); color:#eef3ff; letter-spacing:.01em; font-weight:800;
-    line-height:1.15; margin:10px 0; font-size:clamp(28px, 5.4vw, 68px);
-    text-shadow:0 0 8px rgba(125,180,255,.35),0 0 24px rgba(125,180,255,.20),0 10px 28px rgba(0,0,0,.35);
+    opacity:0;
+    transform:translateY(22px) scale(.95);
+    color:#eef3ff;
+    letter-spacing:.01em;
+    font-weight:800;
+    line-height:1.15;
+    margin:10px 0;
+    font-size:clamp(28px, 5.4vw, 68px);
+    text-shadow:
+      0 0 8px rgba(125,180,255,.35),
+      0 0 24px rgba(125,180,255,.20),
+      0 10px 28px rgba(0,0,0,.35);
   }
+
   .bridge-accent{
     background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 38%,#ffffff 55%,#8db4ff 100%);
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
     filter:drop-shadow(0 0 14px rgba(125,220,255,.4));
   }
+
   .bridge-vignette{
-    position:absolute; inset:0; background:radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.52) 100%);
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.52) 100%);
     pointer-events:none;
   }
-  .bridge-orb{ position:absolute; border-radius:50%; filter:blur(95px); opacity:.2; pointer-events:none; }
+
+  .bridge-orb{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(95px);
+    opacity:.2;
+    pointer-events:none;
+  }
+
   .bridge-orb-1{ width:360px; height:360px; background:#4f86ff; top:8%; left:8%; }
   .bridge-orb-2{ width:320px; height:320px; background:#7f5dff; right:8%; bottom:8%; }
+
   .bridge-noise{
-    position:absolute; inset:0; opacity:.08;
+    position:absolute;
+    inset:0;
+    opacity:.08;
     background-image:radial-gradient(rgba(255,255,255,.65) .6px, transparent .6px);
-    background-size:3px 3px; mix-blend-mode:soft-light; pointer-events:none;
+    background-size:3px 3px;
+    mix-blend-mode:soft-light;
+    pointer-events:none;
   }
 `;
 document.head.appendChild(bridgeStyle);
@@ -431,24 +477,28 @@ function buildBridgeTimeline() {
     { opacity:0, scale:1.02 },
     { opacity:1, scale:1, duration:.35, ease:"power2.out" }, 0);
 
+  // Línea 1
   tl.fromTo("#b1",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, 0.08)
     .to("#b1", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b1", { opacity:.32, y:-8, duration:.22, ease:"power2.inOut" }, "+=0.28");
 
+  // Línea 2
   tl.fromTo("#b2",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.38, ease:"power4.out" }, ">-0.04")
     .to("#b2", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b2", { opacity:.4, y:-7, duration:.22, ease:"power2.inOut" }, "+=0.26");
 
+  // Línea 3
   tl.fromTo("#b3",
     { opacity:0, y:28, scale:.9, filter:"blur(10px)" },
     { opacity:1, y:0, scale:1.03, filter:"blur(0px)", duration:.4, ease:"power4.out" }, ">-0.03")
     .to("#b3", { scale:1, duration:.16, ease:"power2.out" }, ">")
     .to("#b3", { opacity:.5, y:-6, duration:.2, ease:"power2.inOut" }, "+=0.22");
 
+  // Línea 4 remate
   tl.fromTo("#b4",
     { opacity:0, y:36, scale:.88, filter:"blur(12px)" },
     { opacity:1, y:0, scale:1.08, filter:"blur(0px)", duration:.52, ease:"back.out(1.6)" }, ">-0.02")
@@ -512,98 +562,163 @@ scene.innerHTML = `
 `;
 document.body.appendChild(scene);
 
-const nodesStyle = document.createElement("style");
-nodesStyle.textContent = `
+const sceneStyle = document.createElement("style");
+sceneStyle.textContent = `
   #slide3{ overflow:hidden; }
   #nodesCanvas{
-    position:absolute; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; z-index:0;
-    filter: drop-shadow(0 0 10px rgba(125,220,255,.35));
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
+    pointer-events:none;
+    z-index:0;
   }
-  #slide3 .saas-message{ position:relative; z-index:2; }
+  #slide3 .saas-message{
+    position:relative;
+    z-index:2;
+  }
+  /* Acento fijo para "Convenios" */
+  #slide2 .saas-word:last-child{
+    background:linear-gradient(92deg,#a7b8ff 0%,#7de3ff 45%,#ffffff 70%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
 `;
-document.head.appendChild(nodesStyle);
+document.head.appendChild(sceneStyle);
 
 const connectedChars = splitChars("#connectedText");
 const logoChars = splitChars("#logoMain");
 
-/* ---------- Fondo nodos neon para Slide 3 ---------- */
+/* ---------- Red de nodos neon (Slide 3) ---------- */
 const nodesCanvas = document.getElementById("nodesCanvas");
 const nctx = nodesCanvas ? nodesCanvas.getContext("2d") : null;
 
 let nodesRAF = null;
 let nodesRunning = false;
-let nodes = [];
-const NODE_COUNT = 5;
-const LINK_DIST = 260;
+let nodesStart = 0;
+
+/* 5 nodos en posiciones relativas (rodean el texto) */
+const NODE_BASE = [
+  { x: .14, y: .28 },
+  { x: .50, y: .14 },
+  { x: .86, y: .30 },
+  { x: .24, y: .80 },
+  { x: .78, y: .78 }
+];
+
+/* Todas las conexiones posibles entre 5 nodos (10 enlaces), aparecen en secuencia */
+const NODE_LINKS = [];
+(function buildLinks() {
+  let order = 0;
+  for (let i = 0; i < NODE_BASE.length; i++) {
+    for (let j = i + 1; j < NODE_BASE.length; j++) {
+      NODE_LINKS.push({
+        a: i,
+        b: j,
+        delay: 0.55 + order * 0.2, // se van tendiendo uno tras otro
+        dur: 0.7,
+        pulseOffset: (order * 0.37) % 1
+      });
+      order++;
+    }
+  }
+})();
 
 function resizeNodesCanvas() {
   if (!nodesCanvas) return;
-  const rect = nodesCanvas.getBoundingClientRect();
+  const w = nodesCanvas.clientWidth || window.innerWidth;
+  const h = nodesCanvas.clientHeight || window.innerHeight;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  nodesCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
-  nodesCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
+  nodesCanvas.width = Math.max(1, Math.floor(w * dpr));
+  nodesCanvas.height = Math.max(1, Math.floor(h * dpr));
   if (nctx) nctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
-function initNodes() {
-  if (!nodesCanvas) return;
-  const w = nodesCanvas.clientWidth || window.innerWidth;
-  const h = nodesCanvas.clientHeight || window.innerHeight;
-  nodes = Array.from({ length: NODE_COUNT }, () => ({
-    x: Math.random() * w,
-    y: Math.random() * h,
-    vx: (Math.random() * 2 - 1) * 0.28,
-    vy: (Math.random() * 2 - 1) * 0.28,
-    r: 2.2 + Math.random() * 2.2
-  }));
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+
+function nodePos(i, t, w, h) {
+  const n = NODE_BASE[i];
+  return {
+    x: n.x * w + Math.sin(t * 0.8 + i * 1.7) * 12,
+    y: n.y * h + Math.cos(t * 0.65 + i * 2.1) * 12
+  };
 }
 
-function drawNodes() {
+function drawNodes(now) {
   if (!nodesRunning || !nctx || !nodesCanvas) return;
 
   const w = nodesCanvas.clientWidth || window.innerWidth;
   const h = nodesCanvas.clientHeight || window.innerHeight;
+  const t = (now - nodesStart) / 1000;
 
   nctx.clearRect(0, 0, w, h);
 
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      const a = nodes[i];
-      const b = nodes[j];
-      const dx = a.x - b.x;
-      const dy = a.y - b.y;
-      const d = Math.sqrt(dx * dx + dy * dy);
+  const pts = NODE_BASE.map((_, i) => nodePos(i, t, w, h));
 
-      if (d < LINK_DIST) {
-        const alpha = (1 - d / LINK_DIST) * 0.62;
-        nctx.strokeStyle = `rgba(125,220,255,${alpha})`;
-        nctx.lineWidth = 1.5;
-        nctx.beginPath();
-        nctx.moveTo(a.x, a.y);
-        nctx.lineTo(b.x, b.y);
-        nctx.stroke();
-      }
+  /* Líneas que se van conectando */
+  NODE_LINKS.forEach((L) => {
+    const p = easeOutCubic(clamp01((t - L.delay) / L.dur));
+    if (p <= 0) return;
+
+    const A = pts[L.a];
+    const B = pts[L.b];
+    const ex = A.x + (B.x - A.x) * p;
+    const ey = A.y + (B.y - A.y) * p;
+
+    nctx.save();
+    nctx.shadowColor = "rgba(125,220,255,.9)";
+    nctx.shadowBlur = 10;
+    nctx.strokeStyle = `rgba(125,220,255,${0.35 + 0.35 * p})`;
+    nctx.lineWidth = 1.6;
+    nctx.beginPath();
+    nctx.moveTo(A.x, A.y);
+    nctx.lineTo(ex, ey);
+    nctx.stroke();
+    nctx.restore();
+
+    /* Punta luminosa mientras se dibuja */
+    if (p < 1) {
+      nctx.fillStyle = "rgba(230,250,255,.95)";
+      nctx.beginPath();
+      nctx.arc(ex, ey, 3, 0, Math.PI * 2);
+      nctx.fill();
+    } else {
+      /* Pulso viajando por la línea ya conectada */
+      const u = (((t - L.delay - L.dur) * 0.35) + L.pulseOffset) % 1;
+      const px = A.x + (B.x - A.x) * u;
+      const py = A.y + (B.y - A.y) * u;
+      const g = nctx.createRadialGradient(px, py, 0, px, py, 9);
+      g.addColorStop(0, "rgba(230,250,255,.95)");
+      g.addColorStop(1, "rgba(125,220,255,0)");
+      nctx.fillStyle = g;
+      nctx.beginPath();
+      nctx.arc(px, py, 9, 0, Math.PI * 2);
+      nctx.fill();
     }
-  }
+  });
 
-  nodes.forEach((p) => {
-    p.x += p.vx;
-    p.y += p.vy;
+  /* Nodos: aparecen con "pop" escalonado + pulso */
+  pts.forEach((P, i) => {
+    const appear = easeOutCubic(clamp01((t - i * 0.12) / 0.45));
+    if (appear <= 0) return;
 
-    if (p.x < 0 || p.x > w) p.vx *= -1;
-    if (p.y < 0 || p.y > h) p.vy *= -1;
+    const pulse = 1 + 0.12 * Math.sin(t * 3 + i);
+    const r = (3.4 + 1.2 * Math.sin(t * 2 + i)) * appear;
 
-    const g = nctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 12);
-    g.addColorStop(0, "rgba(170,240,255,.95)");
+    const g = nctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, 20 * appear * pulse);
+    g.addColorStop(0, "rgba(170,240,255,.85)");
     g.addColorStop(1, "rgba(125,220,255,0)");
     nctx.fillStyle = g;
     nctx.beginPath();
-    nctx.arc(p.x, p.y, 12, 0, Math.PI * 2);
+    nctx.arc(P.x, P.y, 20 * appear * pulse, 0, Math.PI * 2);
     nctx.fill();
 
-    nctx.fillStyle = "rgba(210,248,255,.98)";
+    nctx.fillStyle = "rgba(220,250,255,1)";
     nctx.beginPath();
-    nctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    nctx.arc(P.x, P.y, Math.max(r, 0.1), 0, Math.PI * 2);
     nctx.fill();
   });
 
@@ -613,9 +728,9 @@ function drawNodes() {
 function startNodesBackground() {
   if (!nodesCanvas || nodesRunning) return;
   resizeNodesCanvas();
-  initNodes();
   nodesRunning = true;
-  drawNodes();
+  nodesStart = performance.now();
+  nodesRAF = requestAnimationFrame(drawNodes);
 }
 
 function stopNodesBackground() {
@@ -623,9 +738,7 @@ function stopNodesBackground() {
   if (nodesRAF) cancelAnimationFrame(nodesRAF);
   nodesRAF = null;
   if (nctx && nodesCanvas) {
-    const w = nodesCanvas.clientWidth || window.innerWidth;
-    const h = nodesCanvas.clientHeight || window.innerHeight;
-    nctx.clearRect(0, 0, w, h);
+    nctx.clearRect(0, 0, nodesCanvas.clientWidth || window.innerWidth, nodesCanvas.clientHeight || window.innerHeight);
   }
 }
 
@@ -655,44 +768,74 @@ function buildSaaSTimeline(){
       {opacity:0, scale:1.18, y:-46, filter:"blur(14px)", duration:.85, ease:"power3.in"},
       "+=1.15");
 
-  // Slide 2 +50% tiempo, más suave
-  tl.fromTo("#slide2",
-      { opacity:0, scale:.86, y:28, filter:"blur(10px)" },
-      { opacity:1, scale:1, y:0, filter:"blur(0px)", duration:.51, ease:"power4.out" })
-    .fromTo(".saas-word",
-      { opacity:0, y:64, scale:.78, rotateX:-80, rotateZ:-2.5, filter:"blur(12px)", transformOrigin:"50% 100%" },
-      { opacity:1, y:0, scale:1.1, rotateX:0, rotateZ:0, filter:"blur(0px)", stagger:.12, duration:.69, ease:"back.out(1.7)" },
-      "<")
-    .to(".saas-word",
-      { scale:1, duration:.21, stagger:.06, ease:"power2.out" },
-      "<+.18")
-    .to("#slide2",
-      { scale:1.03, filter:"brightness(1.13)", duration:.24, yoyo:true, repeat:1, ease:"power2.inOut" },
-      "<+.12")
-    .to(".saas-word",
-      { textShadow:"0 0 24px rgba(150,210,255,.62), 0 0 40px rgba(120,180,255,.38)", duration:.27, yoyo:true, repeat:1, stagger:.04, ease:"sine.inOut" },
-      "<")
-    .to("#slide2",
-      { x:1.4, duration:.04, repeat:4, yoyo:true, ease:"none" },
-      "<+.03")
-    .to({}, { duration:.9 })
-    .to(".saas-word",
-      { y:-34, opacity:0, scale:.88, rotateX:18, filter:"blur(8px)", stagger:.08, duration:.45, ease:"power3.in" },
-      "<")
-    .to("#slide2",
-      { opacity:0, scale:1.01, duration:.24, ease:"power2.in" },
-      "<+.12");
+  // Slide 2: base de la versión anterior, con variaciones (entrada alternada, ola de brillo, ritmo ~30% más lento)
+  tl.fromTo("#slide2", { opacity:0 }, { opacity:1, duration:.33 })
 
-  // Slide 3 nodos neon
+    // entrada con punch + blur, alternando izquierda/derecha
+    .fromTo(".saas-word",
+      {
+        opacity:0,
+        x:(i) => (i % 2 === 0 ? -46 : 46),
+        y:42,
+        scale:.84,
+        rotateX:-78,
+        filter:"blur(12px)",
+        transformOrigin:"50% 100%"
+      },
+      {
+        opacity:1, x:0, y:0, scale:1.04, rotateX:0, filter:"blur(0px)",
+        stagger:.14, duration:.65, ease:"power4.out"
+      },
+      "<")
+
+    // asentado
+    .to(".saas-word",
+      { scale:1, duration:.2, stagger:.08, ease:"power2.out" },
+      "<+.2")
+
+    // pulso suave de TODO el bloque
+    .to("#slide2",
+      { scale:1.025, duration:.3, yoyo:true, repeat:1, ease:"sine.inOut" },
+      "<+.1")
+
+    // ola de brillo recorriendo todas las palabras
+    .to(".saas-word",
+      { textShadow:"0 0 26px rgba(140,210,255,.55), 0 0 44px rgba(120,180,255,.3)", duration:.24, yoyo:true, repeat:1, stagger:.09, ease:"sine.inOut" },
+      "<")
+
+    // micro vibración sutil del bloque
+    .to("#slide2",
+      { x:1, duration:.05, repeat:3, yoyo:true, ease:"none" },
+      "<+.05")
+
+    // lectura
+    .to({}, { duration:.8 })
+
+    // salida en cascada más suave
+    .to(".saas-word",
+      {
+        y:-30, opacity:0, scale:.92,
+        x:(i) => (i % 2 === 0 ? 24 : -24),
+        filter:"blur(9px)", stagger:.08, duration:.45, ease:"power2.in"
+      },
+      "<")
+    .to("#slide2", { opacity:0, duration:.22 }, "<+.15");
+
+  // Slide 3: red de nodos conectándose
   tl.fromTo("#slide3",{opacity:0},{opacity:1, duration:.5, ease:"power2.out"})
     .call(() => startNodesBackground(), null, "<")
-    .fromTo("#nodesCanvas",{ opacity:0 },{ opacity:1, duration:.45, ease:"power2.out" },"<+0.05")
+    .fromTo("#nodesCanvas",
+      { opacity:0 },
+      { opacity:1, duration:.45, ease:"power2.out" },
+      "<+0.05")
     .fromTo(connectedChars,
       {opacity:0, y:24},
       {opacity:1, y:0, stagger:.03, duration:.5, ease:"power3.out"},
-      "<")
-    .to("#slide3",{opacity:0, y:-24, duration:.6, ease:"power2.in"},"+=1.2")
-    .to("#nodesCanvas",{ opacity:0, duration:.3, ease:"power2.in" },"<")
+      "<+0.2")
+    // hold más largo para ver la red completa
+    .to("#slide3",
+      {opacity:0, y:-24, duration:.6, ease:"power2.in"},
+      "+=2.4")
     .call(() => stopNodesBackground(), null, ">");
 
   tl.addLabel("s4", ">");
@@ -725,7 +868,9 @@ function buildSaaSTimeline(){
 /* ---------- Timeline maestro ---------- */
 const master = gsap.timeline({
   paused:true,
-  onUpdate:()=>{ progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`; },
+  onUpdate:()=>{
+    progressBar.style.width = `${(master.progress()*100).toFixed(2)}%`;
+  },
   onComplete:()=>{
     progressBar.style.width = "100%";
     stopAppMusic();
@@ -739,8 +884,8 @@ master.call(()=>{ showNotif({...MARIA, mode:"contact", text:"Recuerda que llego 
 master.call(()=>{ showNotif({...JUAN, mode:"contact", text:"Por supuesto, te espero 🙌", time:"20:46"}); }, null, 3.4);
 master.call(()=>{ clearNotifs(); }, null, 5.2);
 
-/* Música + bloque intermedio */
-master.call(() => { startAppMusic(); }, null, 6.0);
+/* Música + bloque de texto "impacto" */
+master.call(()=>{ startAppMusic(); }, null, 6.0);
 master.add(buildBridgeTimeline(), 6.0);
 
 /* Beneficios app */
@@ -761,6 +906,7 @@ master.call(() => {
 }, null, 18.0);
 
 master.call(()=>{ simulateRedeemClick(); }, null, 19.2);
+
 master.call(() => {
   showNotif({
     ...APP, mode:"app",
@@ -799,7 +945,7 @@ playBtn.addEventListener("click", ()=>{
   typing.n = 0;
 
   master.pause(0);
-  introTl.restart(true);
+  introTl.restart(true); // Play -> Intro -> Presentación
 });
 
 replayBtn.addEventListener("click", ()=>{
@@ -837,6 +983,7 @@ replayBtn.addEventListener("click", ()=>{
 /* ---------- Boot ---------- */
 (async function boot() {
   await preloadAssets();
+
   if (playBtn) {
     playBtn.disabled = false;
     playBtn.textContent = "▶";
