@@ -82,7 +82,7 @@ function showNotif({
     });
 
     gsap.from(wrap.firstElementChild,{
-        y:-72,
+        y:40,
         scale:.92,
         opacity:0,
         duration:.62,
