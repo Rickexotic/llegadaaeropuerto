@@ -392,5 +392,14 @@ body{
 #saas-scene{
   pointer-events:none;
 }
+  #slide4,
+#slide4 .saas-logo,
+#slide4 .saas-logo-sub,
+#slide4 .cta-pill{
+  will-change:transform, opacity;
+  backface-visibility:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+}
   
 }
