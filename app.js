@@ -164,8 +164,8 @@ function clearNotifs(){
 }
 
 /* ---------- Datos ---------- */
-const SIWA = { avatar:"assets/Siwa.png", name:"Siwa" };
-const WOKI = { avatar:"assets/Woki.png", name:"Woki" };
+const SIWA = { avatar:"assets/Siwa.png", name:"María" };
+const WOKI = { avatar:"assets/Woki.png", name:"Juan" };
 const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
 
 /* ---------- Escena final (se crea una sola vez, oculta) ---------- */
