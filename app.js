@@ -127,7 +127,7 @@ function clearNotifs(){
 /* ---------- Datos ---------- */
 const SIWA = { avatar:"assets/Siwa.png", name:"Siwa" };
 const WOKI = { avatar:"assets/Woki.png", name:"Woki" };
-const APP  = { appIcon:"assets/App.png", app:"Club Beneficios" };
+const APP  = { appIcon:"assets/wassap.png", app:"Club Beneficios" };
 
 /* ---------- Secuencia ---------- */
 
@@ -229,16 +229,14 @@ function splitChars(selector){
 
 setTimeout(()=>{
 
-    gsap.to("#stage",{
-        scale:1.32,
-        opacity:0,
-        filter:"blur(24px)",
-        rotationX:-12,
-        rotationY:4,
-        y:-90,
-        duration:1.35,
-        ease:"power4.inOut"
-    });
+   gsap.to("#stage",{
+  scale:1.08,
+  opacity:0,
+  filter:"blur(12px)",
+  y:-20,
+  duration:1.0,
+  ease:"power3.inOut"
+});
 
     const scene = document.createElement("div");
     scene.id = "saas-scene";
